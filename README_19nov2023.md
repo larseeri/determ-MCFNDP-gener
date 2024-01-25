@@ -109,7 +109,7 @@ Two blank or comment rows (are disregarded when reading)<br/>
 low = lowNodeNumber #lowNodeNumber is smallest node number appearing in rows below<br/>
 high = highNodeNumber #highNodeNumber is highest node number appearing in rows below<br/>
 Three blank or comment rows (are disregarded when reading)<br/>
-<origNodeNumber> <destNodeNumber> # each row indicates arc in graph from orig. to dest.<br/>
+<origNodeNumber> <destNodeNumber> #each row indicates arc in graph from orig. to dest.<br/>
 <origNodeNumber> <destNodeNumber><br/>
 <origNodeNumber> <destNodeNumber><br/>
 .<br/>
