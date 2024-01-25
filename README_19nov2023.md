@@ -23,7 +23,7 @@ IN THE SOFTWARE.
 
 ### Generator of instances of the linear, deterministic, multi-commodity, fixed charge, capacitated network design problem: User's guide (19Nov2023)
 
-This application randomly generates instances of the linear, deterministic, multi-commodity,<br/>capacitated, fixed charge network design (MCFND) problem. Details of the process are<br/>governed by user-specified configuration settings.
+This application randomly generates instances of the linear, deterministic, multi-commodity, capacitated, fixed charge network design (MCFND) problem. Details of the process are governed by user-specified configuration settings.
 
 For detailed background, see
 Larsen, E., Bisaillon, S., Cordeau, J.F. and Frejinger, E.
