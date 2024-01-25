@@ -32,13 +32,13 @@ Multi-commodity Network Design Problems.
 
 #### 1 Building the program
 
-Under Linux, follow these steps to build the program:
+Under Linux, follow these steps to build the program:<br/>
 
-a- Uncompress the archive file containing the program files.
-b- In the terminal, go to the directory just created.
+a- Uncompress the archive file containing the program files.<br/>
+b- In the terminal, go to the directory just created.<br/>
 c- Run this command:  make
-	to compile the program.
-d- An executable file named 'exe' will be created.
+	to compile the program.<br/>
+d- An executable file named 'exe' will be created.<br/>
 
 #### 2 Running the program
 
@@ -122,13 +122,13 @@ basic graph in a plain text file whose default name, basicGraph.dat, may
 be superseded using the option basicGraphFileName. In this case, the file
 will have the following appearance:
 
-(beginning of file)
-1 Nodes
+(beginning of file)<br/>
+1 Nodes<br/>
 Nodes are identified with integers in closed interval [low, high].  Program will perform appropriate renumbering.
 low = 0
 high = 11
 
-2 Arcs
+2 Arcs<br/>
 NodeFrom  NodeTo
 0  1
 0  2
