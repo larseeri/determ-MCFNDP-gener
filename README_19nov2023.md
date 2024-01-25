@@ -21,7 +21,7 @@ IN THE SOFTWARE.
 ****************************************************************************
 ****************************************************************************
 
-### Generator of instances of the linear, deterministic, <br/>multi-commodity, fixed charge, capacitated network<br/>design problem: User's guide (19Nov2023)
+### Generator of instances of the linear, deterministic, multi-commodity, fixed charge, capacitated network design problem: User's guide (19Nov2023)
 
 This application randomly generates instances of the linear, deterministic, multi-commodity,<br/>capacitated, fixed charge network design (MCFND) problem. Details of the process are<br/>governed by user-specified configuration settings.
 
@@ -32,13 +32,13 @@ Multi-commodity Network Design Problems.
 
 #### 1 Building the program
 
-Under Linux, follow these steps to build the program:<br/>
+Under Linux, follow these steps to build the program:
 
 a- Uncompress the archive file containing the program files.<br/>
 b- In the terminal, go to the directory just created.<br/>
-c- Run this command:  make
+c- Run this command:  make<br/>
 	to compile the program.<br/>
-d- An executable file named 'exe' will be created.<br/>
+d- An executable file named 'exe' will be created.
 
 #### 2 Running the program
 
@@ -54,10 +54,10 @@ main.cpp.) The default file name can be overridden with the option +F:
 
 The option parameters file should have this format:
 
-optionParameter1   <value>
-optionParameter2   <value>
-.
-.
+optionParameter1   <value><br/>
+optionParameter2   <value><br/>
+.<br/>
+.<br/>
 optionParameterN   <value>
 
 For options expecting boolean values, no values will be read: presence
@@ -104,17 +104,17 @@ text file. The default name of this file is basicGraph.dat. An alternative
 name may be specified with the option basicGraphFileName. To be read
 correctly, this file must be structured as follows:
 
-(beginning of file)
-Two blank or comment rows (are disregarded when reading)
-low = lowNodeNumber #lowNodeNumber is smallest node number appearing in rows below
-high = highNodeNumber #highNodeNumber is highest node number appearing in rows below
-Three blank or comment rows (are disregarded when reading)
-<origNodeNumber> <destNodeNumber> # each row indicates arc in graph from orig. to dest.
-<origNodeNumber> <destNodeNumber>
-<origNodeNumber> <destNodeNumber>
-.
-.
-.
+(beginning of file)<br/>
+Two blank or comment rows (are disregarded when reading)<br/>
+low = lowNodeNumber #lowNodeNumber is smallest node number appearing in rows below<br/>
+high = highNodeNumber #highNodeNumber is highest node number appearing in rows below<br/>
+Three blank or comment rows (are disregarded when reading)<br/>
+<origNodeNumber> <destNodeNumber> # each row indicates arc in graph from orig. to dest.<br/>
+<origNodeNumber> <destNodeNumber><br/>
+<origNodeNumber> <destNodeNumber><br/>
+.<br/>
+.<br/>
+.<br/>
 (end of file)
 
 If option topology is NOT called with value 3, then the program will save the
@@ -124,19 +124,19 @@ will have the following appearance:
 
 (beginning of file)<br/>
 1 Nodes<br/>
-Nodes are identified with integers in closed interval [low, high].  Program will perform appropriate renumbering.
-low = 0
+Nodes are identified with integers in closed interval [low, high].  Program will perform appropriate renumbering.<br/>
+low = 0<br/>
 high = 11
 
 2 Arcs<br/>
-NodeFrom  NodeTo
-0  1
-0  2
-0  3
-0  9
-.
-.
-.
+NodeFrom  NodeTo<br/>
+0  1<br/>
+0  2<br/>
+0  3<br/>
+0  9<br/>
+.<br/>
+.<br/>
+.<br/>
 (end of file)
 
 #### 3 Usage of options
