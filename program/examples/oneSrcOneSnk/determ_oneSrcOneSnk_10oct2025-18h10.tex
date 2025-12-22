@@ -1,0 +1,108 @@
+\documentclass{article}
+\usepackage{longtable}
+\usepackage{rotating}
+\usepackage{adjustbox}
+\usepackage{geometry}
+\geometry{paperwidth=14in,paperheight=14in,lmargin=1in,rmargin=1in,bmargin=1in,tmargin=1in}
+\usepackage{tikz}
+\usepackage{multirow}
+\begin{document}
+\usetikzlibrary{shapes.misc, arrows.meta, quotes, decorations.text}
+\section{Generated network based on grid topology}
+\begin{center}
+\adjustbox{max size={11.5in}{11.5in}}{
+\begin{tikzpicture}[inout/.style={rectangle, minimum size=10mm,very thick,font={\sffamily}, blue},through/.style={circle,minimum size=10mm,very thick,font={\sffamily}},post/.style={->,shorten <=1pt,shorten >=1pt,>={Stealth[round]},thick},randpost/.style={->,shorten <=1pt,shorten >=1pt,>={Stealth[round]},thick,red}]
+\matrix[row sep=25mm,column sep=25mm,nodes=draw,ampersand replacement=\&]{
+\node [through] (1) {node 1};
+\& \node [through] (2) {node 2};
+\& \node [through] (3) {node 3};\\
+\node [inout, align=center] (4){\begin{tabular}{l|r}\multicolumn{2}{l}{node 4}\\
+ comm. & flow \\
+\hline
+3 & 200 \\
+\end{tabular}};
+\& \node [through] (5) {node 5};
+\& \node [inout, align=center] (6){\begin{tabular}{l|r}\multicolumn{2}{l}{node 6}\\
+ comm. & flow \\
+\hline
+2 & 200 \\
+\end{tabular}};\\
+\node [through] (7) {node 7};
+\& \node [inout, align=center] (8){\begin{tabular}{l|r}\multicolumn{2}{l}{node 8}\\
+ comm. & flow \\
+\hline
+1 & 200 \\
+\end{tabular}};
+\& \node [inout, align=center] (9){\begin{tabular}{l|r}\multicolumn{2}{l}{node 9}\\
+ comm. & flow \\
+\hline
+2 & -200 \\
+\end{tabular}};\\
+\node [through] (10) {node 10};
+\& \node [inout, align=center] (11){\begin{tabular}{l|r}\multicolumn{2}{l}{node 11}\\
+ comm. & flow \\
+\hline
+1 & -200 \\
+\end{tabular}};
+\& \node [inout, align=center] (12){\begin{tabular}{l|r}\multicolumn{2}{l}{node 12}\\
+ comm. & flow \\
+\hline
+3 & -200 \\
+\end{tabular}};\\
+};
+\path[post, bend left=20] (1) edge [postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=600 F=100 V=10}}}] (2);
+\path[post, bend left=20] (1) edge [postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=600 F=100 V=10}}}] (4);
+\path[post, bend left=20] (2) edge [postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=600 F=100 V=10}}}] (3);
+\path[post, bend left=20] (2) edge [postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=600 F=100 V=10}}}] (1);
+\path[post, bend left=20] (2) edge [postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=600 F=100 V=10}}}] (5);
+\path[post, bend left=20] (3) edge [postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=600 F=100 V=10}}}] (2);
+\path[post, bend left=20] (3) edge [postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=600 F=100 V=10}}}] (6);
+\path[post, bend left=20] (4) edge [postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=600 F=100 V=10}}}] (5);
+\path[post, bend left=20] (4) edge [postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=600 F=100 V=10}}}] (7);
+\path[post, bend left=20] (4) edge [postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=600 F=100 V=10}}}] (1);
+\path[post, bend left=20] (5) edge [postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=600 F=100 V=10}}}] (6);
+\path[post, bend left=20] (5) edge [postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=600 F=100 V=10}}}] (4);
+\path[post, bend left=20] (5) edge [postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=600 F=100 V=10}}}] (8);
+\path[post, bend left=20] (5) edge [postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=600 F=100 V=10}}}] (2);
+\path[post, bend left=20] (6) edge [postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=600 F=100 V=10}}}] (5);
+\path[post, bend left=20] (6) edge [postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=600 F=100 V=10}}}] (9);
+\path[post, bend left=20] (6) edge [postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=600 F=100 V=10}}}] (3);
+\path[post, bend left=20] (7) edge [postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=600 F=100 V=10}}}] (8);
+\path[post, bend left=20] (7) edge [postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=600 F=100 V=10}}}] (10);
+\path[post, bend left=20] (7) edge [postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=600 F=100 V=10}}}] (4);
+\path[post, bend left=20] (8) edge [postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=600 F=100 V=10}}}] (9);
+\path[post, bend left=20] (8) edge [postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=600 F=100 V=10}}}] (7);
+\path[post, bend left=20] (8) edge [postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=600 F=100 V=10}}}] (11);
+\path[post, bend left=20] (8) edge [postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=600 F=100 V=10}}}] (5);
+\path[post, bend left=20] (9) edge [postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=600 F=100 V=10}}}] (8);
+\path[post, bend left=20] (9) edge [postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=600 F=100 V=10}}}] (12);
+\path[post, bend left=20] (9) edge [postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=600 F=100 V=10}}}] (6);
+\path[post, bend left=20] (10) edge [postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=600 F=100 V=10}}}] (11);
+\path[post, bend left=20] (10) edge [postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=600 F=100 V=10}}}] (7);
+\path[post, bend left=20] (11) edge [postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=600 F=100 V=10}}}] (12);
+\path[post, bend left=20] (11) edge [postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=600 F=100 V=10}}}] (10);
+\path[post, bend left=20] (11) edge [postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=600 F=100 V=10}}}] (8);
+\path[post, bend left=20] (12) edge [postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=600 F=100 V=10}}}] (11);
+\path[post, bend left=20] (12) edge [postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=600 F=100 V=10}}}] (9);
+\path[randpost, bend left=20] (9) edge [postaction={decorate,decoration={text color=red,raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=100 F=100 V=10}}}] (1);
+\path[randpost, bend left=20] (1) edge [postaction={decorate,decoration={text color=red,raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=100 F=100 V=10}}}] (9);
+\path[randpost, bend left=20] (12) edge [postaction={decorate,decoration={text color=red,raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=100 F=100 V=10}}}] (3);
+\path[randpost, bend left=20] (3) edge [postaction={decorate,decoration={text color=red,raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=100 F=100 V=10}}}] (7);
+\path[randpost, bend left=20] (1) edge [postaction={decorate,decoration={text color=red,raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=100 F=100 V=10}}}] (12);
+\path[randpost, bend left=20] (1) edge [postaction={decorate,decoration={text color=red,raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=100 F=100 V=10}}}] (6);
+\end{tikzpicture}
+}
+\end{center}
+\pagebreak
+\section{Notes}
+\begin{itemize}
+\item{Black arcs are part of the base, grid topology.}
+\item{Red arcs are additional, randomly generated.}
+\item{$C=x$ along arc: overall capacity of arc is equal to $x$.}
+\item{$F=y$ along arc: fixed cost of arc is equal to $y$.}
+\item{$V=z$ along arc: variable cost of arc is equal to $z$.}
+\item{Capacities and variable costs are not differentiated between commodities.}
+\item{Circular nodes are transit nodes.}
+\item{Rectangular nodes are source ($flow > 0$) or sink ($flow < 0$) nodes for stated commodities.}
+\end{itemize}
+\end{document}
