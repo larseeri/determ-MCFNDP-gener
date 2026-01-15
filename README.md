@@ -1,4 +1,4 @@
-(Jan 14th 2026)
+(Jan 15th 2026)
 ### GENERATOR OF INSTANCES OF THE LINEAR, DETERMINISTIC, MULTI-COMMODITY, FIXED CHARGE, CAPACITATED NETWORK DESIGN PROBLEM
 
 This application randomly generates instances of the linear deterministic
@@ -299,7 +299,7 @@ respectively correspond to the following Docker instructions:
 	docker run --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_gen_image \
 	/determ_gen +F /inout/newParamfile.par -stream 1234 -seed 4567 -numbCom 10
 
-Important: 
+Important:<br>
 When running the program through Docker instructions, all input and output
 files must be located inside the docker/inout subfolder. Within the Docker 
 instructions and the configuration files, this subfolder must be denoted
