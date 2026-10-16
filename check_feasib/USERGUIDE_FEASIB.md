@@ -10,11 +10,11 @@ check_feasib/USERGUIDE_FEASIB.md
 
 This application verifies if a specified instance of the linear, deterministic, multi-commodity, capacitated, fixed charge network design problem (MCFNDP) is feasible. It does so by (i) opening all existing arcs in the network, (ii) setting the fixed cost over each arc to 0, (iii) setting the variable cost over each arc-commodity pair to 1, (iv) leaving unchanged demanded and supplied commodity volumes at every node as well as overall capacities and commodity-specific capacities, and then (v) verifying if a minimum cost solution is available under these conditions.
 
-This user guide comprises the following sections:
-1 Building and running the program directly from the Linux command line
-2 Running the program through Docker instructions
-3 Format of the deterministic MCFND instance file
-4 Detailed examples
+This user guide comprises the following sections:\
+1 Building and running the program directly from the Linux command line.\
+2 Running the program through Docker instructions.\
+3 Format of the deterministic MCFND instance file.\
+4 Detailed examples.
 
 ### 1 Building and running the program directly from the Linux command line
 
@@ -23,10 +23,15 @@ This user guide comprises the following sections:
 Under Linux, follow these steps to build the program:
 
 a- Install the CPLEX solver and/or the HIGHS solver (if not already done) and note the installation folder(s). According to our verifications, CPLEX and HIGHS work equally well in our application. HIGHS is freely available under the MIT license at https://highs.dev/. See Huangfu, Q., Hall, J.A.J. Parallelizing the dual revised simplex method. Math. Prog. Comp. 10, 119-142 (2018).
+
 b- If not already done, either (i) use Git to clone locally the remote repository https://github.com/larseeri/determ-MCFNDP-gener, or (ii) generate, download locally to an appropriate folder and uncompress a .zip archive containing the remote repository file tree.
+
 c- In a Linux terminal, go to the /check_feasib/program folder just created.
+
 d- Edit the file named "makefile" to set the variables indicating the locations relevant to the CPLEX solver and/or the HIGHS solver, as noted in step a-. These locations are chiefly CPLEX_HOME and HIGHS_HOME. Save the modifications.
+
 e- Make sure that the gcc C++ compiler and the make C++ build tool are available.
+
 f- In the terminal, run ONLY ONE of these commands to build the program equipped either with the CPLEX solver or with the HIGHS solver:
 
 ```
@@ -105,6 +110,7 @@ docker pull ghcr.io/larseeri/determ_feasib_image:latest
 ```
 
 (From this image, Docker containers running the executable 'determ_feasib' will be generated.)
+
 b- For simplicity, define the alias 'determ_feasib_image' through
 
 ```
@@ -119,6 +125,7 @@ docker load --input determ_feasib_image.tar
 ```
 
 c- If not already done, either (i) use Git to clone locally the remote repository https://github.com/larseeri/determ-MCFNDP, or (ii) generate, download locally to an appropriate folder and uncompress a .zip archive containing the remote repository file tree. The /check_feasib/docker folder contains (i) the primitive files named 'Dockerfile' and 'makefile' based on which the Docker image was originally generated, (ii) a subfolder /inout used for exchanging files between the program running inside a Docker container and the directory structure of the host, (iii) some auxiliary files, and (iv) the subfolder /examples containing a number of configuration files and their resulting outputs (examined in Section 5 below).
+
 d- In a terminal, go to the /check_feasib/docker folder just created.
 
 Then, instructions similar to those appearing in Section 1.2 can be run from the terminal on AMD and Intel CPUs (other CPUs are addressed further below).
@@ -143,10 +150,10 @@ corresponds to the following Docker instruction:
 docker run --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_feasib_image /determ_feasib +v -F formatOfNetwork -I /inout/networkFile
 ```
 
-Important: 
+Important:/
 When running the program through Docker instructions, all input and output files must be located inside the docker/inout subfolder. Within the Docker instructions and the configuration files, this subfolder must be denoted /inout since it is located at the root of the Docker container. Hence, a network file located at docker/inout/networkFile.std will be specified in the Docker instruction or inside the configuration file with -I /inout/networkFile.std.
 
-Important:
+Important:/
 The supplied Docker image conforms to the amd64 CPU instructions standard and will run natively on AMD and Intel CPUs. On CPUs conforming instead to the arm64 standard, e.g., on recent Apple computers, the supplied Docker image can be run through emulation. Essentially, this may be achieved as follows:
 
 a- Running the following preliminary instruction once. (For details, see https://hub.docker.com/r/tonistiigi/binfmt.)
@@ -190,20 +197,19 @@ By default, the name of the file describing the base deterministic MCFND network
 Important:
 It is critical that the content of the file describing the base deterministic MCFND instance and the indicated format of its content match together.
 
-DOW and STD formats are commonly used to store deterministic MCFND instances in text files. These formats are described in files DOW-format-desc.txt and STD-format-desc.txt. The application can read from these two formats. One of these three formats may be selected with option F.
-a- DOW presupposes that (i) for each arc, capacities and variable costs are identical for all commodities and (ii) each commodity has a single source node (at which volume > 0) and a single sink node (at which volume < 0).
+DOW and STD formats are commonly used to store deterministic MCFND instances in text files. These formats are described in files DOW-format-desc.txt and STD-format-desc.txt. The application can read from these two formats. One of these three formats may be selected with option F.\
+a- DOW presupposes that (i) for each arc, capacities and variable costs are identical for all commodities and (ii) each commodity has a single source node (at which volume > 0) and a single sink node (at which volume < 0).\
 b- STD imposes neither (i), nor (ii).
 
-Example
-
+Example:\
 Consider this hypothetical Linux command line instruction:
 
 ```
 ./determ_feasib -I instB.std -F G 
 ```
 
-It is interpreted as follows:
--I instB.std: deterministic network is to be read from file instB.std
+It is interpreted as follows:\
+-I instB.std: deterministic network is to be read from file instB.std\
 -F G: format of the latter is STD
 
 ### 4 Detailed examples
@@ -252,17 +258,16 @@ Linux command line instruction:
 ./determ_gen +v +F determ_config_oneSrcOneSnk_12oct2026-17h09.par
 ```
 
-Configuration file:
+Configuration file:\
 determ_config_oneSrcOneSnk_12oct2026-17h09.par
 
-Outputs in DOW, STD, LP, MPS, GRA (basic graph), TEX (code of graphical
-representation), pdf (compiled image) formats:
-determ_oneSrcOneSnk_12oct2026-17h09.dow
-determ_oneSrcOneSnk_12oct2026-17h09.std
-determ_oneSrcOneSnk_12oct2026-17h09.mps
-determ_oneSrcOneSnk_12oct2026-17h09.lp
-determ_oneSrcOneSnk_12oct2026-17h09.gra
-determ_oneSrcOneSnk_12oct2026-17h09.tex
+Outputs in DOW, STD, LP, MPS, GRA (basic graph), TEX (code of graphical representation), pdf (compiled image) formats:\
+determ_oneSrcOneSnk_12oct2026-17h09.dow\
+determ_oneSrcOneSnk_12oct2026-17h09.std\
+determ_oneSrcOneSnk_12oct2026-17h09.mps\
+determ_oneSrcOneSnk_12oct2026-17h09.lp\
+determ_oneSrcOneSnk_12oct2026-17h09.gra\
+determ_oneSrcOneSnk_12oct2026-17h09.tex\
 determ_oneSrcOneSnk_12oct2026-17h09.pdf
 
 ##### 4.1.2 STD format
@@ -283,7 +288,7 @@ Docker instruction:
 docker run --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_feasib_image /determ_feasib +v -F G -I /inout/determ_oneSrcOneSnk_12oct2026-17h09.std
 ```
 
-Location of deterministic network file (input):
+Location of deterministic network file (input):\
 /examples/oneSrcOneSnk/determ_oneSrcOneSnk_12oct2026-17h09.std
 
 Displayed output:
@@ -314,7 +319,7 @@ Docker instruction:
 docker run --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_feasib_image /determ_feasib +v -F G -I /inout/determ_eqSrcsEqSnks_12oct2026-17h09.std
 ```
 
-Location of deterministic network file (input):
+Location of deterministic network file (input):\
 /examples/eqSrcsEqSnks/determ_eqSrcsEqSnks_12oct2026-17h09.std
 
 Displayed output:
@@ -331,14 +336,13 @@ Linux command line instruction:
 ./determ_gen +v +F determ_config_eqSrcsEqSnks_12oct2026-17h09.par
 ```
 
-Configuration file:
+Configuration file:\
 determ_config_eqSrcsEqSnks_12oct2026-17h09.par
 
-Outputs in STD, LP, MPS, GRA (basic graph), TEX (code of graphical
-representation), pdf (compiled image) formats:
-determ_eqSrcsEqSnks_12oct2026-17h09.std
-determ_eqSrcsEqSnks_12oct2026-17h09.mps
-determ_eqSrcsEqSnks_12oct2026-17h09.lp
-determ_eqSrcsEqSnks_12oct2026-17h09.gra
-determ_eqSrcsEqSnks_12oct2026-17h09.tex
+Outputs in STD, LP, MPS, GRA (basic graph), TEX (code of graphical representation), pdf (compiled image) formats:\
+determ_eqSrcsEqSnks_12oct2026-17h09.std\
+determ_eqSrcsEqSnks_12oct2026-17h09.mps\
+determ_eqSrcsEqSnks_12oct2026-17h09.lp\
+determ_eqSrcsEqSnks_12oct2026-17h09.gra\
+determ_eqSrcsEqSnks_12oct2026-17h09.tex\
 determ_eqSrcsEqSnks_12oct2026-17h09.pdf
