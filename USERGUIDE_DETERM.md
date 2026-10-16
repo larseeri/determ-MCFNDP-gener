@@ -15,7 +15,7 @@ This user guide comprises the following sections:\
 2 Building and running the program directly from the Linux command line\
 3 Running the program through Docker instructions\
 4 Usage of options\
-5 Detailed examples\
+5 Detailed examples
 
 ### 1 Pseudo-random generation and available topologies
 
@@ -81,7 +81,7 @@ optionKey1	value1\
 optionKey2   value2\
 .\
 .\
-optionKeyN   value3\
+optionKeyN   valueN
 
 It may specify at most one option per line. Option keys may be prefixed or not with '-'. Comments may appear either at the beginning of a line, in which case they must start with a non-alphabetic character (but not with '-'), or at the end of a line.
 
@@ -141,7 +141,7 @@ origNodeNumberC destNodeNumberC\
 .\
 .\
 .\
-(end of file)\
+(end of file)
 
 When secondary topology is set between 1 and 4, the program will save the basic graph (i.e., including nodes and arcs, but excluding random arcs, costs and capacities) in a plain text file whose default name, basicGraph.gra, may be replaced using the parameter longBasicGraphFileName. The name specified using the latter should include the extension. The 
 content of the file will appear like this:
@@ -249,7 +249,7 @@ this order:\
 (i) initialization values hard-coded in lines 28-48 of data.cpp,\
 (ii) either replacement configuration file specified in the Docker instruction line with option key +F, or default configuration file ./inout/determ_config.par if no replacement configuration file is specified in the Docker instruction line with option key +F,\
 (iii) values specified in the Docker instruction,\
-Notice that location (i) is insufficiently transparent to the user and should not be relied upon. Parameter values should be set through (ii) and (iii).\
+Notice that location (i) is insufficiently transparent to the user and should not be relied upon. Parameter values should be set through (ii) and (iii).
 
 Important:\
 The supplied Docker image conforms to the amd64 CPU instructions standard and will run natively on AMD and Intel CPUs. On CPUs conforming instead to the arm64 standard, e.g., on recent Apple computers, the supplied Docker image can be run through emulation. Essentially, this may be achieved as follows:
@@ -610,7 +610,7 @@ Setting adjFixCostsUp to 1 is not equivalent to no adjustment. This setting bala
 
 Definitions:\
 (i) A satellite arc connects either two satellite nodes or one hub node and one satellite node.\
-(ii) A round is a set of satellite nodes that are assigned to a hub node and that are sequentially connected. End nodes in the round are connected to the hub node.\
+(ii) A round is a set of satellite nodes that are assigned to a hub node and that are sequentially connected. End nodes in the round are connected to the hub node.
 
 ```
 -minSatsPerHub <int: 0, INT_MAX); minimum number of satellites per hub
@@ -689,103 +689,105 @@ Setting adjSatFixCostsUp to 1 is not equivalent to no adjustment. This setting b
 
 #### 4.3 Joint restrictions
 
-minComVol <= maxComVol\
-minVarCos <= maxVarCos\
-minFixCos <= maxFixCos\
-minArcCap <= maxArcCap\		
+```
+minComVol <= maxComVol
+minVarCos <= maxVarCos
+minFixCos <= maxFixCos
+minArcCap <= maxArcCap		
 
-if (!equalizeComCaps)\
-{\
-		minComCap <= maxComCap\
-		maxComCap <= minComVol\
-		maxComCap <= minArcCap\
-		maxArcCap <= numbCom \* minComCap\			
-}\	
+if (!equalizeComCaps)
+{
+		minComCap <= maxComCap
+		maxComCap <= minComVol
+		maxComCap <= minArcCap
+		maxArcCap <= numbCom \* minComCap			
+}	
 	
-if (gridConnect)\
-{\
-    	lengthX \* lengthY >= 2\            
-}\
-else\
-{\
-    	numbNodes >= 2\            
-}\	
+if (gridConnect)
+{
+    	lengthX \* lengthY >= 2            
+}
+else
+{
+    	numbNodes >= 2            
+}	
 	
-// primary topology is point-to-point\
-if (!hubsAndSats)\
-{\
-		if (oneSrcOneSnk)\
-		{\ 				
-			if (1 <= secTopology <= 3)\
-			{\
-				(lengthX \* lengthY) \* ((lengthX \* lengthY) - 1) >= numbCom\					
-			}\
-			else\
-			{\
-				numbNodes \* (numbNodes - 1) >= numbCom\					
-			}\
-		}\
-		else\
-		{\
-			minNbSrc <= maxNbSrc\
-			minNbSnk <= maxNbSnk\				
+// primary topology is point-to-point
+if (!hubsAndSats)
+{
+		if (oneSrcOneSnk)
+		{ 				
+			if (1 <= secTopology <= 3)
+			{
+				(lengthX \* lengthY) \* ((lengthX \* lengthY) - 1) >= numbCom					
+			}
+			else
+			{
+				numbNodes \* (numbNodes - 1) >= numbCom					
+			}
+		}
+		else
+		{
+			minNbSrc <= maxNbSrc
+			minNbSnk <= maxNbSnk				
 
-			if (1 <= secTopology <= 3)\
-			{\
-				maxNbSrc + maxNbSnk <= lengthX \* lengthY\					
-			}\
-			else\
-			{\
-				maxNbSrc + maxNbSnk <= numbNodes\					
-			}\
-		}\
-}\
-// primary topology is hubs-and-satellites\
-else\
-{\
-		secTopology != 5\
-		minSatsPerHub <= maxSatsPerHub\			
-		minSatsRoundSize <= maxSatsRoundSize\
-		minSatFixCos <= maxSatFixCos\			
-		minSatVarCos <= maxSatVarCos\		
-		minSatArcCap <= maxSatArcCap\			
+			if (1 <= secTopology <= 3)
+			{
+				maxNbSrc + maxNbSnk <= lengthX \* lengthY					
+			}
+			else
+			{
+				maxNbSrc + maxNbSnk <= numbNodes					
+			}
+		}
+}
+// primary topology is hubs-and-satellites
+else
+{
+		secTopology != 5
+		minSatsPerHub <= maxSatsPerHub			
+		minSatsRoundSize <= maxSatsRoundSize
+		minSatFixCos <= maxSatFixCos			
+		minSatVarCos <= maxSatVarCos		
+		minSatArcCap <= maxSatArcCap			
 		
-		if (!equalComCaps)\
-		{\
-			minSatComCap <= maxSatComCap\			
-			maxSatComCap <= minComVol\
-			maxSatComCap <= minSatArcCap\
-			maxSatArcCap <= numbCom \* minSatComCap\				
-		}\
+		if (!equalComCaps)
+		{
+			minSatComCap <= maxSatComCap			
+			maxSatComCap <= minComVol
+			maxSatComCap <= minSatArcCap
+			maxSatArcCap <= numbCom \* minSatComCap				
+		}
 			
-		if (oneSrcOneSnk)\
-		{\
-			if (equSrcsEquSnks)\
+		if (oneSrcOneSnk)
+		{
+			if (equSrcsEquSnks)
 				
-			if (1 <= secTopology <= 3)\
-			{\
-				lengthX \* lengthY \* minSatsPerHub \* (lengthX \* lengthY \* minSatsPerHub - 1) >= numbCom\					
-			}\
-			else\
-			{\
-				numbNodes \* minSatsPerHub \* (numbNodes \* minSatsPerHub - 1) >= numbCom\					
-			}\
-		}\
-		else\
-		{\
-			minNbSrc <= maxNbSrc\
-			minNbSnk <= maxNbSnk\				
+			if (1 <= secTopology <= 3)
+			{
+				lengthX \* lengthY \* minSatsPerHub \* (lengthX \* lengthY \* minSatsPerHub - 1) >= numbCom					
+			}
+			else
+			{
+				numbNodes \* minSatsPerHub \* (numbNodes \* minSatsPerHub - 1) >= numbCom					
+			}
+		}
+		else
+		{
+			minNbSrc <= maxNbSrc
+			minNbSnk <= maxNbSnk				
 	
-			if (1 <= secTopology <= 3)\
-			{\
-				maxNbSrc + maxNbSnk <= lengthX \* lengthY * minSatsPerHub\					
-			}\
-			else\
-			{\
-				maxNbSrc + maxNbSnk <= numbNodes \* minSatsPerHub\					
-			}\
-		}\
-}\	
+			if (1 <= secTopology <= 3)
+			{
+				maxNbSrc + maxNbSnk <= lengthX \* lengthY * minSatsPerHub					
+			}
+			else
+			{
+				maxNbSrc + maxNbSnk <= numbNodes \* minSatsPerHub					
+			}
+		}
+}	
+```
 
 ### 5 Detailed examples
 
