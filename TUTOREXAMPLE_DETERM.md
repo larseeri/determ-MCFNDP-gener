@@ -9,10 +9,10 @@ https://github.com/larseeri/determ-MCFNDP-gener
 
 To become proficient with the use of the GenDeterm generator, we suggest to start with steps 1-2 and to iterate on steps 3-5:
 
-1 Read Sections 1-2 of Larsen et al. (2023) attentively.
-2 Skim the user guide USERGUIDE_DETERM.md entirely to build a cognitive structure (know where to seek information, start locating the information related to the task at hand). The user guide details installation, operation, functionalities and available options of the generator.
-3 Study this tutorial example attentively.
-4 Study USERGUIDE_DETERM.md attentively. 
+1 Read Sections 1-2 of Larsen et al. (2023) attentively.\
+2 Skim the user guide USERGUIDE_DETERM.md entirely to build a cognitive structure (know where to seek information, start locating the information related to the task at hand). The user guide details installation, operation, functionalities and available options of the generator.\
+3 Study this tutorial example in detail.\
+4 Study USERGUIDE_DETERM.md in detail.\
 5 Launch generation experiments.
 
 
@@ -38,54 +38,54 @@ We reordered the content of the original file to make the exposition flow more p
 
 *** Content of the configuration file starts on the next line. ***
 
-// file name: hs_vols-20-100_csts-20-100-20-100-20-100-20-100_eqSrcsEqSnks_secTop-flat_secTopSpe-2-3-2-3-2-3-2-8-2-8-12-15-45-10-15-2-15-45-10-15-2_noPar-20_adjSpe-0~33-1~00-0~33-1~00_seed-50163844_strm-5343.par
+// file name:\ hs_vols-20-100_csts-20-100-20-100-20-100-20-100_eqSrcsEqSnks_secTop-flat_secTopSpe-2-3-2-3-2-3-2-8-2-8-12-15-45-10-15-2-15-45-10-15-2_noPar-20_adjSpe-0~33-1~00-0~33-1~00_seed-50163844_strm-5343.par
 
-seed 50163844
+seed 50163844\
 stream 5343
 
 hubsAndSats true
 
-numbCom 12
-minComVol 20
-maxComVol 100
-eqSrcsEqSnks true
-minNbSrc 2
-maxNbSrc 3
-minNbSnk 2
-maxNbSnk 3
-secTopology 3
-lengthX 2
-lengthY 3
-minFixCos 20
-maxFixCos 100
-minVarCos 20
-maxVarCos 100
-minArcCap 15
-maxArcCap 45
-minComCap 10
-maxComCap 15
-nbAddArcPerSampHead 2
-noParalArc 20
-adjCapacsDown 0.330000
+numbCom 12\
+minComVol 20\
+maxComVol 100\
+eqSrcsEqSnks true\
+minNbSrc 2\
+maxNbSrc 3\
+minNbSnk 2\
+maxNbSnk 3\
+secTopology 3\
+lengthX 2\
+lengthY 3\
+minFixCos 20\
+maxFixCos 100\
+minVarCos 20\
+maxVarCos 100\
+minArcCap 15\
+maxArcCap 45\
+minComCap 10\
+maxComCap 15\
+nbAddArcPerSampHead 2\
+noParalArc 20\
+adjCapacsDown 0.330000\
 adjFixCostsUp 1.000000
 
-minSatsPerHub 2
-maxSatsPerHub 8
-minSatsRoundSize 2
-maxSatsRoundSize 8
-minSatFixCos 20
-maxSatFixCos 100
-minSatVarCos 20
-maxSatVarCos 100
-minSatArcCap 15
-maxSatArcCap 45
-minSatComCap 10
-maxSatComCap 15
-nbAddSatArcPerSampHead 2
-adjSatCapacsDown 0.330000
+minSatsPerHub 2\
+maxSatsPerHub 8\
+minSatsRoundSize 2\
+maxSatsRoundSize 8\
+minSatFixCos 20\
+maxSatFixCos 100\
+minSatVarCos 20\
+maxSatVarCos 100\
+minSatArcCap 15\
+maxSatArcCap 45\
+minSatComCap 10\
+maxSatComCap 15\
+nbAddSatArcPerSampHead 2\
+adjSatCapacsDown 0.330000\
 adjSatFixCostsUp 1.000000
 
-shortOutFileName hs_vols-20-100_csts-20-100-20-100-20-100-20-100_eqSrcsEqSnks_secTop-flat_secTopSpe-2-3-2-3-2-3-2-8-2-8-12-15-45-10-15-2-15-45-10-15-2_noPar-20_adjSpe-0~33-1~00-0~33-1~00_seed-50163844_strm-5343
+shortOutFileName\ hs_vols-20-100_csts-20-100-20-100-20-100-20-100_eqSrcsEqSnks_secTop-flat_secTopSpe-2-3-2-3-2-3-2-8-2-8-12-15-45-10-15-2-15-45-10-15-2_noPar-20_adjSpe-0~33-1~00-0~33-1~00_seed-50163844_strm-5343
 
 *** Content of the configuration file ends at the preceding line. ***
 
