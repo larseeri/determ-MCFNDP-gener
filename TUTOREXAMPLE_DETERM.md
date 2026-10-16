@@ -108,7 +108,9 @@ e- In this section, the suffixes appearing in the names of the option values ind
 
 **2.1** While not absolutely necessary, it is advisable to state the name of the current configuration file as a comment within the configuration file and to make sure that this name is a unique identifier of the content.
 
+```
 // file name: name-of-configuration-file
+```
 
 **2.2** seed_int and stream_int stand for the two integers that are assigned to the seed and stream of the pseudo-random generator. To ensure reproducibility, they should always be set. When several configurations are included in a set, the pair (seed_int, stream_int) should be selected for each configuration so as to constitute a unique identifier. A practical choice is to make seed_int invariant within the set of configurations whereas stream_int varies between the configurations in an interpretable way. 
 
