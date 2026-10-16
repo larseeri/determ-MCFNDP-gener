@@ -10,12 +10,12 @@ The GenDeterm application generates instances of the linear, deterministic, mult
 
 For detailed background, seeLarsen, E., Bisaillon, S., Cordeau, J.F. and Frejinger, E. Pseudo-random Instance Generators in C++ for Deterministic and Stochastic Multi-commodity Network Design Problems.
 
-This user guide comprises the following sections:
-1 Pseudo-random generation and available topologies
-2 Building and running the program directly from the Linux command line
-3 Running the program through Docker instructions
-4 Usage of options
-5 Detailed examples
+This user guide comprises the following sections:\
+1 Pseudo-random generation and available topologies\
+2 Building and running the program directly from the Linux command line\
+3 Running the program through Docker instructions\
+4 Usage of options\
+5 Detailed examples\
 
 ### 1 Pseudo-random generation and available topologies
 
@@ -25,7 +25,9 @@ Two primary topologies are available: point-to-point and hubs-and-satellites. No
 - Under the point-to-point primary topology, any node can be a source or a sink of commodity volume. The secondary topology option specifies basic connections between nodes. Additional arcs can be created randomly as specified.
 - Under the hubs-and-satellites primary topology (option hubsAndSats), there are two classes of nodes: hub nodes and satellite nodes. Only satellite nodes can be sources or sinks of commodity volumes. Two classes of arcs must also are distinguished: (i) hub arcs connecting hub nodes and (ii) satellite arcs connecting two satellite nodes or a satellite node and a hub node. In this context, the secondary topology option specifies basic connections between hub nodes. Sets of satellite nodes, called rounds, are assigned to each hub node. The satellite nodes in a round are connected sequentially with satellite arcs. The cardinality of each round is determined randomly according to specified option values. The end satellite nodes in the round(s) are connected to the hub node through satellite arcs. Additional hub arcs and satellite arcs can be created randomly if specified.
 
-The secondary topology (option secTopology) concerns all nodes in the point-to-point primary topology and concerns only hub nodes in the hubs-and-satellites primary topology. It can either (i) be grid-like (the grid can be laid either on a torus, a cylinder or a flat bounded surface), (ii) be based on a circle, (iii) be explicited in a file, or (iv) be entirely random generated. (ia) Under the toral secondary topology, non-random arcs are initially created to build the structure of a torus with major and minor circumferences respectively equal to values of options lengthX and lengthY. (ib) Under the cylindrical secondary topology, non-random arcs are initially created to build the structure of a cylinder with circumference and height respectively equal to values of options lengthX and lengthY. (ic) Under the flat secondary topology, non-random arcs are initially created to build the structure of a bounded flat surface of width and height respectively equal to values of options lengthX and lengthY. (ii) Under the circular secondary topology, non-random arcs are initially created in order to chain the nodes. (iii) A basic graph (including nodes and arcs but excluding costs and capacities) can be read from a file. Each non-random arc initially created in connection with (i), (ii) and (iii) has overall capacity equal to total volume over all commodities and fixed cost equal to the value specified as the maximum fixed cost (value of option maxFixedCos). Over these non-random arcs, overall capacities are equal to total volume over all commodities, each commodity-specific capacity is equal to commodity volume and commodity-specific variable costs are equal to the value specified as the maximum commodity-specific variable cost (value of option maxVarCos).
+The secondary topology (option secTopology) concerns all nodes in the point-to-point primary topology and concerns only hub nodes in the hubs-and-satellites primary topology. It can either (i) be grid-like (the grid can be laid either on a torus, a cylinder or a flat bounded surface), (ii) be based on a circle, (iii) be explicited in a file, or (iv) be entirely random generated.
+
+(ia) Under the toral secondary topology, non-random arcs are initially created to build the structure of a torus with major and minor circumferences respectively equal to values of options lengthX and lengthY. (ib) Under the cylindrical secondary topology, non-random arcs are initially created to build the structure of a cylinder with circumference and height respectively equal to values of options lengthX and lengthY. (ic) Under the flat secondary topology, non-random arcs are initially created to build the structure of a bounded flat surface of width and height respectively equal to values of options lengthX and lengthY. (ii) Under the circular secondary topology, non-random arcs are initially created in order to chain the nodes. (iii) A basic graph (including nodes and arcs but excluding costs and capacities) can be read from a file. Each non-random arc initially created in connection with (i), (ii) and (iii) has overall capacity equal to total volume over all commodities and fixed cost equal to the value specified as the maximum fixed cost (value of option maxFixedCos). Over these non-random arcs, overall capacities are equal to total volume over all commodities, each commodity-specific capacity is equal to commodity volume and commodity-specific variable costs are equal to the value specified as the maximum commodity-specific variable cost (value of option maxVarCos).
 
 Addition of random arcs to the aforementioned structures can be performed in one or both of the two following ways: (i) A specified total number of additional arcs whose head and tail are generated pseudo-randomly. (ii) A specified number of additional arcs starting from each existing node are created whereas only their heads are generated pseudo-randomly. Each one of the arcs in (i) and (ii) has fixed cost pseudo-randomly generated independently and uniformly within the interval specified by the values of options minFixCos and maxFixCos and overall capacity pseudo-randomly generated independently and uniformly within the interval specified by the values of options minArcCap and maxArcCap. The commodity-specific variable costs and capacities are pseudo-randomly generated independently and uniformly between the values of options minVarCos and maxVarCos and the values of options minComCap and maxComCap, respectively. Section 4 below details the usage of every option available under the point-to-point and hubs-and-satellites primary topologies.
 
@@ -36,8 +38,11 @@ Addition of random arcs to the aforementioned structures can be performed in one
 Follow these steps to build the program:
 
 a- Either (i) use Git to clone locally the remote repository https://github.com/larseeri/determ-MCFNDP-gener, or (ii) generate, download locally to an appropriate folder and uncompress a .zip archive containing the remote repository file tree.
+
 b- In a Linux terminal, go to the /program subfolder just created.
+
 c- Make sure that the gcc C++ compiler and the make C++ build tool are available.
+
 d- Run this instruction to build the program. An executable file named 'determ_gen' will be created inside the /program folder.
 
 ```
@@ -72,11 +77,11 @@ Verbosity option +v should be used to obtain more information about all options 
 
 A configuration file should have this format:
 
-optionKey1	value1
-optionKey2   value2
-.
-.
-optionKeyN   value3
+optionKey1	value1\
+optionKey2   value2\
+.\
+.\
+optionKeyN   value3\
 
 It may specify at most one option per line. Option keys may be prefixed or not with '-'. Comments may appear either at the beginning of a line, in which case they must start with a non-alphabetic character (but not with '-'), or at the end of a line.
 
@@ -111,13 +116,13 @@ To display the complete documentation about the application and the available op
 ./determ_gen -help
 ```
 
-Summing up, option values are successively updated from these locations in this order:
-(i) hard-coded initialization values in lines 28-48 of data.cpp
-(ii) values appearing in configuration file whose name is specified in command line with +F (if it is specified and if it exists); if no valid configuration file is specified with +F in command line, values will be taken from default configuration file whose name is specified in line 1210 of main.cpp; at this point, the latter should exist
-(iii) values specified in the command line
+Summing up, option values are successively updated from these locations in this order:\
+(i) hard-coded initialization values in lines 28-48 of data.cpp\
+(ii) values appearing in configuration file whose name is specified in command line with +F (if it is specified and if it exists); if no valid configuration file is specified with +F in command line, values will be taken from default configuration file whose name is specified in line 1210 of main.cpp; at this point, the latter should exist\
+(iii) values specified in the command line\
 Notice that location (i) is insufficiently transparent to the user and should not be relied upon. Parameter values should be set through (ii) and (iii).
 
-Remark:
+Remark:\
 See Section 5 below for examples of configuration files and instructions when the program is run from the Linux command line.
 
 ##### 2.2.1 Reading and writing the basic graph from and to a file
@@ -125,40 +130,40 @@ See Section 5 below for examples of configuration files and instructions when th
 Setting secondary topology option to 5 instructs the program to read the basic graph (nodes + arcs without costs and capacities) from a plain text file. The default name of this file is basic_graph.gra. An alternative long name (including extension) may be specified with the option longBasicGraphFileName. To be read correctly, this file must be structured
 as follows:
 
-(beginning of file)
-Two blank or comment rows (these are disregarded when reading)
-low = lowNodeNumber (lowNodeNumber is smallest node number appearing in rows below)
-high = highNodeNumber (highNodeNumber is highest node number appearing in rows below)
-Three blank or comment rows (these are disregarded when reading)
-origNodeNumberA destNodeNumberA (a row identifies an arc from origin to destination)
-origNodeNumberB destNodeNumberB
-origNodeNumberC destNodeNumberC
-.
-.
-.
-(end of file)
+(beginning of file)\
+Two blank or comment rows (these are disregarded when reading)\
+low = lowNodeNumber (lowNodeNumber is smallest node number appearing in rows below)\
+high = highNodeNumber (highNodeNumber is highest node number appearing in rows below)\
+Three blank or comment rows (these are disregarded when reading)\
+origNodeNumberA destNodeNumberA (a row identifies an arc from origin to destination)\
+origNodeNumberB destNodeNumberB\
+origNodeNumberC destNodeNumberC\
+.\
+.\
+.\
+(end of file)\
 
 When secondary topology is set between 1 and 4, the program will save the basic graph (i.e., including nodes and arcs, but excluding random arcs, costs and capacities) in a plain text file whose default name, basicGraph.gra, may be replaced using the parameter longBasicGraphFileName. The name specified using the latter should include the extension. The 
 content of the file will appear like this:
 
-(beginning of file)
-1 Nodes
-Nodes are identified with integers in closed interval [low, high].  Program will perform appropriate renumbering.
-low = 0
-high = 11
+(beginning of file)\
+1 Nodes\
+Nodes are identified with integers in closed interval [low, high].  Program will perform appropriate renumbering.\
+low = 0\
+high = 11\
 
-2 Arcs
-NodeFrom  NodeTo
-0  1
-0  2
-0  3
-0  9
-.
-.
-.
-(end of file)
+2 Arcs\
+NodeFrom  NodeTo\
+0  1\
+0  2\
+0  3\
+0  9\
+.\
+.\
+.\
+(end of file)\
 
-Remark:
+Remark:\
 See Section 5 below for examples of basic graph files.
 
 ### 3 Running the program through Docker instructions
@@ -181,7 +186,7 @@ b- For simplicity, define the alias 'determ_gen_image' through
 docker tag ghcr.io/larseeri/determ_gen_image:latest determ_gen_image
 ```
 
-Remark:
+Remark:\
 If the Docker image determ_gen_image were instead available as the tar ball determ_gen_image.tar, then it could be loaded through
 
 ```
@@ -236,17 +241,17 @@ docker run --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inou
 docker run --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_gen_image /determ_gen +F /inout/newParamfile.par -stream 1234 -seed 4567 -numbCom 10
 ```
 
-Important: 
+Important:\
 When running the program through Docker instructions, all input and output files must be located inside the docker/inout subfolder. Within the Docker instructions and the configuration files, this subfolder must be denoted /inout since it is located at the root of the Docker container. Hence, a replacement configuration file located at docker/inout/newParamFile.par will be specified in the Docker instruction with +F /inout/newParamFile.par. Similarly, a short output file name ./shortOutputFileName will be specified in the Docker instruction or inside the configuration file with -shortOutFileName /inout/shortOutputFileName.
 
 The default configuration file is located at docker/inout/determ_config.par. It has initially been filled with illustrative values and should be edited appropriately if no replacement configuration file is indicated on the Docker instruction line with option key +F. Option parameter values are successively updated from these locations in
-this order:
-(i) initialization values hard-coded in lines 28-48 of data.cpp,
-(ii) either replacement configuration file specified in the Docker instruction line with option key +F, or default configuration file ./inout/determ_config.par if no replacement configuration file is specified in the Docker instruction line with option key +F,
-(iii) values specified in the Docker instruction,
-Notice that location (i) is insufficiently transparent to the user and should not be relied upon. Parameter values should be set through (ii) and (iii).
+this order:\
+(i) initialization values hard-coded in lines 28-48 of data.cpp,\
+(ii) either replacement configuration file specified in the Docker instruction line with option key +F, or default configuration file ./inout/determ_config.par if no replacement configuration file is specified in the Docker instruction line with option key +F,\
+(iii) values specified in the Docker instruction,\
+Notice that location (i) is insufficiently transparent to the user and should not be relied upon. Parameter values should be set through (ii) and (iii).\
 
-Important:
+Important:\
 The supplied Docker image conforms to the amd64 CPU instructions standard and will run natively on AMD and Intel CPUs. On CPUs conforming instead to the arm64 standard, e.g., on recent Apple computers, the supplied Docker image can be run through emulation. Essentially, this may be achieved as follows:
 
 a- Running the following preliminary instruction once. (For details, see https://hub.docker.com/r/tonistiigi/binfmt.)
@@ -285,7 +290,7 @@ See Section 5 below for examples of configuration files and instructions when th
 
 ### 4 Detailed usage of options
 
-Notation:
+Notation:\
 For the purposes of the current discussion, <...> indicates that some value or values of the type specified inside the brackets is expected. For instance, <string> means that a string is expected whereas <> means that no value is expected.
 
 #### 4.1 Options available in instruction line only (Linux or Docker)
@@ -297,7 +302,7 @@ For the purposes of the current discussion, <...> indicates that some value or v
 +v <> (no value supplied); requests verbosity while parsing options in instruction line or configuration file
 ```
 
-Remark:
+Remark:\
 An unknown option key following '+' in the instruction line is disregarded.
 
 #### 4.2 Options available in instruction line (Linux or Docker) and in configuration file
@@ -320,7 +325,7 @@ Remarks:
 -shortOutFileName <string>; short name (without extension) of output file; default value is './outfile' (Linux instructions) or './inout/outfile' (Docker instructions); extension will differ according to format: dow, std (a.k.a. Canad format), lp, mps, tex; when using Linux instructions, absolute path or path relative to the /program folder may be added
 ```
 
-Remark:
+Remark:\
 DOW, STD and TEX formats describe the generated network; DOW and STD (a.k.a. Canad format) are text formats specified in files DOW-format-desc.txt and STD-format-desc.txt; STD is a generic format valid for any MCFNDP, DOW requires that (i) for each arc, capacities and variable costs are identical for all commodities and that (ii) each commodity has a
 single source node (at which volume > 0) and a single sink node (at which volume < 0); TEX format is a graphical representation that can be processed by a LaTeX text and graphics compiler; LP (human readable) and MPS formats state linear programming formulations of the generated MCFNDP instance.
 
@@ -363,7 +368,7 @@ Remarks:
 -eqSrcsEqSnks <> (no value supplied); impose identical sources over all commodities and identical sinks over all commodities; common source nodes and common sink nodes are selected randomly according to minNbSrc, maxNbSrc, minNbSnk, maxNbSnk
 ```
 
-Remark:
+Remark:\
 oneSrcOneSnk and eqSrcsEqSnks cannot be both active; if oneSrcOneSnk and eqSrcsEqSnks are both inactive, then sources and sinks are selected randomly
 
 ```
@@ -385,7 +390,7 @@ oneSrcOneSnk and eqSrcsEqSnks cannot be both active; if oneSrcOneSnk and eqSrcsE
 -inclDesignObjCommCap <> (no value supplied); when saving in LP or MPS format, (i) design variables will appear with fixed costs in objective, (ii) design variables will appear in commodity-specific capacity constraints.
 ```
 
-Important:
+Important:\
 Whereas the DOW, STD and TEX formats store sufficient basic information to uniquely identify a MCFNDP instance, the LP and MPS formats state a formulation of this problem (objective and constraints). LP and MPS are respectively human- and machine-readable. Options inclDesignObjCap and inclDesignObjCommCap allow to select particular formulations of the linear programming statement of the MCFNDP.
 
 By default, (i.e, when options inclDesignObjCap and inclDesignObjCommCap are omitted or explicitly set to false) design variables are altogether absent: (i) the objective omits fixed costs as if all existing arcs are costlessly opened), (ii) overall capacity constraints for all arcs are included, (iii) commodity-specific capacity constraints for all arcs
@@ -406,7 +411,7 @@ Producing the standard formulation of the MCFNDP requires that both inclDesignOb
 nbAddArcPerSampHead; 1 to 5 call for a particular base secondary graph topology (before additional, random arcs are eventually added according to nbAddArcSampTailHead and/or nbAddArcPerSampHead): 1 grid on a torus, 2 grid on a cylinder, 3 grid on a bounded surface, 4 circular, 5 read (nodes + arcs without costs and capacities) from file
 ```
 
-Important:
+Important:\
 Whenever secTopology is set to 5 so that a basic graph is read from a file (whose name is specified with option longBasicGraphFileName), value of option numbNodes must be set to a number larger than the exact number of nodes found in this file.
 
 ```
@@ -476,14 +481,14 @@ Whenever secTopology is set to 5 so that a basic graph is read from a file (whos
 -adjCapacsDown <dbl: 0.0001, 10000>; normalize overall capacities of all arcs (non-random and random) by uniform adjustment (downward if value of adjCapacsDown >= 1, upward otherwise), whose magnitude is proportional to the specified figure (see Graph::adjustArcCapacities() in graph.cpp); if this option is omitted, no adjustment will be made
 ```
 
-Remark:
+Remark:\
 Setting adjCapacsDown to 1 is not equivalent to no adjustment. This setting balances the sum of total commodity volumes flowing on all arcs with the sum of all arc capacities. It might be viewed as a neutral setting. 
 
 ```
 -adjFixCostsUp <dbl: 0.0001, 10000>; normalize fixed costs of all arcs (non-random and random) by uniform adjustment (downward if value of adjFixCostsUp <= 1, upward otherwise) whose magnitude is proportional to the specified figure (see Graph::adjustFixedCosts() in graph.cpp); if this option is inactive, no adjustment will be made
 ```
 
-Remark:
+Remark:\
 Setting adjFixCostsUp to 1 is not equivalent to no adjustment. This setting balances the sum of fixed costs over all arcs with the total variable cost that would be incurred by circulating average commodity volume on all arcs. It might be viewed as a neutral setting. 
 
 ```
@@ -508,7 +513,7 @@ Setting adjFixCostsUp to 1 is not equivalent to no adjustment. This setting bala
 /program folder may be added
 ```
 
-Important:
+Important:\
 Under the hubs-and-satellite primary topology, secTopology cannot be set to 5. That is, the topology cannot be read from a basic graph file. However, a basic graph file will be written if 1 <= secTopology <= 4. In this case, the graph will be saved unstructured, without information about its original (i.e., hubs-and-satellites) primary topology.
 Subsequently, this basic graph file could be read in a new run in which the primary topology would be set to point-to-point. Obviously, the original hubs-and-satellites characterization would be lost.
 
@@ -518,7 +523,7 @@ Subsequently, this basic graph file could be read in a new run in which the prim
 
 ###### 4.2.3.1 Options describing hub nodes and hub arcs
 
-Definition:
+Definition:\
 A hub arc connects two hub nodes.
 
 ```
@@ -526,7 +531,7 @@ A hub arc connects two hub nodes.
 nbAddArcPerSampHead): 1 grid on a torus, 2 grid on a cylinder, 3 grid on a bounded surface, 4 circular.
 ```
 
-Important:
+Important:\
 Under the hubs-and-satellite primary topology, option secTopology cannot be set to 5. That is, the topology cannot be read from a basic graph file. 
 
 ```
@@ -584,14 +589,14 @@ Under the hubs-and-satellite primary topology, option secTopology cannot be set 
 -adjCapacsDown <dbl: 0.0001, 10000>; normalize overall capacities of all hub arcs (non-random and random) by uniform adjustment (downward if value of adjCapacsDown >= 1, upward otherwise), whose magnitude is proportional to the specified figure (see Graph::adjustArcCapacities() in graph.cpp); if this option is omitted, no adjustment will be made
 ```
 
-Remark:
+Remark:\
 Setting adjCapacsDown to 1 is not equivalent to no adjustment. This setting balances the sum of total commodity volumes flowing on all hub arcs with the sum of all hub arc capacities. It might be viewed as a neutral setting. 
 
 ```
 -adjFixCostsUp <dbl: 0.0001, 10000>; normalize fixed costs of all hub arcs (non-random and random) by uniform adjustment (downward if value of adjFixCostsUp <= 1, upward otherwise) whose magnitude is proportional to the specified figure (see Graph::adjustFixedCosts() in graph.cpp); if this option is inactive, no adjustment will be made
 ```
 
-Remark:
+Remark:\
 Setting adjFixCostsUp to 1 is not equivalent to no adjustment. This setting balances the sum of fixed costs over all hub arcs with the total variable cost that would be incurred by circulating average commodity volume on all hub arcs. It might be viewed as a neutral setting.
 
 ```
@@ -603,9 +608,9 @@ Setting adjFixCostsUp to 1 is not equivalent to no adjustment. This setting bala
 
 ###### 4.2.3.2 Options describing satellite nodes and satellite arcs
 
-Definitions:
-(i) A satellite arc connects either two satellite nodes or one hub node and one satellite node.
-(ii) A round is a set of satellite nodes that are assigned to a hub node and that are sequentially connected. End nodes in the round are connected to the hub node.
+Definitions:\
+(i) A satellite arc connects either two satellite nodes or one hub node and one satellite node.\
+(ii) A round is a set of satellite nodes that are assigned to a hub node and that are sequentially connected. End nodes in the round are connected to the hub node.\
 
 ```
 -minSatsPerHub <int: 0, INT_MAX); minimum number of satellites per hub
@@ -665,14 +670,14 @@ Definitions:
 -adjSatCapacsDown <dbl: 0.0001, 10000>; normalize overall capacities of all satellite arcs (non-random and random) by uniform adjustment (downward if value of adjSatCapacsDown >= 1, upward otherwise), whose magnitude is proportional to the specified figure (see Graph::adjustArcCapacities_sat() in graph.cpp); if this option is omitted, no adjustment will be made
 ```
 
-Remark:
+Remark:\
 Setting adjSatCapacsDown to 1 is not equivalent to no adjustment. This setting balances the sum of total commodity volumes flowing on all arcs with the sum of all arc capacities. It might be viewed as a neutral setting. 
 
 ```
 -adjSatFixCostsUp <dbl: 0.0001, 10000>; normalize fixed costs of all satellite arcs (non-random and random) by uniform adjustment (downward if value of adjSatFixCostsUp <= 1, upward otherwise) whose magnitude is proportional to the specified figure (see Graph::adjustFixedCosts_sat() in graph.cpp); if this  option is inactive, no adjustment will be made
 ```
 
-Remark:
+Remark:\
 Setting adjSatFixCostsUp to 1 is not equivalent to no adjustment. This setting balances the sum of fixed costs over all arcs with the total variable cost that would be incurred by circulating average commodity volume on all arcs. It might be viewed as a neutral setting.
 
 ```
@@ -684,103 +689,103 @@ Setting adjSatFixCostsUp to 1 is not equivalent to no adjustment. This setting b
 
 #### 4.3 Joint restrictions
 
-minComVol <= maxComVol
-minVarCos <= maxVarCos
-minFixCos <= maxFixCos
-minArcCap <= maxArcCap		
+minComVol <= maxComVol\
+minVarCos <= maxVarCos\
+minFixCos <= maxFixCos\
+minArcCap <= maxArcCap\		
 
-if (!equalizeComCaps)
-{
-		minComCap <= maxComCap
-		maxComCap <= minComVol
-		maxComCap <= minArcCap
-		maxArcCap <= numbCom * minComCap			
-}	
+if (!equalizeComCaps)\
+{\
+		minComCap <= maxComCap\
+		maxComCap <= minComVol\
+		maxComCap <= minArcCap\
+		maxArcCap <= numbCom \* minComCap\			
+}\	
 	
-if (gridConnect)
-{
-    	lengthX * lengthY >= 2            
-}
-else
-{
-    	numbNodes >= 2            
-}	
+if (gridConnect)\
+{\
+    	lengthX \* lengthY >= 2\            
+}\
+else\
+{\
+    	numbNodes >= 2\            
+}\	
 	
-// primary topology is point-to-point
-if (!hubsAndSats)
-{
-		if (oneSrcOneSnk)
-		{ 				
-			if (1 <= secTopology <= 3)
-			{
-				(lengthX * lengthY) * ((lengthX * lengthY) - 1) >= numbCom					
-			}
-			else
-			{
-				numbNodes * (numbNodes - 1) >= numbCom					
-			}
-		}
-		else
-		{
-			minNbSrc <= maxNbSrc
-			minNbSnk <= maxNbSnk				
+// primary topology is point-to-point\
+if (!hubsAndSats)\
+{\
+		if (oneSrcOneSnk)\
+		{\ 				
+			if (1 <= secTopology <= 3)\
+			{\
+				(lengthX \* lengthY) \* ((lengthX \* lengthY) - 1) >= numbCom\					
+			}\
+			else\
+			{\
+				numbNodes \* (numbNodes - 1) >= numbCom\					
+			}\
+		}\
+		else\
+		{\
+			minNbSrc <= maxNbSrc\
+			minNbSnk <= maxNbSnk\				
 
-			if (1 <= secTopology <= 3)
-			{
-				maxNbSrc + maxNbSnk <= lengthX * lengthY					
-			}
-			else
-			{
-				maxNbSrc + maxNbSnk <= numbNodes					
-			}
-		}
-}
-// primary topology is hubs-and-satellites
-else
-{
-		secTopology != 5
-		minSatsPerHub <= maxSatsPerHub			
-		minSatsRoundSize <= maxSatsRoundSize
-		minSatFixCos <= maxSatFixCos			
-		minSatVarCos <= maxSatVarCos		
-		minSatArcCap <= maxSatArcCap			
+			if (1 <= secTopology <= 3)\
+			{\
+				maxNbSrc + maxNbSnk <= lengthX \* lengthY\					
+			}\
+			else\
+			{\
+				maxNbSrc + maxNbSnk <= numbNodes\					
+			}\
+		}\
+}\
+// primary topology is hubs-and-satellites\
+else\
+{\
+		secTopology != 5\
+		minSatsPerHub <= maxSatsPerHub\			
+		minSatsRoundSize <= maxSatsRoundSize\
+		minSatFixCos <= maxSatFixCos\			
+		minSatVarCos <= maxSatVarCos\		
+		minSatArcCap <= maxSatArcCap\			
 		
-		if (!equalComCaps)
-		{
-			minSatComCap <= maxSatComCap			
-			maxSatComCap <= minComVol
-			maxSatComCap <= minSatArcCap
-			maxSatArcCap <= numbCom * minSatComCap				
-		}
+		if (!equalComCaps)\
+		{\
+			minSatComCap <= maxSatComCap\			
+			maxSatComCap <= minComVol\
+			maxSatComCap <= minSatArcCap\
+			maxSatArcCap <= numbCom \* minSatComCap\				
+		}\
 			
-		if (oneSrcOneSnk)
-		{
-			if (equSrcsEquSnks)
+		if (oneSrcOneSnk)\
+		{\
+			if (equSrcsEquSnks)\
 				
-			if (1 <= secTopology <= 3)
-			{
-				lengthX * lengthY * minSatsPerHub * (lengthX * lengthY * minSatsPerHub - 1) >= numbCom					
-			}
-			else
-			{
-				numbNodes * minSatsPerHub * (numbNodes * minSatsPerHub - 1) >= numbCom					
-			}				
-		}
-		else
-		{
-			minNbSrc <= maxNbSrc
-			minNbSnk <= maxNbSnk				
+			if (1 <= secTopology <= 3)\
+			{\
+				lengthX \* lengthY \* minSatsPerHub \* (lengthX \* lengthY \* minSatsPerHub - 1) >= numbCom\					
+			}\
+			else\
+			{\
+				numbNodes \* minSatsPerHub \* (numbNodes \* minSatsPerHub - 1) >= numbCom\					
+			}\
+		}\
+		else\
+		{\
+			minNbSrc <= maxNbSrc\
+			minNbSnk <= maxNbSnk\				
 	
-			if (1 <= secTopology <= 3)
-			{
-				maxNbSrc + maxNbSnk <= lengthX * lengthY * minSatsPerHub					
-			}
-			else
-			{
-				maxNbSrc + maxNbSnk <= numbNodes * minSatsPerHub					
-			}
-		}
-}	
+			if (1 <= secTopology <= 3)\
+			{\
+				maxNbSrc + maxNbSnk <= lengthX \* lengthY * minSatsPerHub\					
+			}\
+			else\
+			{\
+				maxNbSrc + maxNbSnk <= numbNodes \* minSatsPerHub\					
+			}\
+		}\
+}\	
 
 ### 5 Detailed examples
 
@@ -788,7 +793,7 @@ The program/examples subfolder holds examples of configuration files and instruc
 
 Similarly, the docker/examples subfolder holds examples of configuration files and instruction lines occurring when the executable of the program is run through Docker instructions. These examples are identified by the addition of the prefix 'docker_'. The subfolder also contains the output files resulting from each pair of configuration file and instruction line. The former are identical to the files generated when the executable is run from the Linux instruction line.
 
-Remark:
+Remark:\
 The output examples contained in the /examples subfolders will also be used to illustrate the operation of the separate application generating stochastic MCFNDP instances.
 
 In all included examples, the generated MCFNDP instance is characterized by a point-to-point primary topology, a (3 x 4) grid secondary topology applied to a bounded surface and by 3 commodities.
