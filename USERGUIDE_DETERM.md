@@ -1,5 +1,4 @@
-October 12th 2026
-https://github.com/larseeri/determ-MCFNDP-gener
+October 16th 2026
 
 
 ## Generator of instances of the linear, deterministic, multi-commodity, capacitated, fixed charge network design problem
@@ -11,11 +10,11 @@ The GenDeterm application generates instances of the linear, deterministic, mult
 For detailed background, seeLarsen, E., Bisaillon, S., Cordeau, J.F. and Frejinger, E. Pseudo-random Instance Generators in C++ for Deterministic and Stochastic Multi-commodity Network Design Problems.
 
 This user guide comprises the following sections:\
-1 Pseudo-random generation and available topologies\
-2 Building and running the program directly from the Linux command line\
-3 Running the program through Docker instructions\
-4 Usage of options\
-5 Detailed examples
+1 Pseudo-random generation and available topologies.\
+2 Building and running the program directly from the Linux command line.\
+3 Running the program through Docker instructions.\
+4 Usage of options.\
+5 Detailed examples.
 
 ### 1 Pseudo-random generation and available topologies
 
@@ -117,9 +116,9 @@ To display the complete documentation about the application and the available op
 ```
 
 Summing up, option values are successively updated from these locations in this order:\
-(i) hard-coded initialization values in lines 28-48 of data.cpp\
-(ii) values appearing in configuration file whose name is specified in command line with +F (if it is specified and if it exists); if no valid configuration file is specified with +F in command line, values will be taken from default configuration file whose name is specified in line 1210 of main.cpp; at this point, the latter should exist\
-(iii) values specified in the command line\
+(i) Hard-coded initialization values in lines 28-48 of data.cpp.\
+(ii) Values appearing in configuration file whose name is specified in command line with +F (if it is specified and if it exists); if no valid configuration file is specified with +F in command line, values will be taken from default configuration file whose name is specified in line 1210 of main.cpp; at this point, the latter should exist.\
+(iii) Values specified in the command line.\
 Notice that location (i) is insufficiently transparent to the user and should not be relied upon. Parameter values should be set through (ii) and (iii).
 
 Remark:\
@@ -161,7 +160,7 @@ NodeFrom  NodeTo\
 .\
 .\
 .\
-(end of file)\
+(end of file)
 
 Remark:\
 See Section 5 below for examples of basic graph files.
@@ -246,9 +245,9 @@ When running the program through Docker instructions, all input and output files
 
 The default configuration file is located at docker/inout/determ_config.par. It has initially been filled with illustrative values and should be edited appropriately if no replacement configuration file is indicated on the Docker instruction line with option key +F. Option parameter values are successively updated from these locations in
 this order:\
-(i) initialization values hard-coded in lines 28-48 of data.cpp,\
-(ii) either replacement configuration file specified in the Docker instruction line with option key +F, or default configuration file ./inout/determ_config.par if no replacement configuration file is specified in the Docker instruction line with option key +F,\
-(iii) values specified in the Docker instruction,\
+(i) Initialization values hard-coded in lines 28-48 of data.cpp.\
+(ii) Either replacement configuration file specified in the Docker instruction line with option key +F, or default configuration file ./inout/determ_config.par if no replacement configuration file is specified in the Docker instruction line with option key +F.\
+(iii) Values specified in the Docker instruction.\
 Notice that location (i) is insufficiently transparent to the user and should not be relied upon. Parameter values should be set through (ii) and (iii).
 
 Important:\
@@ -700,12 +699,12 @@ if (!equalizeComCaps)
 		minComCap <= maxComCap
 		maxComCap <= minComVol
 		maxComCap <= minArcCap
-		maxArcCap <= numbCom \* minComCap			
+		maxArcCap <= numbCom * minComCap			
 }	
 	
 if (gridConnect)
 {
-    	lengthX \* lengthY >= 2            
+    	lengthX * lengthY >= 2            
 }
 else
 {
@@ -719,11 +718,11 @@ if (!hubsAndSats)
 		{ 				
 			if (1 <= secTopology <= 3)
 			{
-				(lengthX \* lengthY) \* ((lengthX \* lengthY) - 1) >= numbCom					
+				(lengthX * lengthY) * ((lengthX * lengthY) - 1) >= numbCom					
 			}
 			else
 			{
-				numbNodes \* (numbNodes - 1) >= numbCom					
+				numbNodes * (numbNodes - 1) >= numbCom					
 			}
 		}
 		else
@@ -733,7 +732,7 @@ if (!hubsAndSats)
 
 			if (1 <= secTopology <= 3)
 			{
-				maxNbSrc + maxNbSnk <= lengthX \* lengthY					
+				maxNbSrc + maxNbSnk <= lengthX * lengthY					
 			}
 			else
 			{
@@ -756,7 +755,7 @@ else
 			minSatComCap <= maxSatComCap			
 			maxSatComCap <= minComVol
 			maxSatComCap <= minSatArcCap
-			maxSatArcCap <= numbCom \* minSatComCap				
+			maxSatArcCap <= numbCom * minSatComCap				
 		}
 			
 		if (oneSrcOneSnk)
@@ -765,11 +764,11 @@ else
 				
 			if (1 <= secTopology <= 3)
 			{
-				lengthX \* lengthY \* minSatsPerHub \* (lengthX \* lengthY \* minSatsPerHub - 1) >= numbCom					
+				lengthX * lengthY * minSatsPerHub * (lengthX * lengthY * minSatsPerHub - 1) >= numbCom					
 			}
 			else
 			{
-				numbNodes \* minSatsPerHub \* (numbNodes \* minSatsPerHub - 1) >= numbCom					
+				numbNodes * minSatsPerHub * (numbNodes * minSatsPerHub - 1) >= numbCom					
 			}
 		}
 		else
@@ -779,11 +778,11 @@ else
 	
 			if (1 <= secTopology <= 3)
 			{
-				maxNbSrc + maxNbSnk <= lengthX \* lengthY * minSatsPerHub					
+				maxNbSrc + maxNbSnk <= lengthX * lengthY * minSatsPerHub					
 			}
 			else
 			{
-				maxNbSrc + maxNbSnk <= numbNodes \* minSatsPerHub					
+				maxNbSrc + maxNbSnk <= numbNodes * minSatsPerHub					
 			}
 		}
 }	
@@ -822,33 +821,33 @@ docker run --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inou
 
 ##### 5.1.2 Configuration files (input)
 
-configuration file used with Linux command line:
+configuration file used with Linux command line:\
 determ_config_oneSrcOneSnk_12oct2026-17h09.par
 
-configuration file used with Docker instruction:
+configuration file used with Docker instruction:\
 docker_determ_config_oneSrcOneSnk_12oct2026-17h09.par
 
 ##### 5.1.3 Generated files
 
-numerical representation of the network in DOW format:
+numerical representation of the network in DOW format:\
 determ_oneSrcOneSnk_12oct2026-17h09.dow
 
-numerical representation of the network in STD format:
+numerical representation of the network in STD format:\
 determ_oneSrcOneSnk_12oct2026-17h09.std
 
-numerical representation of the basic graph:
+numerical representation of the basic graph:\
 determ_oneSrcOneSnk_12oct2026-17h09.gra
 
-human-readable representation of the associated linear programming problem in LP format:
+human-readable representation of the associated linear programming problem in LP format:\
 determ_oneSrcOneSnk_12oct2026-17h09.lp
 
-numerical representation of the associated linear programming problem in MPS format:
+numerical representation of the associated linear programming problem in MPS format:\
 determ_oneSrcOneSnk_12oct2026-17h09.mps
 
-graphical representation of the network in TEX format:
+graphical representation of the network in TEX format:\
 determ_oneSrcOneSnk_12oct2026-17h09.tex
 
-compiled graphical representation:
+compiled graphical representation:\
 determ_oneSrcOneSnk_12oct2026-17h09.pdf
 
 #### 5.2 Multiple but equal sources and multiple but equal sinks
@@ -873,29 +872,29 @@ docker run --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inou
 
 ##### 5.2.2 Configuration files (input)
 
-configuration file used with Linux command line:
+configuration file used with Linux command line:\
 determ_config_eqSrcsEqSnks_12oct2026-17h09.par
 
-configuration file used with Docker instruction:
+configuration file used with Docker instruction:\
 docker_determ_config_eqSrcsEqSnks_12oct2026-17h09.par
 
 ##### 5.2.3 Generated files
 
-numerical representation of the network in STD format:
+numerical representation of the network in STD format:\
 determ_eqSrcsEqSnks_12oct2026-17h09.std
 
-numerical representation of the basic graph:
+numerical representation of the basic graph:\
 determ_eqSrcsEqSnks_12oct2026-17h09.gra
 
-human-readable representation of the associated linear programming problem in LP format:
+human-readable representation of the associated linear programming problem in LP format:\
 determ_eqSrcsEqSnks_12oct2026-17h09.lp
 
-numerical representation of the associated linear programming problem in MPS format:
+numerical representation of the associated linear programming problem in MPS format:\
 determ_eqSrcsEqSnks_12oct2026-17h09.mps
 
-graphical representation of the network in TEX format:
+graphical representation of the network in TEX format:\
 determ_eqSrcsEqSnks_12oct2026-17h09.tex
 
-compiled graphical representation:
+compiled graphical representation:\
 determ_eqSrcsEqSnks_12oct2026-17h09.pdf
 

@@ -1,5 +1,4 @@
 October 13th 2026
-https://github.com/larseeri/determ-MCFNDP-gener
 
 
 ## Generator of instances of the linear, deterministic, multi-commodity, capacitated, fixed charge network design problem
