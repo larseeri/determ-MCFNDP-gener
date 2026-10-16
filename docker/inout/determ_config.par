@@ -1,0 +1,40 @@
+
+// This default configuration file determ_config.par is filled
+// with illustrative values and should be edited appropriately
+// if no replacement configuration file is indicated on the
+// command line with option key +F.
+
+stream 100
+seed   101304
+topology 3 // grid on a bounded surface
+noParalArc 10
+oneSrcOneSnk
+// eqSrcsEqSnks
+numbNodes 36 // ignored since grid specified with lengthX, lengthY
+lengthX 3
+lengthY 4
+numbCom 3
+nbAddArcSampTailHead 6
+nbAddArcPerSampHead 0
+minNbSrc 4 // ignored since oneSrcOneSnk
+maxNbSrc 4 // ignored since oneSrcOneSnk
+minNbSnk 3 // ignored since oneSrcOneSnk
+maxNbSnk 3 // ignored since oneSrcOneSnk
+minFixCos 100
+maxFixCos 100
+minVarCos 10
+maxVarCos 10
+minComVol 200
+maxComVol 200
+minArcCap 100
+maxArcCap 100
+minComCap 100
+maxComCap 100
+//shortOutFileName
+lpOut
+mpsOut
+texOut
+inclDesignObjCap
+inclDesignObjCommCap
+//longBasicGraphFileName
+//help
