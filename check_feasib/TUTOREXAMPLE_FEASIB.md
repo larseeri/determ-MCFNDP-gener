@@ -1,5 +1,4 @@
-October 16th 2026\
-check_feasib/TUTOREXAMPLE_FEASIB.md
+(October 16th 2026)
 
 
 ## Feasibility tester for instances of the linear, deterministic, multi-commodity, capacitated, fixed charge network design problem
