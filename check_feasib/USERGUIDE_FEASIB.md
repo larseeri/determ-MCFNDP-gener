@@ -1,5 +1,4 @@
-October 15th 2026
-https://github.com/larseeri/determ-MCFNDP-gener
+October 16th 2026\
 check_feasib/USERGUIDE_FEASIB.md
 
 
@@ -117,7 +116,7 @@ b- For simplicity, define the alias 'determ_feasib_image' through
 docker tag ghcr.io/larseeri/determ_feasib_image:latest determ_feasib_image
 ```
 
-Remark:
+Remark:\
 If the Docker image determ_feasib_image were instead available as the tar ball determ_feasib_image.tar, then it could be loaded through
 
 ```
@@ -150,10 +149,10 @@ corresponds to the following Docker instruction:
 docker run --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_feasib_image /determ_feasib +v -F formatOfNetwork -I /inout/networkFile
 ```
 
-Important:/
+Important:\
 When running the program through Docker instructions, all input and output files must be located inside the docker/inout subfolder. Within the Docker instructions and the configuration files, this subfolder must be denoted /inout since it is located at the root of the Docker container. Hence, a network file located at docker/inout/networkFile.std will be specified in the Docker instruction or inside the configuration file with -I /inout/networkFile.std.
 
-Important:/
+Important:\
 The supplied Docker image conforms to the amd64 CPU instructions standard and will run natively on AMD and Intel CPUs. On CPUs conforming instead to the arm64 standard, e.g., on recent Apple computers, the supplied Docker image can be run through emulation. Essentially, this may be achieved as follows:
 
 a- Running the following preliminary instruction once. (For details, see https://hub.docker.com/r/tonistiigi/binfmt.)
@@ -240,7 +239,7 @@ Docker instruction:
 docker run --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_feasib_image /determ_feasib +v -F D -I /inout/determ_oneSrcOneSnk_12oct2026-17h09.dow
 ```
 
-Location of deterministic network file (input):
+Location of deterministic network file (input):\
 /examples/oneSrcOneSnk/determ_oneSrcOneSnk_12oct2026-17h09.dow
 
 Displayed output:
@@ -249,8 +248,7 @@ Verifying feasibility: SUCCESS
 
 ###### 4.1.1.2 Origin of the deterministic network
 
-The deterministic network was originally produced by the determistic
-generator as follows.
+The deterministic network was originally produced by the determistic generator as follows.
 
 Linux command line instruction:
 

@@ -1,5 +1,4 @@
-October 13th 2026
-https://github.com/larseeri/determ-MCFNDP-gener
+October 16th 2026\
 check_feasib/TUTOREXAMPLE_FEASIB.md
 
 
