@@ -4,7 +4,7 @@ https://github.com/larseeri/determ-MCFNDP-gener
 
 ## Generator of instances of the linear, deterministic, multi-commodity, capacitated, fixed charge network design problem
 
-## Turorial example 
+## Tutorial example 
 
 
 To become proficient with the use of the GenDeterm generator, we suggest to start with steps 1-2 and to iterate on steps 3-5:
@@ -106,11 +106,11 @@ d- The selected option values must conform to the restrictions stated in Section
 
 e- In this section, the suffixes appearing in the names of the option values indicate the expected type. For instance, option seed expects an integer. Hence the value is named seed_int. 
 
-2.1 While not absolutely necessary, it is advisable to state the name of the current configuration file as a comment within the configuration file and to make sure that this name is a unique identifier of the content.
+**2.1** While not absolutely necessary, it is advisable to state the name of the current configuration file as a comment within the configuration file and to make sure that this name is a unique identifier of the content.
 
 // file name: name-of-configuration-file
 
-2.2 seed_int and stream_int stand for the two integers that are assigned to the seed and stream of the pseudo-random generator. To ensure reproducibility, they should always be set. When several configurations are included in a set, the pair (seed_int, stream_int) should be selected for each configuration so as to constitute a unique identifier. A practical choice is to make seed_int invariant within the set of configurations whereas stream_int varies between the configurations in an interpretable way. 
+**2.2** seed_int and stream_int stand for the two integers that are assigned to the seed and stream of the pseudo-random generator. To ensure reproducibility, they should always be set. When several configurations are included in a set, the pair (seed_int, stream_int) should be selected for each configuration so as to constitute a unique identifier. A practical choice is to make seed_int invariant within the set of configurations whereas stream_int varies between the configurations in an interpretable way. 
 
 ```
 seed seed_int
@@ -120,26 +120,26 @@ seed seed_int
 stream stream_int
 ```
 
-2.3 Setting hubsAndSats_bool to true (either explicitly or implicitly by omitting hubsAndSats_bool), as is the case here, means that the hubs-and-satellites primary topology is to be implemented. If setting to false explicitly or implicitly (by omitting this option entirely), then the point-to-point primary toplogy is implemented. See Section 1 of the online user guide for details.
+**2.3** Setting hubsAndSats_bool to true (either explicitly or implicitly by omitting hubsAndSats_bool), as is the case here, means that the hubs-and-satellites primary topology is to be implemented. If setting to false explicitly or implicitly (by omitting this option entirely), then the point-to-point primary toplogy is implemented. See Section 1 of the online user guide for details.
 
 ```
 hubsAndSats hubsAndSats_bool
 ```
 
-2.4 Number of commodities is equal to numbCom_int. Here, numbCom_int==12. 
+**2.4** Number of commodities is equal to numbCom_int. Here, numbCom_int==12. 
 
 ```
 numbCom numbCom_int
 ```
 
-2.5 Each commodity volume will be generated pseudo-randomly according to a uniform(minComVol_int, maxComVol_int) distribution. Here, minComVol_int == 20, maxComVol_int == 100. (See note 1 below.)
+**2.5** Each commodity volume will be generated pseudo-randomly according to a uniform(minComVol_int, maxComVol_int) distribution. Here, minComVol_int == 20, maxComVol_int == 100. (See note 1 below.)
 
 ```
 minComVol minComVol_int
 maxComVol maxComVol_int
 ```
 
-2.6 Setting eqSrcsEqSnks_bool to true explicitly or implicitly (by omitting eqSrcsEqSnks_bool), as is the case here, means that commodity volumes will have common source nodes over all commodities and common sink nodes over all commodities; the common sources and common sinks are sampled pseudo-randomly according to uniform(minNbSrc_int, maxNbSrc_int) and uniform(minNbSnk_int, maxNbSnk_int) distributions, respectively. Here, minNbSrc_int==2, maxNbSrc_int==3, minNbSnk_int==2, maxNbSnk_int==3. Setting instead the value of option oneSrcOneSnk to true explicitly or implicitly (by omitting oneSrcOneSnk_bool) would have meant that there would be a single source and a single sink for each commodity. In this case, minNbSrc_int, maxNbSrc_int, minNbSnk_int, maxNbSnk_int would have been neglected. Of course, values of options eqSrcsEqSnks and oneSrcOneSnk cannot both be set to true.
+**2.6** Setting eqSrcsEqSnks_bool to true explicitly or implicitly (by omitting eqSrcsEqSnks_bool), as is the case here, means that commodity volumes will have common source nodes over all commodities and common sink nodes over all commodities; the common sources and common sinks are sampled pseudo-randomly according to uniform(minNbSrc_int, maxNbSrc_int) and uniform(minNbSnk_int, maxNbSnk_int) distributions, respectively. Here, minNbSrc_int==2, maxNbSrc_int==3, minNbSnk_int==2, maxNbSnk_int==3. Setting instead the value of option oneSrcOneSnk to true explicitly or implicitly (by omitting oneSrcOneSnk_bool) would have meant that there would be a single source and a single sink for each commodity. In this case, minNbSrc_int, maxNbSrc_int, minNbSnk_int, maxNbSnk_int would have been neglected. Of course, values of options eqSrcsEqSnks and oneSrcOneSnk cannot both be set to true.
 
 ```
 eqSrcsEqSnks eqSrcsEqSnks_bool
@@ -155,145 +155,145 @@ minNbSnk minNbSnk_int
 maxNbSnk maxNbSnk_int
 ```
 
-2.7 Secondary topology will be that specified with secTopology_int (equal to 3 here, that is a grid on a flat surface). See Section 1 of online user guide.
+**2.7** Secondary topology will be that specified with secTopology_int (equal to 3 here, that is a grid on a flat surface). See Section 1 of online user guide.
 
 ```
 secTopology secTopology_int
 ```
 
-2.8 The horizontal and vertical numbers of hub nodes (recall that the primary topology is hubs-and-satellites) on the torus will be respectively lengthX_int, lengthY_int (equal to 2 and 3 here). The number of hub nodes will automatically be inferred as 6 = 2 * 3.
+**2.8** The horizontal and vertical numbers of hub nodes (recall that the primary topology is hubs-and-satellites) on the torus will be respectively lengthX_int, lengthY_int (equal to 2 and 3 here). The number of hub nodes will automatically be inferred as 6 = 2 * 3.
 
 ```
 lengthX lengthX_int
 lengthY lengthY_int
 ```
 
-2.9 Non-random hub arcs initially created to build a strongly connected graph between hub nodes will be assigned a fixed cost equal to maxFixCos_int. The additional, random hub arcs that will eventually be created will have a fixed cost sampled pseudo-randomly according to uniform(minFixCos_int, maxFixCos_int). Here, minFixCos_int==20, maxFixCos_int==100. (See note 1 below.)
+**2.9** Non-random hub arcs initially created to build a strongly connected graph between hub nodes will be assigned a fixed cost equal to maxFixCos_int. The additional, random hub arcs that will eventually be created will have a fixed cost sampled pseudo-randomly according to uniform(minFixCos_int, maxFixCos_int). Here, minFixCos_int==20, maxFixCos_int==100. (See note 1 below.)
 
 ```
 minFixCos minFixCos_int
 maxFixCos maxFixCos_int
 ```
 
-2.10 Non-random hub arcs initially created to build a strongly connected graph between hub nodes will be assigned a variable cost common to all commodities equal to maxVarCos_int. Additional, random hub arcs that will eventually be created will have commodity-specific costs sampled pseudo-randomly according to uniform(minVarCos_int, maxVarCos_int). Here, minVarCos_int==20, maxVarCos_int==100. (See note 1 below.)
+**2.10 Non-random hub arcs initially created to build a strongly connected graph between hub nodes will be assigned a variable cost common to all commodities equal to maxVarCos_int. Additional, random hub arcs that will eventually be created will have commodity-specific costs sampled pseudo-randomly according to uniform(minVarCos_int, maxVarCos_int). Here, minVarCos_int==20, maxVarCos_int==100. (See note 1 below.)
 
 ```
 minVarCos minVarCos_int
 maxVarCos maxVarCos_int
 ```
 
-2.11 Non-random hub arcs initially created to build a strongly connected graph between hub nodes will be assigned an overall capacity equal to total volume over all commodities. Additional, random hub arcs that will eventually be created will have overall capacity sampled pseudo-randomly according to uniform(minArcCap_int, maxArcCap_int). Here, minArcCap_int==15, maxArcCap_int==45. (See note 1 below.)
+**2.11 Non-random hub arcs initially created to build a strongly connected graph between hub nodes will be assigned an overall capacity equal to total volume over all commodities. Additional, random hub arcs that will eventually be created will have overall capacity sampled pseudo-randomly according to uniform(minArcCap_int, maxArcCap_int). Here, minArcCap_int==15, maxArcCap_int==45. (See note 1 below.)
 
 ```
 minArcCap minArcCap_int
 maxArcCap maxArcCap_int
 ```
 
-2.12 Non-random hub arcs initially created to build a strongly connected graph between hub nodes will be assigned commodity-specific capacities equal to commodity volume. Additional, random hub arcs that will entually be created will have commodity-specific capacities sampled pseudo-randomly according to uniform(minComCap_int, maxComCap_int). Here, minComCap_int==10, maxComCap_int==15. (See note 1 below.)
+**2.12 Non-random hub arcs initially created to build a strongly connected graph between hub nodes will be assigned commodity-specific capacities equal to commodity volume. Additional, random hub arcs that will entually be created will have commodity-specific capacities sampled pseudo-randomly according to uniform(minComCap_int, maxComCap_int). Here, minComCap_int==10, maxComCap_int==15. (See note 1 below.)
 
 ```
 minComCap minComCap_int
 maxComCap maxComCap_int
 ```
 
-2.13 From each hub node, nbAddArcPerSampHead_int arcs towards other hub nodes will be added randomly. Here, nbAddArcPerSampHead_int==2 (i.e., only the heads of the random arcs are sampled). These arcs will be specified according to 2.9-2.12. Notice that the addition of random arcs whose head and tail would be both sampled is also possible. In this case the appropriate option would be nbAddArcSampTailHead. 
+**2.13 From each hub node, nbAddArcPerSampHead_int arcs towards other hub nodes will be added randomly. Here, nbAddArcPerSampHead_int==2 (i.e., only the heads of the random arcs are sampled). These arcs will be specified according to 2.9-2.12. Notice that the addition of random arcs whose head and tail would be both sampled is also possible. In this case the appropriate option would be nbAddArcSampTailHead. 
 
 ```
 nbAddArcPerSampHead nbAddArcPerSampHead_int
 ```
 
-2.14 While generating random arcs (between any pair of nodes), up to noParalArc_int attempts (equal to 20 here) will be made to sample an arc that is not paralleling an existing arc. If noParalArc_int attempts are unsuccessful, the current search for a non-parallel arc will be interrupted. 
+**2.14 While generating random arcs (between any pair of nodes), up to noParalArc_int attempts (equal to 20 here) will be made to sample an arc that is not paralleling an existing arc. If noParalArc_int attempts are unsuccessful, the current search for a non-parallel arc will be interrupted. 
 
 ```
 noParalArc noParalArc_int
 ```
 
-2.15 (Unused in the current example) Although the current example does not make use of this additional functionality, it would be possible to exert a direct, deterministic control over the properties of the random hub arcs added so as to alter the path followed by the optimal solution over these arcs as well as the complexity of the problem. Thus, the fixed cost of a percentage of the random hub arcs could be set to zero, a percentage of the random hub arcs could be set to full overall capacity, one commodity-specific capacity could be set to zero in a percentage of random hub arcs or one commodity-specific capacity could be set to full in a percentage of random hub arcs. These four adjustments are respectively controlled with the options ratZeroFix, ratTotVolCap, ratZeroComCap and ratMaxComCap.
+**2.15 (Unused in the current example) Although the current example does not make use of this additional functionality, it would be possible to exert a direct, deterministic control over the properties of the random hub arcs added so as to alter the path followed by the optimal solution over these arcs as well as the complexity of the problem. Thus, the fixed cost of a percentage of the random hub arcs could be set to zero, a percentage of the random hub arcs could be set to full overall capacity, one commodity-specific capacity could be set to zero in a percentage of random hub arcs or one commodity-specific capacity could be set to full in a percentage of random hub arcs. These four adjustments are respectively controlled with the options ratZeroFix, ratTotVolCap, ratZeroComCap and ratMaxComCap.
 
-2.16 Normalize overall and commodity-specific capacities over all hub arcs (non-random and random) by uniform adjustment equal to adjCapacsDown_double (downward if adjCapacsDown_double >= 1, upward otherwise). Specifying a value of 1 balances the sum of total commodity volumes flowing on all hub arcs with the sum of all hub arc capacities. It might be viewed as a neutral setting. Here, adjCapacsDown_double==0.330000. (See note 2 below.)
+**2.16 Normalize overall and commodity-specific capacities over all hub arcs (non-random and random) by uniform adjustment equal to adjCapacsDown_double (downward if adjCapacsDown_double >= 1, upward otherwise). Specifying a value of 1 balances the sum of total commodity volumes flowing on all hub arcs with the sum of all hub arc capacities. It might be viewed as a neutral setting. Here, adjCapacsDown_double==0.330000. (See note 2 below.)
 
 ```
 adjCapacsDown adjCapacsDown_double
 ```
 
-2.17 Normalize fixed costs over all hub arcs (non-random and random) by uniform adjustment equal to adjFixCostsUp_double (downward if adjFixCostsUp_double <= 1, upward otherwise). Specifying a value of 1 balances the sum of fixed costs over all hub arcs with the total variable cost that would be incurred by circulating average commodity volume on all hub arcs. Here, adjFixCostsUp_double==1. (See note 2 below.)
+**2.17 Normalize fixed costs over all hub arcs (non-random and random) by uniform adjustment equal to adjFixCostsUp_double (downward if adjFixCostsUp_double <= 1, upward otherwise). Specifying a value of 1 balances the sum of fixed costs over all hub arcs with the total variable cost that would be incurred by circulating average commodity volume on all hub arcs. Here, adjFixCostsUp_double==1. (See note 2 below.)
 
 ```
 adjFixCostsUp adjFixCostsUp_double
 ```
 
-2.18 (Unused in the current example) Although the current example does not make use of these additional functionalities, it would be possible to uniformize the commodity-specific capacities and/or variable costs over all commodities for each hub arc. This would be controlled with the options equalComCaps and equalVarCosts, respectively.
+**2.18 (Unused in the current example) Although the current example does not make use of these additional functionalities, it would be possible to uniformize the commodity-specific capacities and/or variable costs over all commodities for each hub arc. This would be controlled with the options equalComCaps and equalVarCosts, respectively.
 
-2.19 The number of satellite nodes assigned to a hub node will be sampled pseudo-randomly according to uniform(minSatsPerHub_int, maxSatsPerHub_int). Here, minSatsPerHub_int==2 and maxSatsPerHub_int==8
+**2.19 The number of satellite nodes assigned to a hub node will be sampled pseudo-randomly according to uniform(minSatsPerHub_int, maxSatsPerHub_int). Here, minSatsPerHub_int==2 and maxSatsPerHub_int==8
 ```
 minSatsPerHub minSatsPerHub_int
 maxSatsPerHub maxSatsPerHub_int
 ```
 
-2.20 The number of satellite nodes tied sequentially in a round will be sampled pseudo-randomly according to uniform(minSatsRoundSize_int, maxSatsRoundSize_int). Here, minSatsRoundSize_int==2, maxSatsRoundSize_int==8. 
+**2.20 The number of satellite nodes tied sequentially in a round will be sampled pseudo-randomly according to uniform(minSatsRoundSize_int, maxSatsRoundSize_int). Here, minSatsRoundSize_int==2, maxSatsRoundSize_int==8. 
 
 ```
 minSatsRoundSize minSatsRoundSize_int
 maxSatsRoundSize maxSatsRoundSize_int
 ```
 
-2.21 Non-random satellite arcs initially created to build a strongly connected graph will be assigned a fixed cost equal to maxSatFixCos_int. Additional, random satellite arcs that will eventually be created will have a fixed cost sampled pseudo-randomly according to uniform(minSatFixCos_int, maxSatFixCos_int). Here, minSatFixCos_int==20, maxSatFixCos_int==100. (See note 1 below.)
+**2.21 Non-random satellite arcs initially created to build a strongly connected graph will be assigned a fixed cost equal to maxSatFixCos_int. Additional, random satellite arcs that will eventually be created will have a fixed cost sampled pseudo-randomly according to uniform(minSatFixCos_int, maxSatFixCos_int). Here, minSatFixCos_int==20, maxSatFixCos_int==100. (See note 1 below.)
 
 ```
 minSatFixCos minSatFixCos_int
 maxSatFixCos maxSatFixCos_int
 ```
 
-2.22 Non-random satellite arcs initially created to build a strongly connected graph will be assigned a variable cost common to all commodities equal to maxSatVarCos_int. Additional, random satellite arcs that will eventually be created will have commodity-specific costs sampled pseudo-randomly according to uniform(minSatVarCos_int, maxSatVarCos_int). Here, minSatVarCos_int==20, maxSatVarCos_int==100. (See note 1 below.)
+**2.22 Non-random satellite arcs initially created to build a strongly connected graph will be assigned a variable cost common to all commodities equal to maxSatVarCos_int. Additional, random satellite arcs that will eventually be created will have commodity-specific costs sampled pseudo-randomly according to uniform(minSatVarCos_int, maxSatVarCos_int). Here, minSatVarCos_int==20, maxSatVarCos_int==100. (See note 1 below.)
 
 ```
 minSatVarCos minSatVarCos_int
 maxSatVarCos maxSatVarCos_int
 ```
 
-2.23 Non-random satellite arcs initially created to build a strongly connected graph will be assigned an overall capacity equal to total volume over all commoditie. Additional, random satellite arcs that will eventually be created will have overall capacity sampled pseudo-randomly according to uniform(minSatArcCap_int, maxSatArcCap_int). Here, minSatArcCap_int==15, maxSatArcCap_int==45.
+**2.23 Non-random satellite arcs initially created to build a strongly connected graph will be assigned an overall capacity equal to total volume over all commoditie. Additional, random satellite arcs that will eventually be created will have overall capacity sampled pseudo-randomly according to uniform(minSatArcCap_int, maxSatArcCap_int). Here, minSatArcCap_int==15, maxSatArcCap_int==45.
 
 ```
 minSatArcCap minSatArcCap_int
 maxSatArcCap maxSatArcCap_int
 ```
 
-2.24 Non-random satellite arcs initially created to build a strongly connected graph will be assigned commodity-specific capacities equal to commodity volume. Additional, random satellite arcs that will eventually be created will have commodity-specific capacities sampled pseudo-randomly according to uniform(minSatComCap_int, maxSatComCap_int). Here, minSatComCap_int==10, maxSatComCap_int==15.
+**2.24 Non-random satellite arcs initially created to build a strongly connected graph will be assigned commodity-specific capacities equal to commodity volume. Additional, random satellite arcs that will eventually be created will have commodity-specific capacities sampled pseudo-randomly according to uniform(minSatComCap_int, maxSatComCap_int). Here, minSatComCap_int==10, maxSatComCap_int==15.
 
 ```
 minSatComCap minSatComCap_int
 maxSatComCap maxSatComCap_int
 ```
 
-2.25 From each satellite node, nbAddSatArcPerSampHead_int arcs towards any other node nodes will be added randomly (i.e., only the heads of the random arcs are sampled). Here, nbAddSatArcPerSampHead==2. These arcs will be specified according to 2.21-2.24. Notice that the addition of random arcs whose head and tail would be both sampled is also possible. In this case the appropriate option would be nbAddSatArcSampTailHead. 
+**2.25 From each satellite node, nbAddSatArcPerSampHead_int arcs towards any other node nodes will be added randomly (i.e., only the heads of the random arcs are sampled). Here, nbAddSatArcPerSampHead==2. These arcs will be specified according to 2.21-2.24. Notice that the addition of random arcs whose head and tail would be both sampled is also possible. In this case the appropriate option would be nbAddSatArcSampTailHead. 
 
 ```
 nbAddSatArcPerSampHead 2
 ```
 
-2.26 (Unused in the current example) Although the current example does not make use of this additional functionality, it would be possible to exert a direct, deterministic control over the properties of the random satellite arcs added so as to alter the path followed by the optimal solution over these arcs as well as the complexity of the problem. The motivation is to Thus, the fixed cost of a percentage of the random satellite arcs could be set to zero, a percentage of the random satellite arcs could be set to full overall capacity, one commodity-specific capacity could be set to zero in a percentage of random satellite arcs or one commodity-specific capacity could be set to full in a percentage of random satellite arcs. These four adjustments are respectively controlled with the options ratSatZeroFix, ratSatTotVolCap, ratSatZeroComCap and ratSatMaxComCap.
+**2.26 (Unused in the current example) Although the current example does not make use of this additional functionality, it would be possible to exert a direct, deterministic control over the properties of the random satellite arcs added so as to alter the path followed by the optimal solution over these arcs as well as the complexity of the problem. The motivation is to Thus, the fixed cost of a percentage of the random satellite arcs could be set to zero, a percentage of the random satellite arcs could be set to full overall capacity, one commodity-specific capacity could be set to zero in a percentage of random satellite arcs or one commodity-specific capacity could be set to full in a percentage of random satellite arcs. These four adjustments are respectively controlled with the options ratSatZeroFix, ratSatTotVolCap, ratSatZeroComCap and ratSatMaxComCap.
 
-2.27 Normalize overall and commodity-specific capacities over all satellite arcs (non-random and random) by uniform adjustment equal to adjSatCapacsDown_double (downward if adjSatCapacsDown_double >= 1, upward otherwise). Specifying a value of 1 balances the sum of total commodity volumes flowing on all arcs with the sum of all arc capacities. It might be viewed as a neutral setting. Here, adjSatCapacsDown_double==0.330000. (See note 2 below.)
+**2.27 Normalize overall and commodity-specific capacities over all satellite arcs (non-random and random) by uniform adjustment equal to adjSatCapacsDown_double (downward if adjSatCapacsDown_double >= 1, upward otherwise). Specifying a value of 1 balances the sum of total commodity volumes flowing on all arcs with the sum of all arc capacities. It might be viewed as a neutral setting. Here, adjSatCapacsDown_double==0.330000. (See note 2 below.)
 
 ```
 adjSatCapacsDown adjSatCapacsDown_double
 ```
 
-2.28 Normalize fixed costs over all satellite arcs (non-random and random) by uniform adjustment equal to adjSatFixCostsUp_double (downward if adjSatFixCostsUp_double <= 1, upward otherwise). Specifying a value of 1 balances the sum of fixed costs over all arcs with the total variable cost that would be incurred by circulating average commodity volume on all arcs. Here, adjSatFixCostsUp_double==1. (See note 2 below.)
+**2.28 Normalize fixed costs over all satellite arcs (non-random and random) by uniform adjustment equal to adjSatFixCostsUp_double (downward if adjSatFixCostsUp_double <= 1, upward otherwise). Specifying a value of 1 balances the sum of fixed costs over all arcs with the total variable cost that would be incurred by circulating average commodity volume on all arcs. Here, adjSatFixCostsUp_double==1. (See note 2 below.)
 
 ```
 adjSatFixCostsUp adjSatFixCostsUp_double
 ```
 
-2.29 (Unused in the current example) Although the current example does not make use of these additional functionalities, it would be possible to uniformize the commodity-specific capacities and/or variable costs over all commodities for each satellite arc. This would be controlled with the options equalSatComCaps and equalSatVarCosts, respectively.
+**2.29 (Unused in the current example) Although the current example does not make use of these additional functionalities, it would be possible to uniformize the commodity-specific capacities and/or variable costs over all commodities for each satellite arc. This would be controlled with the options equalSatComCaps and equalSatVarCosts, respectively.
 
-2.30 Path of output file, excluding any extension name. The program will save all output files using this path and will add the relevant extensions according to their exact nature. Unless the option noStdOut is specified, the output is automatically saved in STD format and therefore will have the ".std" extension. Here, shortOutFileName_string==hs_vols-20-100_csts-20-100-20-100-20-100-20-100_eqSrcsEqSnks_secTop-flat_secTopSpe-2-3-2-3-2-3-2-8-2-8-12-15-45-10-15-2-15-45-10-15-2_noPar-20_adjSpe-0~33-1~00-0~33-1~00_seed-50163844_strm-5343
+**2.30 Path of output file, excluding any extension name. The program will save all output files using this path and will add the relevant extensions according to their exact nature. Unless the option noStdOut is specified, the output is automatically saved in STD format and therefore will have the ".std" extension. Here, shortOutFileName_string==hs_vols-20-100_csts-20-100-20-100-20-100-20-100_eqSrcsEqSnks_secTop-flat_secTopSpe-2-3-2-3-2-3-2-8-2-8-12-15-45-10-15-2-15-45-10-15-2_noPar-20_adjSpe-0~33-1~00-0~33-1~00_seed-50163844_strm-5343
 
 ```
 shortOutFileName shortOutFileName_string
 ```
 
-2.31 (Unused in the current example) Provided the generated MCFNDP instance satisfies a number of restrictive conditions, it will also be saved automatically in the simpler DOW format. Saving the output additionally under other formats can be requested: option mpsOut specifies the machine-readable MPS format, option lpOut specifies a human-readable statement of the MCFNDP, option texOut specifies generating and saving a LaTeX code representation. Output files of every format are saved under the file name specified with option shortOutFileName. The particular extension (std, dow, mps, lp, tex) denotes the exact content. See the user guide for complete details.
+**2.31 (Unused in the current example) Provided the generated MCFNDP instance satisfies a number of restrictive conditions, it will also be saved automatically in the simpler DOW format. Saving the output additionally under other formats can be requested: option mpsOut specifies the machine-readable MPS format, option lpOut specifies a human-readable statement of the MCFNDP, option texOut specifies generating and saving a LaTeX code representation. Output files of every format are saved under the file name specified with option shortOutFileName. The particular extension (std, dow, mps, lp, tex) denotes the exact content. See the user guide for complete details.
 
 Note 1: When generating a set of several instances with the intent of creating diversification, it is desirable that the ratio of the maximum value to the minimum value be large.
 
