@@ -37,6 +37,18 @@ void checkIfValidOutputFile(ofstream& os, string fileName)
         }		
 }
 
+bool isDigitsOnly(const string& str)
+{
+    // Avoid checking empty strings
+    if (str.empty())
+		return false; 
+    
+    // cast to unsigned char prevents undefined behavior with negative values
+    return std::all_of(str.begin(), str.end(), [](unsigned char c) { 
+        return isdigit(c); 
+    });
+}
+
 int CommodNode::count = 0;
 
 // Constructor
@@ -150,8 +162,8 @@ void Graph::defineVolumes()
     totalVolume = 0;
 
     for (int k = 0; k < numbCommods; k++)
-    {
-        commods[k].volume = rnd.getRandom(data->minCommVol, data->maxCommVol - data->minCommVol);
+    {		
+        commods[k].volume = rnd.getRandom(data->minCommVol, data->maxCommVol - data->minCommVol + 1);
         totalVolume += commods[k].volume;
     }
 }
@@ -300,7 +312,7 @@ void Graph::addSatArcs()
 	for (int indHub = 0; indHub < numbNodes; indHub++)
     {
 		// select number of satellite nodes tied to this hub
-		remain = rnd.getRandom(data->minSatsPerHub, data->maxSatsPerHub - data->minSatsPerHub);
+		remain = rnd.getRandom(data->minSatsPerHub, data->maxSatsPerHub - data->minSatsPerHub + 1);
 		
 		// create the rounds and their connecting arcs
 		while (remain != 0)
@@ -308,7 +320,7 @@ void Graph::addSatArcs()
 			start = min(data->minSatsRoundSize, remain);
 			end = min(data->maxSatsRoundSize, remain);			
 			width = end - start;					
-			roundSize =  rnd.getRandom(start, width);			
+			roundSize =  rnd.getRandom(start, width + 1);			
 			
 			// create pair of arcs between hub and first satellite in round			
 			addSatNonRandomArc(Arc(indHub, (numbNodes + numbSatNodes), data->maxSatFixedCost, totalVolume, commodsOnArc));
@@ -380,15 +392,15 @@ bool Graph::findSatArc(int orig, int dest)
 // if hubs-and-satellites primary topology, adds arc between hub nodes.
 void Graph::addRandomArc(int orig, int dest)
 {
-    int cost = rnd.getRandom(data->minFixedCost, data->maxFixedCost - data->minFixedCost);
-    int capac = rnd.getRandom(data->minArcCapac, data->maxArcCapac - data->minArcCapac);
+    int cost = rnd.getRandom(data->minFixedCost, data->maxFixedCost - data->minFixedCost + 1);
+    int capac = rnd.getRandom(data->minArcCapac, data->maxArcCapac - data->minArcCapac + 1);
 
     Arc arc(orig, dest, cost, capac);
 
     for (int k = 0; k < numbCommods; k++)
     {
-        cost = rnd.getRandom(data->minVarCost, data->maxVarCost - data->minVarCost);
-        capac = rnd.getRandom(data->minCommCapac, data->maxCommCapac - data->minCommCapac);
+        cost = rnd.getRandom(data->minVarCost, data->maxVarCost - data->minVarCost + 1);
+        capac = rnd.getRandom(data->minCommCapac, data->maxCommCapac - data->minCommCapac + 1);
         arc.addCommodOnArc(CommodOnArc(cost, capac));
     }
 
@@ -401,15 +413,15 @@ void Graph::addRandomArc(int orig, int dest)
 // (satellite arcs connect at least one satellite node).
 void Graph::addSatRandomArc(int orig, int dest)
 {
-    int cost = rnd.getRandom(data->minSatFixedCost, data->maxSatFixedCost - data->minSatFixedCost);
-    int capac = rnd.getRandom(data->minSatArcCapac, data->maxSatArcCapac - data->minSatArcCapac);
+    int cost = rnd.getRandom(data->minSatFixedCost, data->maxSatFixedCost - data->minSatFixedCost + 1);
+    int capac = rnd.getRandom(data->minSatArcCapac, data->maxSatArcCapac - data->minSatArcCapac + 1);
 
     Arc arc(orig, dest, cost, capac);
 
     for (int k = 0; k < numbCommods; k++)
     {
-        cost = rnd.getRandom(data->minSatVarCost, data->maxSatVarCost - data->minSatVarCost);
-        capac = rnd.getRandom(data->minSatCommCapac, data->maxSatCommCapac - data->minSatCommCapac);
+        cost = rnd.getRandom(data->minSatVarCost, data->maxSatVarCost - data->minSatVarCost + 1);
+        capac = rnd.getRandom(data->minSatCommCapac, data->maxSatCommCapac - data->minSatCommCapac + 1);
         arc.addCommodOnArc(CommodOnArc(cost, capac));
     }
 
@@ -521,9 +533,26 @@ void Graph::adjustRandomArcs()
     {
         // desired number of random arcs with fixed cost set to zero
         int numbArcsToModify = (int)(data->ratioZeroFixedCost * numbRandomArcs / 100);
+		
+		int vecIndex, arcIndex, currSize;		
+		vector<int> tempVec(numbRandomArcs); 
 
-        for (int a = numbArcs - 1; a > numbArcs - numbArcsToModify; a--)
-            arcs[a].cost = 0;
+		// fill with increasing numbers starting at numbNonRandomArcs
+		iota(tempVec.begin(), tempVec.end(), numbNonRandomArcs);	
+		
+		currSize = numbRandomArcs;	
+		for (int i =0; i <  numbArcsToModify; i++)	
+		{		
+			vecIndex = rnd.getRandom(0, currSize);
+			
+			// O(1) time
+			swap(tempVec[vecIndex], tempVec.back());
+			
+			arcIndex = tempVec.back();
+			tempVec.pop_back();	
+			currSize--;
+			arcs[arcIndex].cost = 0;		
+		}		
     }
 
     if (data->ratioTotVolCapac > 0)
@@ -531,8 +560,25 @@ void Graph::adjustRandomArcs()
         // desired number of random arcs with capacity set to total volume
         int numbArcsToModify = (int)(data->ratioTotVolCapac * numbRandomArcs / 100);
 
-        for (int a = numbArcs - 1; a > numbArcs - numbArcsToModify; a--)
-            arcs[a].capac = totalVolume;
+		int vecIndex, arcIndex, currSize;		
+		vector<int> tempVec(numbRandomArcs); 
+
+		// fill with increasing numbers starting at numbNonRandomArcs
+		iota(tempVec.begin(), tempVec.end(), numbNonRandomArcs);	
+		
+		currSize = numbRandomArcs;	
+		for (int i =0; i <  numbArcsToModify; i++)	
+		{		
+			vecIndex = rnd.getRandom(0, currSize);
+			
+			// O(1) time
+			swap(tempVec[vecIndex], tempVec.back());
+			
+			arcIndex = tempVec.back();
+			tempVec.pop_back();	
+			currSize--;
+			arcs[arcIndex].capac = totalVolume;		
+		}		
     }
 
     if (data->ratioZeroCommCapac > 0)
@@ -540,14 +586,27 @@ void Graph::adjustRandomArcs()
         // desired number of random arcs with one commodity-specific capacity
         // set to zero
         int numbArcsToModify = (int)(data->ratioZeroCommCapac * numbRandomArcs / 100);
+		
+		int vecIndex, arcIndex, currSize;		
+		vector<int> tempVec(numbRandomArcs); 
 
-        for (int a = numbArcs - 1; a > numbArcs - numbArcsToModify; a--)
-        {
-            int k = rnd.getRandom(0, numbCommods);
-            int arc = rnd.getRandom(numbNonRandomArcs, numbRandomArcs);
-
-            arcs[arc].commodsOnArc[k].capac = 0;
-        }
+		// fill with increasing numbers starting at numbNonRandomArcs
+		iota(tempVec.begin(), tempVec.end(), numbNonRandomArcs);	
+		
+		currSize = numbRandomArcs;	
+		for (int i =0; i <  numbArcsToModify; i++)	
+		{		
+			vecIndex = rnd.getRandom(0, currSize);
+			
+			// O(1) time
+			swap(tempVec[vecIndex], tempVec.back());
+			
+			arcIndex = tempVec.back();
+			tempVec.pop_back();	
+			currSize--;
+			int k = rnd.getRandom(0, numbCommods);
+			arcs[arcIndex].commodsOnArc[k].capac = 0;	
+		}		
     }
 
     if (data->ratioMaxCommCapac)
@@ -555,16 +614,85 @@ void Graph::adjustRandomArcs()
         // desired number of random arcs with one commodity-specific capacity
         // set to maxArcCapac
         int numbArcsToModify = (int)(data->ratioMaxCommCapac * numbRandomArcs / 100);
+		
+		int vecIndex, arcIndex, currSize;		
+		vector<int> tempVec(numbRandomArcs); 
 
-        for (int a = numbArcs - 1; a > numbArcs - numbArcsToModify; a--)
-        {
-            int k = rnd.getRandom(0, numbCommods);
-            int arc = rnd.getRandom(numbNonRandomArcs, numbRandomArcs);
-
-            arcs[arc].commodsOnArc[k].capac = data->maxArcCapac;
-        }
+		// fill with increasing numbers starting at numbNonRandomArcs
+		iota(tempVec.begin(), tempVec.end(), numbNonRandomArcs);	
+		
+		currSize = numbRandomArcs;	
+		for (int i =0; i <  numbArcsToModify; i++)	
+		{		
+			vecIndex = rnd.getRandom(0, currSize);
+			
+			// O(1) time
+			swap(tempVec[vecIndex], tempVec.back());
+			
+			arcIndex = tempVec.back();
+			tempVec.pop_back();	
+			currSize--;
+			int k = rnd.getRandom(0, numbCommods);
+			arcs[arcIndex].commodsOnArc[k].capac = data->maxCommCapac;	
+		}		
     }
 }
+
+// // ORIG
+// // Adjusts characteristics of random arcs according to parameters.
+// // If point-to-point primary topology, adjusts random arcs between nodes;
+// // if hubs-and-satellites primary topology, adjusts random arcs between hubs.
+// void Graph::adjustRandomArcs()
+// {
+    // if (data->ratioZeroFixedCost > 0)
+    // {
+        // // desired number of random arcs with fixed cost set to zero
+        // int numbArcsToModify = (int)(data->ratioZeroFixedCost * numbRandomArcs / 100);
+
+        // for (int a = numbArcs - 1; a > numbArcs - 1 - numbArcsToModify; a--)
+            // arcs[a].cost = 0;
+    // }
+
+    // if (data->ratioTotVolCapac > 0)
+    // {
+        // // desired number of random arcs with capacity set to total volume
+        // int numbArcsToModify = (int)(data->ratioTotVolCapac * numbRandomArcs / 100);
+
+        // for (int a = numbArcs - 1; a > numbArcs - 1 - numbArcsToModify; a--)
+            // arcs[a].capac = totalVolume;
+    // }
+
+    // if (data->ratioZeroCommCapac > 0)
+    // {
+        // // desired number of random arcs with one commodity-specific capacity
+        // // set to zero
+        // int numbArcsToModify = (int)(data->ratioZeroCommCapac * numbRandomArcs / 100);
+
+        // for (int a = numbArcs - 1; a > numbArcs - 1 - numbArcsToModify; a--)
+        // {
+            // int k = rnd.getRandom(0, numbCommods);
+            // int arc = rnd.getRandom(numbNonRandomArcs, numbRandomArcs);
+
+            // arcs[arc].commodsOnArc[k].capac = 0;
+        // }
+    // }
+
+    // if (data->ratioMaxCommCapac)
+    // {
+        // // desired number of random arcs with one commodity-specific capacity
+        // // set to maxArcCapac
+        // int numbArcsToModify = (int)(data->ratioMaxCommCapac * numbRandomArcs / 100);
+
+        // for (int a = numbArcs - 1; a > numbArcs - 1 - numbArcsToModify; a--)
+        // {
+            // int k = rnd.getRandom(0, numbCommods);
+            // int arc = rnd.getRandom(numbNonRandomArcs, numbRandomArcs);
+
+            // arcs[arc].commodsOnArc[k].capac = data->maxCommCapac;
+        // }
+    // }
+// }
+
 
 // Adjusts characteristics of random satellite arcs according to parameters.
 // Only used if hubs-and-satellites primary topology: adjusts random satellite arcs
@@ -575,18 +703,52 @@ void Graph::adjustRandomArcs_sat()
     {
         // desired number of random arcs with fixed cost set to zero
         int numbArcsToModify = (int)(data->ratioSatZeroFixedCost * numbSatRandomArcs / 100);
+ 		
+		int vecIndex, arcIndex, currSize;		
+		vector<int> tempVec(numbSatRandomArcs); 
 
-        for (int a = numbArcs + numbSatArcs - 1; a > numbArcs + numbSatArcs - numbArcsToModify; a--)
-            arcs[a].cost = 0;
+		// fill with increasing numbers starting at numbArcs + numbSatNonRandomArcs
+		iota(tempVec.begin(), tempVec.end(), numbArcs + numbSatNonRandomArcs);	
+		
+		currSize = numbSatRandomArcs;	
+		for (int i =0; i <  numbArcsToModify; i++)	
+		{		
+			vecIndex = rnd.getRandom(0, currSize);
+			
+			// O(1) time
+			swap(tempVec[vecIndex], tempVec.back());
+			
+			arcIndex = tempVec.back();
+			tempVec.pop_back();	
+			currSize--;
+			arcs[arcIndex].cost = 0;		
+		}		
     }
 
     if (data->ratioSatTotVolCapac > 0)
     {
         // desired number of random arcs with capacity set to total volume
         int numbArcsToModify = (int)(data->ratioSatTotVolCapac * numbSatRandomArcs / 100);
+		
+		int vecIndex, arcIndex, currSize;		
+		vector<int> tempVec(numbSatRandomArcs); 
 
-        for (int a = numbArcs + numbSatArcs - 1; a > numbArcs + numbSatArcs - numbArcsToModify; a--)
-            arcs[a].capac = totalVolume;
+		// fill with increasing numbers starting at numbArcs + numbSatNonRandomArcs
+		iota(tempVec.begin(), tempVec.end(), numbArcs + numbSatNonRandomArcs);	
+		
+		currSize = numbSatRandomArcs;	
+		for (int i =0; i <  numbArcsToModify; i++)	
+		{		
+			vecIndex = rnd.getRandom(0, currSize);
+			
+			// O(1) time
+			swap(tempVec[vecIndex], tempVec.back());
+			
+			arcIndex = tempVec.back();
+			tempVec.pop_back();	
+			currSize--;
+			arcs[arcIndex].capac = totalVolume;		
+		}		
     }
 
     if (data->ratioSatZeroCommCapac > 0)
@@ -594,14 +756,27 @@ void Graph::adjustRandomArcs_sat()
         // desired number of random arcs with one commodity-specific capacity
         // set to zero
         int numbArcsToModify = (int)(data->ratioSatZeroCommCapac * numbSatRandomArcs / 100);
+			
+		int vecIndex, arcIndex, currSize;		
+		vector<int> tempVec(numbSatRandomArcs); 
 
-        for (int a = numbArcs + numbSatArcs - 1; a > numbArcs + numbSatArcs - numbArcsToModify; a--)
-        {
-            int k = rnd.getRandom(0, numbCommods);
-            int arc = rnd.getRandom(numbArcs + numbSatNonRandomArcs, numbSatRandomArcs);
-
-            arcs[arc].commodsOnArc[k].capac = 0;
-        }
+		// fill with increasing numbers starting at numbArcs + numbSatNonRandomArcs
+		iota(tempVec.begin(), tempVec.end(), numbArcs + numbSatNonRandomArcs);	
+		
+		currSize = numbSatRandomArcs;	
+		for (int i =0; i <  numbArcsToModify; i++)	
+		{		
+			vecIndex = rnd.getRandom(0, currSize);
+			
+			// O(1) time
+			swap(tempVec[vecIndex], tempVec.back());
+			
+			arcIndex = tempVec.back();
+			tempVec.pop_back();	
+			currSize--;
+			int k = rnd.getRandom(0, numbCommods);
+			arcs[arcIndex].commodsOnArc[k].capac = 0;	
+		}        
     }
 
     if (data->ratioSatMaxCommCapac)
@@ -609,16 +784,84 @@ void Graph::adjustRandomArcs_sat()
         // desired number of random arcs with one commodity-specific capacity
         // set to maxArcCapac
         int numbArcsToModify = (int)(data->ratioSatMaxCommCapac * numbSatRandomArcs / 100);
+  	
+		int vecIndex, arcIndex, currSize;		
+		vector<int> tempVec(numbSatRandomArcs); 
 
-        for (int a = numbArcs + numbSatArcs - 1; a > numbArcs + numbSatArcs - numbArcsToModify; a--)
-        {
-            int k = rnd.getRandom(0, numbCommods);
-            int arc = rnd.getRandom(numbArcs + numbSatNonRandomArcs, numbSatRandomArcs);
-
-            arcs[arc].commodsOnArc[k].capac = data->maxArcCapac;
-        }
+		// fill with increasing numbers starting at numbArcs + numbSatNonRandomArcs
+		iota(tempVec.begin(), tempVec.end(), numbArcs + numbSatNonRandomArcs);	
+		
+		currSize = numbSatRandomArcs;	
+		for (int i =0; i <  numbArcsToModify; i++)	
+		{		
+			vecIndex = rnd.getRandom(0, currSize);
+			
+			// O(1) time
+			swap(tempVec[vecIndex], tempVec.back());
+			
+			arcIndex = tempVec.back();
+			tempVec.pop_back();	
+			currSize--;
+			int k = rnd.getRandom(0, numbCommods);
+			arcs[arcIndex].commodsOnArc[k].capac = data->maxSatCommCapac;	
+		} 		
     }
 }
+
+// ORIG
+// Adjusts characteristics of random satellite arcs according to parameters.
+// Only used if hubs-and-satellites primary topology: adjusts random satellite arcs
+// (satellite arcs connect at least one satellite node).
+// void Graph::adjustRandomArcs_sat()
+// {
+    // if (data->ratioSatZeroFixedCost > 0)
+    // {
+        // // desired number of random arcs with fixed cost set to zero
+        // int numbArcsToModify = (int)(data->ratioSatZeroFixedCost * numbSatRandomArcs / 100);
+
+        // for (int a = numbArcs + numbSatArcs - 1; a > numbArcs + numbSatArcs - 1 - numbArcsToModify; a--)
+            // arcs[a].cost = 0;
+    // }
+
+    // if (data->ratioSatTotVolCapac > 0)
+    // {
+        // // desired number of random arcs with capacity set to total volume
+        // int numbArcsToModify = (int)(data->ratioSatTotVolCapac * numbSatRandomArcs / 100);
+
+        // for (int a = numbArcs + numbSatArcs - 1; a > numbArcs + numbSatArcs - 1 - numbArcsToModify; a--)
+            // arcs[a].capac = totalVolume;
+    // }
+
+    // if (data->ratioSatZeroCommCapac > 0)
+    // {
+        // // desired number of random arcs with one commodity-specific capacity
+        // // set to zero
+        // int numbArcsToModify = (int)(data->ratioSatZeroCommCapac * numbSatRandomArcs / 100);
+
+        // for (int a = numbArcs + numbSatArcs - 1; a > numbArcs + numbSatArcs - 1 - numbArcsToModify; a--)
+        // {
+            // int k = rnd.getRandom(0, numbCommods);
+            // int arc = rnd.getRandom(numbArcs + numbSatNonRandomArcs, numbSatRandomArcs);
+
+            // arcs[arc].commodsOnArc[k].capac = 0;
+        // }
+    // }
+
+    // if (data->ratioSatMaxCommCapac)
+    // {
+        // // desired number of random arcs with one commodity-specific capacity
+        // // set to maxArcCapac
+        // int numbArcsToModify = (int)(data->ratioSatMaxCommCapac * numbSatRandomArcs / 100);
+
+        // for (int a = numbArcs + numbSatArcs - 1; a > numbArcs + numbSatArcs - 1 - numbArcsToModify; a--)
+        // {
+            // int k = rnd.getRandom(0, numbCommods);
+            // int arc = rnd.getRandom(numbArcs + numbSatNonRandomArcs, numbSatRandomArcs);
+
+            // arcs[arc].commodsOnArc[k].capac = data->maxSatCommCapac;
+        // }
+    // }
+// }
 
 // Defines source(s)/sink(s) of commodities.
 // Only used if point-to-point primary topology: sources and sinks
@@ -716,6 +959,7 @@ void Graph::defCommsOneSourceOneSink_sat()
     }
 }
 
+
 // Randomly selects sources and sinks for all commodities, ensuring
 // that sources are identical over all commodities
 // and sinks are identical over all commodities.
@@ -723,13 +967,15 @@ void Graph::defCommsOneSourceOneSink_sat()
 // on any node.
 void Graph::defCommsEquSourcesEquSinks()
 {	
+	cout << "beg Graph::defCommsEquSourcesEquSinks()" << endl;
+
     VectBool omark(numbNodes, false);
     VectBool dmark(numbNodes, false);
     int nbSources = 0, nbSinks = 0, node, temp;
-    int idxOrig = 0, idxDest = 0, surplus = 0;
+    int surplus = 0, unassSupply = 0, unassDemand = 0;
 
-    nbSources = rnd.getRandom(data->minNumbSources, data->maxNumbSources - data->minNumbSources);
-    nbSinks = rnd.getRandom(data->minNumbSinks, data->maxNumbSinks - data->minNumbSinks);
+    nbSources = rnd.getRandom(data->minNumbSources, data->maxNumbSources - data->minNumbSources + 1);
+    nbSinks = rnd.getRandom(data->minNumbSinks, data->maxNumbSinks - data->minNumbSinks + 1);
 
     for (int i = 0; i < nbSources; i++)
     {
@@ -760,18 +1006,34 @@ void Graph::defCommsEquSourcesEquSinks()
         {			
             if (omark[n])
             {				
-                if (idxOrig == 0)
-                    idxOrig = n;
+                //if (idxOrig == 0)
+                //    idxOrig = n;
 
-                temp = rnd.getRandom(1, (int)(commods[k].volume / nbSources));
+                temp = rnd.getRandom(0, (int)(commods[k].volume / nbSources) + 1);
                 commods[k].commodNodes[n].volume = surplus + temp;
                 totalSupply += commods[k].commodNodes[n].volume;
                 surplus = (int)(commods[k].volume / nbSources) - temp;
             }
         }
-
-        commods[k].commodNodes[idxOrig].volume += surplus;
-        totalSupply += surplus;
+		
+		do 
+			node = rnd.getRandom(0, numbNodes);
+		while (!omark[node]);
+        commods[k].commodNodes[node].volume += surplus;
+		
+        totalSupply += surplus;		
+		unassSupply = commods[k].volume - totalSupply;
+		
+		while (unassSupply != 0)
+		{		
+			do 
+				node = rnd.getRandom(0, numbNodes);
+			while (!omark[node]);
+			
+			commods[k].commodNodes[node].volume++;
+			totalSupply++;
+			unassSupply--;
+		}				
 		
         surplus = 0;
 
@@ -779,22 +1041,124 @@ void Graph::defCommsEquSourcesEquSinks()
         {			
             if (dmark[n])
             {				
-                if (idxDest == 0)
-                    idxDest = n;
+                //if (idxDest == 0)
+                //    idxDest = n;
 
-                temp = rnd.getRandom(1, (int)(commods[k].volume / nbSinks));
+                temp = rnd.getRandom(0, (int)(commods[k].volume / nbSinks) + 1);
                 commods[k].commodNodes[n].volume = -(surplus + temp);
                 totalDemand -= commods[k].commodNodes[n].volume;
                 surplus = (int)(commods[k].volume / nbSinks) - temp;
             }
         }
 
-        commods[k].commodNodes[idxDest].volume -= surplus;
-        totalDemand += surplus;
-        // required for correcting slight mismatch due to floor (int)
-        balanceCommodity(k, totalSupply, totalDemand);
+		do 
+			node = rnd.getRandom(0, numbNodes);
+		while (!dmark[node]);
+        commods[k].commodNodes[node].volume -= surplus;
+		
+        totalDemand -= surplus;		
+		unassDemand = commods[k].volume + totalDemand;		
+		
+		while (unassDemand != 0)
+		{		
+			do 
+				node = rnd.getRandom(0, numbNodes);
+			while (!dmark[node]);
+			
+			commods[k].commodNodes[node].volume--;
+			totalDemand--;
+			unassDemand--;
+		}		
+		
+		cout << "commod: " << k << " totalSupply: " << totalSupply 
+			<< " totalDemand: " << totalDemand << endl;	
+		
     }	
+	
+	cout << "end Graph::defCommsEquSourcesEquSinks()" << endl;
+	
 }
+
+// // ORIG
+// // Randomly selects sources and sinks for all commodities, ensuring
+// // that sources are identical over all commodities
+// // and sinks are identical over all commodities.
+// // Only used if point-to-point primary topology: sources and sinks can be
+// // on any node.
+// void Graph::defCommsEquSourcesEquSinks()
+// {	
+    // VectBool omark(numbNodes, false);
+    // VectBool dmark(numbNodes, false);
+    // int nbSources = 0, nbSinks = 0, node, temp;
+    // int idxOrig = 0, idxDest = 0, surplus = 0;
+
+    // nbSources = rnd.getRandom(data->minNumbSources, data->maxNumbSources - data->minNumbSources + 1);
+    // nbSinks = rnd.getRandom(data->minNumbSinks, data->maxNumbSinks - data->minNumbSinks + 1);
+
+    // for (int i = 0; i < nbSources; i++)
+    // {
+        // do
+            // node = rnd.getRandom(0, numbNodes);
+        // while (omark[node]);
+
+        // omark[node] = true;
+    // }
+
+    // for (int i = 0; i < nbSinks; i++)
+    // {
+        // do
+            // node = rnd.getRandom(0, numbNodes);
+        // while (dmark[node] || omark[node]);
+
+        // dmark[node] = true;
+    // }
+
+    // for (int k = 0; k < numbCommods; k++)
+    // {		
+        // int totalSupply = 0;
+        // int totalDemand = 0;
+
+        // surplus = 0;
+
+        // for (int n = 0; n < numbNodes; n++)
+        // {			
+            // if (omark[n])
+            // {				
+                // if (idxOrig == 0)
+                    // idxOrig = n;
+
+                // temp = rnd.getRandom(1, (int)(commods[k].volume / nbSources));
+                // commods[k].commodNodes[n].volume = surplus + temp;
+                // totalSupply += commods[k].commodNodes[n].volume;
+                // surplus = (int)(commods[k].volume / nbSources) - temp;
+            // }
+        // }
+
+        // commods[k].commodNodes[idxOrig].volume += surplus;
+        // totalSupply += surplus;
+		
+        // surplus = 0;
+
+        // for (int n = 0; n < numbNodes; n++)
+        // {			
+            // if (dmark[n])
+            // {				
+                // if (idxDest == 0)
+                    // idxDest = n;
+
+                // temp = rnd.getRandom(1, (int)(commods[k].volume / nbSinks));
+                // commods[k].commodNodes[n].volume = -(surplus + temp);
+                // totalDemand -= commods[k].commodNodes[n].volume;
+                // surplus = (int)(commods[k].volume / nbSinks) - temp;
+            // }
+        // }
+
+        // commods[k].commodNodes[idxDest].volume -= surplus;
+        // totalDemand += surplus;
+        // // required for correcting slight mismatch due to floor (int)
+        // balanceCommodity(k, totalSupply, totalDemand);
+    // }	
+// }
 
 // Randomly selects sources and sinks for all commodities, ensuring
 // that sources are identical over all commodities
@@ -806,10 +1170,10 @@ void Graph::defCommsEquSourcesEquSinks_sat()
     VectBool omark(numbNodes + numbSatNodes, false);	
     VectBool dmark(numbNodes + numbSatNodes, false);
     int nbSources = 0, nbSinks = 0, node, temp;
-    int idxOrig = 0, idxDest = 0, surplus = 0;
+    int surplus = 0, unassSupply = 0, unassDemand = 0;
 
-    nbSources = rnd.getRandom(data->minNumbSources, data->maxNumbSources - data->minNumbSources);	
-    nbSinks = rnd.getRandom(data->minNumbSinks, data->maxNumbSinks - data->minNumbSinks);
+    nbSources = rnd.getRandom(data->minNumbSources, data->maxNumbSources - data->minNumbSources + 1);	
+    nbSinks = rnd.getRandom(data->minNumbSinks, data->maxNumbSinks - data->minNumbSinks + 1);
 
     for (int i = 0; i < nbSources; i++)
     {
@@ -840,18 +1204,33 @@ void Graph::defCommsEquSourcesEquSinks_sat()
         {
             if (omark[n])
             {
-                if (idxOrig == 0)
-                    idxOrig = n;
+                //if (idxOrig == 0)
+                //    idxOrig = n;
 
-                temp = rnd.getRandom(1, (int)(commods[k].volume / nbSources));
+                temp = rnd.getRandom(0, (int)(commods[k].volume / nbSources) + 1);
                 commods[k].commodNodes[n].volume = surplus + temp;
                 totalSupply += commods[k].commodNodes[n].volume;
                 surplus = (int)(commods[k].volume / nbSources) - temp;
             }
         }
 
-        commods[k].commodNodes[idxOrig].volume += surplus;
-        totalSupply += surplus;
+		do 
+			node = rnd.getRandom(numbNodes, numbSatNodes);
+		while (!omark[node]);
+        commods[k].commodNodes[node].volume += surplus;
+		
+        totalSupply += surplus;		
+		unassSupply = commods[k].volume - totalSupply;
+		
+		while (unassSupply != 0)
+		{		
+			do 
+				node = rnd.getRandom(numbNodes, numbSatNodes);
+			while (!omark[node]);
+			
+			commods[k].commodNodes[node].volume++;		
+			unassSupply--;
+		}
 
         surplus = 0;
 
@@ -859,8 +1238,8 @@ void Graph::defCommsEquSourcesEquSinks_sat()
         {
             if (dmark[n])
             {
-                if (idxDest == 0)
-                    idxDest = n;
+                //if (idxDest == 0)
+                //    idxDest = n;
 
                 temp = rnd.getRandom(1, (int)(commods[k].volume / nbSinks));
                 commods[k].commodNodes[n].volume = -(surplus + temp);
@@ -868,13 +1247,108 @@ void Graph::defCommsEquSourcesEquSinks_sat()
                 surplus = (int)(commods[k].volume / nbSinks) - temp;
             }
         }
-
-        commods[k].commodNodes[idxDest].volume -= surplus;
-        totalDemand += surplus;
-        // required for correcting slight mismatch due to floor (int)
-        balanceCommodity(k, totalSupply, totalDemand);
+		
+		do 
+			node = rnd.getRandom(numbNodes, numbSatNodes);
+		while (!dmark[node]);
+        commods[k].commodNodes[node].volume -= surplus;
+		
+        totalDemand -= surplus;		
+		unassDemand = commods[k].volume + totalDemand;		
+		
+		while (unassDemand != 0)
+		{		
+			do 
+				node = rnd.getRandom(numbNodes, numbSatNodes);
+			while (!dmark[node]);
+			
+			commods[k].commodNodes[node].volume--;		
+			unassDemand--;
+		}			
     }	
 }
+
+// // ORIG
+// // Randomly selects sources and sinks for all commodities, ensuring
+// // that sources are identical over all commodities
+// // and sinks are identical over all commodities.
+// // Only used if hubs-and-satellites primary topology: sources and sinks
+// // are exclusively on satellite nodes.
+// void Graph::defCommsEquSourcesEquSinks_sat()
+// {	
+    // VectBool omark(numbNodes + numbSatNodes, false);	
+    // VectBool dmark(numbNodes + numbSatNodes, false);
+    // int nbSources = 0, nbSinks = 0, node, temp;
+    // int idxOrig = 0, idxDest = 0, surplus = 0;
+
+    // nbSources = rnd.getRandom(data->minNumbSources, data->maxNumbSources - data->minNumbSources + 1);	
+    // nbSinks = rnd.getRandom(data->minNumbSinks, data->maxNumbSinks - data->minNumbSinks + 1);
+
+    // for (int i = 0; i < nbSources; i++)
+    // {
+        // do
+            // node = rnd.getRandom(numbNodes, numbSatNodes);
+        // while (omark[node]);
+
+        // omark[node] = true;
+    // }
+
+    // for (int i = 0; i < nbSinks; i++)
+    // {
+        // do
+            // node = rnd.getRandom(numbNodes, numbSatNodes);
+        // while (dmark[node] || omark[node]);
+
+        // dmark[node] = true;
+    // }
+
+    // for (int k = 0; k < numbCommods; k++)
+    // {
+        // int totalSupply = 0;
+        // int totalDemand = 0;
+
+        // surplus = 0;
+
+        // for (int n = numbNodes; n < numbNodes + numbSatNodes; n++)
+        // {
+            // if (omark[n])
+            // {
+                // if (idxOrig == 0)
+                    // idxOrig = n;
+
+                // temp = rnd.getRandom(1, (int)(commods[k].volume / nbSources));
+                // commods[k].commodNodes[n].volume = surplus + temp;
+                // totalSupply += commods[k].commodNodes[n].volume;
+                // surplus = (int)(commods[k].volume / nbSources) - temp;
+            // }
+        // }
+
+        // commods[k].commodNodes[idxOrig].volume += surplus;
+        // totalSupply += surplus;
+
+        // surplus = 0;
+
+        // for (int n = numbNodes; n < numbNodes + numbSatNodes; n++)
+        // {
+            // if (dmark[n])
+            // {
+                // if (idxDest == 0)
+                    // idxDest = n;
+
+                // temp = rnd.getRandom(1, (int)(commods[k].volume / nbSinks));
+                // commods[k].commodNodes[n].volume = -(surplus + temp);
+                // totalDemand -= commods[k].commodNodes[n].volume;
+                // surplus = (int)(commods[k].volume / nbSinks) - temp;
+            // }
+        // }
+
+        // commods[k].commodNodes[idxDest].volume -= surplus;
+        // totalDemand += surplus;
+        // // required for correcting slight mismatch due to floor (int)
+        // balanceCommodity(k, totalSupply, totalDemand);
+    // }	
+// }
+
 
 // Randomly selects sources and sinks for all commodities without
 // additional conditions.
@@ -886,13 +1360,14 @@ void Graph::defCommsDefault()
 
     for (int k = 0; k < numbCommods; k++)
     {
-        commods[k].numbOrig = rnd.getRandom(data->minNumbSources, data->maxNumbSources - data->minNumbSources);
-        commods[k].numbDest = rnd.getRandom(data->minNumbSinks, data->maxNumbSinks - data->minNumbSinks);
+        commods[k].numbOrig = rnd.getRandom(data->minNumbSources, data->maxNumbSources - data->minNumbSources + 1);
+        commods[k].numbDest = rnd.getRandom(data->minNumbSinks, data->maxNumbSinks - data->minNumbSinks + 1);
     }
 
     for (int k = 0; k < numbCommods; k++)
     {
-        int surplus = 0, totalSupply = 0, totalDemand = 0, node, index = 0, temp;
+        int surplus = 0, totalSupply = 0, totalDemand = 0, node, temp;
+		int unassSupply = 0, unassDemand = 0;
 
         for (int s = 0; s < commods[k].numbOrig; s++)
         {
@@ -900,18 +1375,33 @@ void Graph::defCommsDefault()
                 node = rnd.getRandom(0, numbNodes);
             while (mark[k][node]);
 
-            if (s == 0)
-                index = node;
+            //if (s == 0)
+            //    index = node;
 
             mark[k][node] = true;
             temp = rnd.getRandom(1, (int)(commods[k].volume / commods[k].numbOrig));
             commods[k].commodNodes[node].volume = surplus + temp;
             totalSupply += commods[k].commodNodes[node].volume;
             surplus = (int)(commods[k].volume / commods[k].numbOrig) - temp;
-        }
+        }        
 
-        commods[k].commodNodes[index].volume += surplus;
-        totalSupply += surplus;
+		do 
+			node = rnd.getRandom(0, numbNodes);
+		while (!mark[k][node]);
+        commods[k].commodNodes[node].volume += surplus;
+		
+        totalSupply += surplus;		
+		unassSupply = commods[k].volume - totalSupply;
+		
+		while (unassSupply != 0)
+		{		
+			do 
+				node = rnd.getRandom(0, numbNodes);
+			while (!mark[k][node]);
+			
+			commods[k].commodNodes[node].volume++;		
+			unassSupply--;
+		}		
 
         surplus = 0;
 
@@ -921,8 +1411,8 @@ void Graph::defCommsDefault()
                 node = rnd.getRandom(0, numbNodes);
             while (mark[k][node]);
 
-            if (s == 0)
-                index = node;
+            //if (s == 0)
+            //    index = node;
 
             mark[k][node] = true;
             temp = rnd.getRandom(1, (int)(commods[k].volume / commods[k].numbDest));
@@ -930,13 +1420,89 @@ void Graph::defCommsDefault()
             totalDemand -= commods[k].commodNodes[node].volume;
             surplus = (int)(commods[k].volume / commods[k].numbDest) - temp;
         }
-
-        commods[k].commodNodes[index].volume -= surplus;
-        totalDemand += surplus;
-        // required for correcting slight mismatch due to floor (int)
-        balanceCommodity(k, totalSupply, totalDemand);
+		
+		do 
+			node = rnd.getRandom(0, numbNodes);
+		while (!mark[k][node]);
+        commods[k].commodNodes[node].volume -= surplus;
+		
+        totalDemand -= surplus;		
+		unassDemand = commods[k].volume + totalDemand;		
+		
+		while (unassDemand != 0)
+		{		
+			do 
+				node = rnd.getRandom(0, numbNodes);
+			while (!mark[k][node]);
+			
+			commods[k].commodNodes[node].volume--;		
+			unassDemand--;
+		}				
     }	
 }
+
+// // ORIG
+// // Randomly selects sources and sinks for all commodities without
+// // additional conditions.
+// // Only used if point-to-point primary topology: sources and sinks
+// // can be on any node.
+// void Graph::defCommsDefault()
+// {
+    // VectBool2 mark(numbCommods, VectBool(numbNodes, false));
+
+    // for (int k = 0; k < numbCommods; k++)
+    // {
+        // commods[k].numbOrig = rnd.getRandom(data->minNumbSources, data->maxNumbSources - data->minNumbSources + 1);
+        // commods[k].numbDest = rnd.getRandom(data->minNumbSinks, data->maxNumbSinks - data->minNumbSinks + 1);
+    // }
+
+    // for (int k = 0; k < numbCommods; k++)
+    // {
+        // int surplus = 0, totalSupply = 0, totalDemand = 0, node, index = 0, temp;
+
+        // for (int s = 0; s < commods[k].numbOrig; s++)
+        // {
+            // do
+                // node = rnd.getRandom(0, numbNodes);
+            // while (mark[k][node]);
+
+            // if (s == 0)
+                // index = node;
+
+            // mark[k][node] = true;
+            // temp = rnd.getRandom(1, (int)(commods[k].volume / commods[k].numbOrig));
+            // commods[k].commodNodes[node].volume = surplus + temp;
+            // totalSupply += commods[k].commodNodes[node].volume;
+            // surplus = (int)(commods[k].volume / commods[k].numbOrig) - temp;
+        // }
+
+        // commods[k].commodNodes[index].volume += surplus;
+        // totalSupply += surplus;
+
+        // surplus = 0;
+
+        // for (int s = 0; s < commods[k].numbDest; s++)
+        // {
+            // do
+                // node = rnd.getRandom(0, numbNodes);
+            // while (mark[k][node]);
+
+            // if (s == 0)
+                // index = node;
+
+            // mark[k][node] = true;
+            // temp = rnd.getRandom(1, (int)(commods[k].volume / commods[k].numbDest));
+            // commods[k].commodNodes[node].volume = -(surplus + temp);
+            // totalDemand -= commods[k].commodNodes[node].volume;
+            // surplus = (int)(commods[k].volume / commods[k].numbDest) - temp;
+        // }
+
+        // commods[k].commodNodes[index].volume -= surplus;
+        // totalDemand += surplus;
+        // // required for correcting slight mismatch due to floor (int)
+        // balanceCommodity(k, totalSupply, totalDemand);
+    // }	
+// }
 
 // Randomly selects sources and sinks for all commodities without
 // additional conditions.
@@ -948,13 +1514,14 @@ void Graph::defCommsDefault_sat()
 
     for (int k = 0; k < numbCommods; k++)
     {
-        commods[k].numbOrig = rnd.getRandom(data->minNumbSources, data->maxNumbSources - data->minNumbSources);
-        commods[k].numbDest = rnd.getRandom(data->minNumbSinks, data->maxNumbSinks - data->minNumbSinks);
+        commods[k].numbOrig = rnd.getRandom(data->minNumbSources, data->maxNumbSources - data->minNumbSources + 1);
+        commods[k].numbDest = rnd.getRandom(data->minNumbSinks, data->maxNumbSinks - data->minNumbSinks + 1);
     }
 
     for (int k = 0; k < numbCommods; k++)
     {
-        int surplus = 0, totalSupply = 0, totalDemand = 0, node, index = 0, temp;
+        int surplus = 0, totalSupply = 0, totalDemand = 0, node, temp;
+		int unassSupply = 0, unassDemand = 0;
 
         for (int s = 0; s < commods[k].numbOrig; s++)
         {
@@ -962,19 +1529,34 @@ void Graph::defCommsDefault_sat()
                 node = rnd.getRandom(numbNodes, numbSatNodes);
             while (mark[k][node]);
 
-            if (s == 0)
-                index = node;
+            //if (s == 0)
+            //    index = node;
 
             mark[k][node] = true;
             temp = rnd.getRandom(1, (int)(commods[k].volume / commods[k].numbOrig));
             commods[k].commodNodes[node].volume = surplus + temp;
             totalSupply += commods[k].commodNodes[node].volume;
             surplus = (int)(commods[k].volume / commods[k].numbOrig) - temp;
-        }
-
-        commods[k].commodNodes[index].volume += surplus;
-        totalSupply += surplus;
-
+        };
+		
+		do 
+			node = rnd.getRandom(numbNodes, numbSatNodes);
+		while (!mark[k][node]);
+        commods[k].commodNodes[node].volume += surplus;
+		
+        totalSupply += surplus;		
+		unassSupply = commods[k].volume - totalSupply;
+		
+		while (unassSupply != 0)
+		{		
+			do 
+				node = rnd.getRandom(numbNodes, numbSatNodes);
+			while (!mark[k][node]);
+			
+			commods[k].commodNodes[node].volume++;		
+			unassSupply--;
+		}
+		
         surplus = 0;
 
         for (int s = 0; s < commods[k].numbDest; s++)
@@ -983,8 +1565,8 @@ void Graph::defCommsDefault_sat()
                 node = rnd.getRandom(numbNodes, numbSatNodes);
             while (mark[k][node]);
 
-            if (s == 0)
-                index = node;
+            //if (s == 0)
+            //    index = node;
 
             mark[k][node] = true;
             temp = rnd.getRandom(1, (int)(commods[k].volume / commods[k].numbDest));
@@ -993,12 +1575,88 @@ void Graph::defCommsDefault_sat()
             surplus = (int)(commods[k].volume / commods[k].numbDest) - temp;
         }
 
-        commods[k].commodNodes[index].volume -= surplus;
-        totalDemand += surplus;
-        // required for correcting slight mismatch due to floor (int)
-        balanceCommodity(k, totalSupply, totalDemand);
+		do 
+			node = rnd.getRandom(numbNodes, numbSatNodes);
+		while (!mark[k][node]);
+        commods[k].commodNodes[node].volume -= surplus;
+		
+        totalDemand -= surplus;		
+		unassDemand = commods[k].volume + totalDemand;		
+		
+		while (unassDemand != 0)
+		{		
+			do 
+				node = rnd.getRandom(numbNodes, numbSatNodes);
+			while (!mark[k][node]);
+			
+			commods[k].commodNodes[node].volume--;		
+			unassDemand--;
+		}		
     }
 }
+
+// // ORIG
+// // Randomly selects sources and sinks for all commodities without
+// // additional conditions.
+// // Only used if hubs-and-satellites primary topology: sources and sinks
+// // are exclusively on satellite nodes.
+// void Graph::defCommsDefault_sat()
+// {
+    // VectBool2 mark(numbCommods, VectBool(numbNodes + numbSatNodes, false));
+
+    // for (int k = 0; k < numbCommods; k++)
+    // {
+        // commods[k].numbOrig = rnd.getRandom(data->minNumbSources, data->maxNumbSources - data->minNumbSources + 1);
+        // commods[k].numbDest = rnd.getRandom(data->minNumbSinks, data->maxNumbSinks - data->minNumbSinks + 1);
+    // }
+
+    // for (int k = 0; k < numbCommods; k++)
+    // {
+        // int surplus = 0, totalSupply = 0, totalDemand = 0, node, index = 0, temp;
+
+        // for (int s = 0; s < commods[k].numbOrig; s++)
+        // {
+            // do
+                // node = rnd.getRandom(numbNodes, numbSatNodes);
+            // while (mark[k][node]);
+
+            // if (s == 0)
+                // index = node;
+
+            // mark[k][node] = true;
+            // temp = rnd.getRandom(1, (int)(commods[k].volume / commods[k].numbOrig));
+            // commods[k].commodNodes[node].volume = surplus + temp;
+            // totalSupply += commods[k].commodNodes[node].volume;
+            // surplus = (int)(commods[k].volume / commods[k].numbOrig) - temp;
+        // }
+
+        // commods[k].commodNodes[index].volume += surplus;
+        // totalSupply += surplus;
+
+        // surplus = 0;
+
+        // for (int s = 0; s < commods[k].numbDest; s++)
+        // {
+            // do
+                // node = rnd.getRandom(numbNodes, numbSatNodes);
+            // while (mark[k][node]);
+
+            // if (s == 0)
+                // index = node;
+
+            // mark[k][node] = true;
+            // temp = rnd.getRandom(1, (int)(commods[k].volume / commods[k].numbDest));
+            // commods[k].commodNodes[node].volume = -(surplus + temp);
+            // totalDemand -= commods[k].commodNodes[node].volume;
+            // surplus = (int)(commods[k].volume / commods[k].numbDest) - temp;
+        // }
+
+        // commods[k].commodNodes[index].volume -= surplus;
+        // totalDemand += surplus;
+        // // required for correcting slight mismatch due to floor (int)
+        // balanceCommodity(k, totalSupply, totalDemand);
+    // }
+// }
 
 // Balances remaining discrepancy between supply and demand.
 void Graph::balanceCommodity(int k, int totalSupply, int totalDemand)
@@ -1030,12 +1688,12 @@ void Graph::adjustArcCapacities()
 {
     if (data->adjCapacsDown)
     {
-        int totalCapac = 0;
+        double totalCapac = 0.0;
 
         for (int a = 0; a < numbArcs; a++)
             totalCapac += arcs[a].capac;
-
-        double q = (double)(numbArcs * totalVolume) / totalCapac;
+		
+		double q = (static_cast<double>(numbArcs) * totalVolume) / totalCapac;
 
 		if (data->adjFactCapacs >= 1)
 		{		
@@ -1053,14 +1711,27 @@ void Graph::adjustArcCapacities()
 		{
 			for (int a = 0; a < numbArcs; a++)
 			{
-				arcs[a].capac = max(totalVolume, (int)((q / data->adjFactCapacs) * arcs[a].capac) + 1);
+				arcs[a].capac = (int)((q / data->adjFactCapacs) * arcs[a].capac) + 1;
 				
 				for(int k = 0; k < numbCommods; k++)
 				{			
-					arcs[a].commodsOnArc[k].capac = max(commods[k].volume, (int)((q / data->adjFactCapacs) * arcs[a].commodsOnArc[k].capac) + 1);
+					arcs[a].commodsOnArc[k].capac = (int)((q / data->adjFactCapacs) * arcs[a].commodsOnArc[k].capac) + 1;
 				}		
 			}			
 		}		
+		////EL: replaced 16oct2026-20h14
+		// else
+		// {
+			// for (int a = 0; a < numbArcs; a++)
+			// {
+				// arcs[a].capac = max(totalVolume, (int)((q / data->adjFactCapacs) * arcs[a].capac) + 1);
+				
+				// for(int k = 0; k < numbCommods; k++)
+				// {			
+					// arcs[a].commodsOnArc[k].capac = max(commods[k].volume, (int)((q / data->adjFactCapacs) * arcs[a].commodsOnArc[k].capac) + 1);
+				// }		
+			// }			
+		// }		
     }
 }
 
@@ -1072,12 +1743,12 @@ void Graph::adjustArcCapacities_sat()
 {	
     if (data->adjSatCapacsDown)
     {
-        int totalCapac = 0;
+		double totalCapac = 0.0;
 
         for (int a = numbArcs; a < numbArcs + numbSatArcs; a++)
             totalCapac += arcs[a].capac;
 
-        double q = (double)(numbSatArcs * totalVolume) / totalCapac;
+        double q = (static_cast<double>(numbSatArcs) * totalVolume) / totalCapac;
 
 		if (data->adjSatFactCapacs >= 1)
 		{		
@@ -1095,14 +1766,27 @@ void Graph::adjustArcCapacities_sat()
 		{		
 			for (int a = numbArcs; a < numbArcs + numbSatArcs; a++)
 			{
-				arcs[a].capac = max(totalVolume, (int)((q / data->adjSatFactCapacs) * arcs[a].capac) + 1);
+				arcs[a].capac = (int)((q / data->adjSatFactCapacs) * arcs[a].capac) + 1;
 			
 				for(int k = 0; k < numbCommods; k++)
 				{
-					arcs[a].commodsOnArc[k].capac = max(commods[k].volume, (int)((q / data->adjSatFactCapacs) * arcs[a].commodsOnArc[k].capac) + 1);		
+					arcs[a].commodsOnArc[k].capac = (int)((q / data->adjSatFactCapacs) * arcs[a].commodsOnArc[k].capac) + 1;		
 				}
 			}			
 		}		
+		////EL: replaced 16oct2026-20h14
+		// else
+		// {		
+			// for (int a = numbArcs; a < numbArcs + numbSatArcs; a++)
+			// {
+				// arcs[a].capac = max(totalVolume, (int)((q / data->adjSatFactCapacs) * arcs[a].capac) + 1);
+			
+				// for(int k = 0; k < numbCommods; k++)
+				// {
+					// arcs[a].commodsOnArc[k].capac = max(commods[k].volume, (int)((q / data->adjSatFactCapacs) * arcs[a].commodsOnArc[k].capac) + 1);		
+				// }
+			// }			
+		// }		
     }
 }
 
@@ -1114,7 +1798,7 @@ void Graph::adjustFixedCosts()
 {	
     if (data->adjFixCostsUp)
     {
-        int totalFixedCost = 0, totalCommodCost = 0;
+        double totalFixedCost = 0.0, totalCommodCost = 0.0;
 
         for (int a = 0; a < numbArcs; a++)
         {
@@ -1126,7 +1810,7 @@ void Graph::adjustFixedCosts()
 
         totalCommodCost = totalVolume * (totalCommodCost / numbCommods);
 
-        double q = (double)totalFixedCost / totalCommodCost;
+        double q = totalFixedCost / totalCommodCost;
 
         for (int a = 0; a < numbArcs; a++)
             arcs[a].cost = (int)((data->adjFactFixCosts / q) * arcs[a].cost) + 1;
@@ -1143,7 +1827,7 @@ void Graph::adjustFixedCosts_sat()
 {
     if (data->adjSatFixCostsUp)
     {
-        int totalFixedCost = 0, totalCommodCost = 0;
+        double totalFixedCost = 0.0, totalCommodCost = 0.0;
 
         for (int a = numbArcs; a < numbArcs + numbSatArcs; a++)
         {
@@ -1155,7 +1839,7 @@ void Graph::adjustFixedCosts_sat()
 
         totalCommodCost = totalVolume * (totalCommodCost / numbCommods);
 
-        double q = (double)totalFixedCost / totalCommodCost;
+        double q = totalFixedCost / totalCommodCost;
 
         for (int a = numbArcs; a < numbArcs + numbSatArcs; a++)
             arcs[a].cost = (int)((data->adjSatFactFixCosts / q) * arcs[a].cost) + 1;
@@ -1293,6 +1977,7 @@ void Graph::readBasicGraph(string longBasicGraphFileName, const VectCommodOnArc 
     string dummy;
     int low, high; // low and high values for nodes
     int orig, dest;
+	string origStr, destStr;
 
     inFile.getline(line, 1024);
     inFile.getline(line, 1024);
@@ -1304,18 +1989,34 @@ void Graph::readBasicGraph(string longBasicGraphFileName, const VectCommodOnArc 
     inFile.getline(line, 1024);
     inFile.getline(line, 1024);
 
-    inFile >> orig >> dest;
+    //inFile >> orig >> dest;
 
     bool foundError = false;
 
-    while (!inFile.eof())
-    {
+    while (inFile >> origStr >> destStr)
+    {		
+		
+		if (isDigitsOnly(origStr) && isDigitsOnly(destStr))
+		{
+			orig = stoi(origStr);
+			dest = stoi(destStr);		
+		}
+		else
+		{			
+			cerr << "\nERROR: While reading " + longBasicGraphFileName + ", the tokens "
+				<< origStr << " and " << destStr
+				<< " could not be interpreted as node numbers." << endl;
+
+            foundError = true;
+			break;			
+		}		
         if (orig < low)
         {
             cerr << "\nERROR: While reading " + longBasicGraphFileName + ", origin node number " << orig
                  << " is lower than specified low " << low << endl;
 
             foundError = true;
+			break;
         }
         else if (dest < low)
         {
@@ -1323,6 +2024,7 @@ void Graph::readBasicGraph(string longBasicGraphFileName, const VectCommodOnArc 
                  << " is lower than specified low " << low << endl;
 
             foundError = true;
+			break;
         }
         else if (orig > high)
         {
@@ -1330,6 +2032,7 @@ void Graph::readBasicGraph(string longBasicGraphFileName, const VectCommodOnArc 
                  << " is higher than specified high " << high << endl;
 
             foundError = true;
+			break;
         }
         else if (dest > high)
         {
@@ -1337,6 +2040,7 @@ void Graph::readBasicGraph(string longBasicGraphFileName, const VectCommodOnArc 
                  << " is higher than specified high " << high << endl;
 
             foundError = true;
+			break;
         }
 
         orig -= low;
@@ -1344,18 +2048,131 @@ void Graph::readBasicGraph(string longBasicGraphFileName, const VectCommodOnArc 
 
         addNonRandomArc(Arc(orig, dest, data->maxFixedCost, totalVolume, commodsOnArc));
 
-        inFile >> orig >> dest;
+        //inFile >> orig >> dest;
     }
 
-    inFile.close();
-
-    if (foundError)
+    inFile.close();    
+	
+	if (foundError)
     {
         exit(1);
-    }
+    }	
 
-    numbNodes = high - low + 1;
+	int temp = high - low + 1;
+	
+	if (temp > numbNodes)
+    {
+        cerr << "\nERROR: While reading " + longBasicGraphFileName + ", " << temp << " nodes have been detected\n"
+            << "whereas the value specified for option numbNodes is " << numbNodes << ".\n"
+			<< "The value of numbNodes should be corrected to be at least as large the number of detected nodes." << endl;
+			
+            exit(1);
+    }		
+
+    numbNodes = temp;	
 }
+
+// // ORIG
+// // Reads basic graph (only nodes + arcs) from file without costs or capacities.
+// void Graph::readBasicGraph(string longBasicGraphFileName, const VectCommodOnArc &commodsOnArc)
+// {
+    // if (!filesystem::is_regular_file(longBasicGraphFileName))
+    // {
+        // cerr << "\nERROR:" << endl;
+        // cerr << "The basic graph input file " << longBasicGraphFileName << " could not be found." << endl;
+        // cerr << "EXECUTION ABORTED\n" << endl;
+        // exit(1);
+    // }
+
+    // ifstream inFile(longBasicGraphFileName);
+
+    // if (!inFile.is_open())
+    // {
+        // cerr << "\nERROR:" << endl;
+        // cerr << "The basic graph input file " << longBasicGraphFileName << " could not be opened." << endl;
+        // cerr << "EXECUTION ABORTED\n" << endl;
+        // exit(1);
+    // }
+
+    // char line[1024];
+    // string dummy;
+    // int low, high; // low and high values for nodes
+    // int orig, dest;
+
+    // inFile.getline(line, 1024);
+    // inFile.getline(line, 1024);
+    // inFile >> dummy >> dummy >> low;
+    // inFile >> dummy >> dummy >> high;
+
+    // inFile.getline(line, 1024);
+    // inFile.getline(line, 1024);
+    // inFile.getline(line, 1024);
+    // inFile.getline(line, 1024);
+
+    // inFile >> orig >> dest;
+
+    // bool foundError = false;
+
+    // while (!inFile.eof())
+    // {
+        // if (orig < low)
+        // {
+            // cerr << "\nERROR: While reading " + longBasicGraphFileName + ", origin node number " << orig
+                 // << " is lower than specified low " << low << endl;
+
+            // foundError = true;
+        // }
+        // else if (dest < low)
+        // {
+            // cerr << "\nERROR: While reading " + longBasicGraphFileName + ", destination node number " << dest
+                 // << " is lower than specified low " << low << endl;
+
+            // foundError = true;
+        // }
+        // else if (orig > high)
+        // {
+            // cerr << "\nERROR: While reading " + longBasicGraphFileName + ", origin node number " << orig
+                 // << " is higher than specified high " << high << endl;
+
+            // foundError = true;
+        // }
+        // else if (dest > high)
+        // {
+            // cerr << "\nERROR: While reading " + longBasicGraphFileName + ", destination node number " << dest
+                 // << " is higher than specified high " << high << endl;
+
+            // foundError = true;
+        // }
+
+        // orig -= low;
+        // dest -= low;
+
+        // addNonRandomArc(Arc(orig, dest, data->maxFixedCost, totalVolume, commodsOnArc));
+
+        // inFile >> orig >> dest;
+    // }
+
+    // inFile.close();    
+
+	// int temp = high - low + 1;
+	
+	// if (temp > numbNodes)
+    // {
+        // cerr << "\nERROR: While reading " + longBasicGraphFileName + ", " << temp << " nodes have been detected\n"
+            // << "whereas the value specified for option numbNodes is " << numbNodes << ".\n"
+			// << "The value of numbNodes should be corrected to be at least as large the number of detected nodes." << endl;
+			
+            // foundError = true;
+    // }
+	
+	// if (foundError)
+    // {
+        // exit(1);
+    // }	
+
+    // numbNodes = temp;	
+// }
+
 
 // Saves basic graph (only nodes + non-random arcs) to file without costs or
 // capacities.
@@ -1494,7 +2311,10 @@ void Graph::outputLP(string fileName)
     {
         for (int k = 0; k < numbCommods; k++)
         {
-            coef = (data->oneSourceOneSink) ? arcs[a].commodsOnArc[0].cost : arcs[a].commodsOnArc[k].cost;
+			
+			//// EL: replaced 15oct2026-18h14: coef = (data->oneSourceOneSink) ? arcs[a].commodsOnArc[0].cost : arcs[a].commodsOnArc[k].cost;
+            coef = arcs[a].commodsOnArc[k].cost;			
+            
             obj.addVar(coef, "X", a, k);
         }
     }
@@ -1640,9 +2460,13 @@ void Graph::outputMPS(string fileName)
     int coef;
     string varID, ctrID;
 
-    outFile << "NAME  " << fileName << endl << endl;
-
-    outFile << "ROWS  " << fileName << endl << endl;
+	//// EL: replaced 16oct2026-18h11:
+    ////outFile << "NAME  " << fileName << endl << endl;
+    ////outFile << "ROWS  " << fileName << endl << endl;
+	
+	outFile << "NAME  " << fileName << endl;
+	
+    outFile << "ROWS  " << endl;
 
     outFile << " N  Obj" << endl;
 

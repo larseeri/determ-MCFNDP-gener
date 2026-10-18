@@ -178,22 +178,25 @@
 // optionKeyN   value3
 //
 // It may specify at most one option per line. Option keys may be prefixed or
-// not with '-'. Comments may appear either at the beginning of a line, in
-// which case they must start with a non-alphabetic character (but not with
-// '-'), or at the end of a line.
+// not with '-'. Comments may appear either at the beginning or the end of a line.
+// In both cases, they must start with '#'.
 //
 // Once the configuration file has been processed, options appearing in the
-// command line (other than +F and +v) are processed. Option values specified
+// command line (other than +F, +v and +H) are processed. Option values specified
 // in the command line supersede those specified in the configuration file.
 // That is, if included, they replace, modify and supplement the latter.
 // Option keys appearing in the command line must be prefixed with '-' as
-// follow:
+// follows:
 //
 // -optionkeyA valueA -optionKeyB valueB...
 //
 // By default, boolean values are set to false and presence of option key is
 // sufficient to set the corresponding value to true. For other options
 // expecting other types of values, values should be specified.
+//
+// Option values interpreted as strings (e.g., file names or paths) must NOT
+// include blanks. Enclosing such values between quotes does NOT obviate this
+// requirement.
 //
 // Example of a valid command line:
 //
@@ -217,7 +220,7 @@
 // To display the complete documentation about the application and the
 // available options, run
 //
-// ./determ_gen -help
+// ./determ_gen +H
 //
 // Summing up, option values are successively updated from these locations in
 // this order:
@@ -352,20 +355,17 @@
 //
 // ./determ_gen +v +F newParamfile.par
 //
-// ./determ_gen -help
+// ./determ_gen +H
 //
 // ./determ_gen +F newParamfile.par -stream 1234 -seed 4567 -numbCom 10
 //
 // respectively correspond to the following Docker instructions:
 //
-// docker run --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_gen_image /determ_gen \
-// +v +F /inout/newParamfile.par
+// docker run --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_gen_image /determ_gen +v +F /inout/newParamfile.par
 //
-// docker run --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout \
-// determ_gen_image /determ_gen -help
+// docker run --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_gen_image /determ_gen +H
 //
-// docker run --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_gen_image /determ_gen \
-// +F /inout/newParamfile.par -stream 1234 -seed 4567 -numbCom 10
+// docker run --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_gen_image /determ_gen +F /inout/newParamfile.par -stream 1234 -seed 4567 -numbCom 10
 //
 // Important: 
 // When running the program through Docker instructions, all input and output
@@ -462,6 +462,8 @@
 // +v <> (no value supplied); requests verbosity while parsing options in
 // instruction line or configuration file
 //
+// +H <> (no value supplied); display documentation
+//
 // Remark:
 // An unknown option key following '+' in the instruction line is disregarded.
 //
@@ -474,9 +476,9 @@
 // called from a configuration file.
 // - To supply an option, a line of a configuration file must begin with a dash
 // '-' or a letter. A line beginning with any other character will be
-// considered a comment.
-// - The remainder of a line beyond the stated option and its value (if any is
-// expected) is disregarded and may therefore be used for adding comments.
+// disregarded.
+// - Comments may appear either at the beginning or the end of a line. In both cases,
+// they should start with '#'.
 // - Unknown option keys following '-' in the instruction line are disregarded.
 // - Unknown option keys (following '-' or not) at beginning of lines in a
 // configuration file are disregarded.
@@ -486,8 +488,6 @@
 // (That is, when the option hubsAndSats is either (i) absent and implicity set
 // to false, or (ii) present without value and implicity set to true or (iii) 
 // present and explicitly set to true or false.)	
-//
-// -help <> (no value supplied); display help message
 //
 // -shortOutFileName <string>; short name (without extension) of output file;
 // default value is './outfile' (Linux instructions) or './inout/outfile'
@@ -546,7 +546,7 @@
 //
 // -stream <int: 0, INT_MAX>; stream of the pseudo-random generator
 //
-// -numbCom <int: 0, INT_MAX>; number of commodities
+// -numbCom <int: 0, 1000>; number of commodities
 //
 // -oneSrcOneSnk <> (no value supplied); select randomly one source and one 
 // sink for each commodity; (source, sink) pairs must be different across all
@@ -562,16 +562,16 @@
 // eqSrcsEqSnks are both inactive, then sources and sinks are selected
 // randomly
 //
-// -minNbSrc <int: 1, INT_MAX>; min number of sources; inactive under
+// -minNbSrc <int: 1, 1000>; min number of sources; inactive under
 // oneSrcOneSnk
 //
-// -maxNbSrc <int: 1, INT_MAX>; max number of sources; inactive under
+// -maxNbSrc <int: 1, 1000>; max number of sources; inactive under
 // oneSrcOneSnk
 //
-// -minNbSnk <int: 1, INT_MAX>; min number of sinks; inactive under
+// -minNbSnk <int: 1, 1000>; min number of sinks; inactive under
 // oneSrcOneSnk
 //
-// -maxNbSnk <int: 1, INT_MAX>; max number of sinks; inactive under
+// -maxNbSnk <int: 1, 1000>; max number of sinks; inactive under
 // oneSrcOneSnk
 //
 // -inclDesignObjCap <> (no value supplied); when saving in LP or MPS format,
@@ -641,43 +641,43 @@
 // instructions, absolute path or path relative to the /program folder may be
 // added
 //
-// -lengthX <int: 1, INT_MAX>; length along X axis if secTopology is in
+// -lengthX <int: 1, 1000>; length along X axis if secTopology is in
 // {1, 2, 3} (inactive otherwise)
 //
-// -lengthY <int: 1, INT_MAX>; length along Y axis if secTopology is in
+// -lengthY <int: 1, 1000>; length along Y axis if secTopology is in
 // {1, 2, 3} (inactive otherwise)
 //
-// -numbNodes <int: 1, INT_MAX>; number of nodes under random or circular
+// -numbNodes <int: 1, 10000>; number of nodes under random or circular
 // secondary topology; (overriden by lengthX * lengthY under grid secondary
 // topology)
 //
-// -nbAddArcSampTailHead <int: 0, INT_MAX>; total number of additional random
+// -nbAddArcSampTailHead <int: 0, 1000>; total number of additional random
 // arcs generated by sampling over tail (origin) and head (destination) nodes;
 // if this option is inactive, default value is 0
 //
-// -nbAddArcPerSampHead <int: 0, INT_MAX>; number of additional random arcs
+// -nbAddArcPerSampHead <int: 0, 1000>; number of additional random arcs
 // per tail (origin) node generated by sampling over head (destination) nodes;
 // if this option is inactive, default value is 0
 //
-// -minComVol <int: 1, INT_MAX>; min commodity volume
+// -minComVol <int: 1, 10000>; min commodity volume
 //
-// -maxComVol <int: 1, INT_MAX>; max commodity volume
+// -maxComVol <int: 1, 10000>; max commodity volume
 //
-// -minVarCos <int: 0, INT_MAX>; min commodity-specific variable cost
+// -minVarCos <int: 0, 10000>; min commodity-specific variable cost
 //
-// -maxVarCos <int: 0, INT_MAX>; max commodity-specific variable cost
+// -maxVarCos <int: 0, 10000>; max commodity-specific variable cost
 //
-// -minArcCap <int: 1, INT_MAX>; min arc overall capacity
+// -minArcCap <int: 1, 10000>; min arc overall capacity
 //
-// -maxArcCap <int: 1, INT_MAX>; max arc overall capacity
+// -maxArcCap <int: 1, 10000>; max arc overall capacity
 //
-// -minFixCos <int: 0, INT_MAX>; min fixed cost
+// -minFixCos <int: 0, 10000>; min fixed cost
 //
-// -maxFixCos <int: 0, INT_MAX>; max fixed cost
+// -maxFixCos <int: 0, 10000>; max fixed cost
 //
-// -minComCap <int: 0, INT_MAX>; min commodity-specific arc capacity
+// -minComCap <int: 1, 10000>; min commodity-specific arc capacity
 //
-// -maxComCap <int: 0, INT_MAX>; max commodity-specific arc capacity
+// -maxComCap <int: 1, 10000>; max commodity-specific arc capacity
 //
 // -ratZeroFix <int: 0, 100>; percent of random arcs with fixed cost
 // set to zero; if this option is inactive, default percentage is 0
@@ -694,7 +694,7 @@
 // commodity-specific capacities set to maxComCap; if this option is inactive,
 // default percentage is 0
 //
-// -noParalArc <int: 1, INT_MAX>; when adding random arcs, avoid parallel arcs
+// -noParalArc <int: 1, 100>; when adding random arcs, avoid parallel arcs
 // and set to this figure the maximum number of failed attempts to add a non-
 // parallel arc. If reached, decrease the number of random arcs to be added
 // by one; if this option is inactive, no attempt will be made to avoid 
@@ -739,9 +739,9 @@
 // (That is, when option hubsAndSats is (i) present and implicity set to true, or
 // (ii) present and explicitly set to true.)
 //
-// -minComVol <int: 1, INT_MAX>; min commodity volume
+// -minComVol <int: 1, 10000>; min commodity volume
 //
-// -maxComVol <int: 1, INT_MAX>; max commodity volume
+// -maxComVol <int: 1, 10000>; max commodity volume
 //
 // -longBasicGraphFileName <string>; long name (including extension) of file
 // where basic graph (excluding random arcs, capacities and costs ) will be
@@ -784,40 +784,40 @@
 // Under the hubs-and-satellite primary topology, option secTopology cannot be
 // set to 5. That is, the topology cannot be read from a basic graph file.
 //
-// -lengthX <int: 1, INT_MAX>; length along X axis if hub topology option 
+// -lengthX <int: 1, 1000>; length along X axis if hub topology option 
 // secTopology is in {1, 2, 3} (inactive otherwise)
 //
-// -lengthY <int: 1, INT_MAX>; length along Y axis if hub topology option
+// -lengthY <int: 1, 1000>; length along Y axis if hub topology option
 // secTopology is in {1, 2, 3} (inactive otherwise)
 //
-// -numbNodes <int: 1, INT_MAX>; number of hub nodes under random or circular
+// -numbNodes <int: 1, 10000>; number of hub nodes under random or circular
 // hub topology; (overriden by lengthX * lengthY under grid secondary topology)
 //
-// -nbAddArcSampTailHead <int: 0, INT_MAX>; total number of additional random
+// -nbAddArcSampTailHead <int: 0, 1000>; total number of additional random
 // arcs between hub nodes generated by sampling over tail (origin) and head 
 // (destination) hub nodes; if this option is inactive, default value is 0
 //
-// -nbAddArcPerSampHead <int: 0, INT_MAX>; number of additional random arcs
+// -nbAddArcPerSampHead <int: 0, 1000>; number of additional random arcs
 // per tail (origin) hub node generated by sampling over head (destination)
 // hub nodes; if this option is inactive, default value is 0
 //
-// -minVarCos <int: 0, INT_MAX>; min commodity-specific variable cost over hub
+// -minVarCos <int: 0, 10000>; min commodity-specific variable cost over hub
 // arc
 //
-// -maxVarCos <int: 0, INT_MAX>; max commodity-specific variable cost over hub
+// -maxVarCos <int: 0, 10000>; max commodity-specific variable cost over hub
 // arc
 //
-// -minArcCap <int: 1, INT_MAX>; min arc overall capacity over hub arc
+// -minArcCap <int: 0, 10000>; min arc overall capacity over hub arc
 //
-// -maxArcCap <int: 1, INT_MAX>; max arc overall capacity over hub arc
+// -maxArcCap <int: 0, 10000>; max arc overall capacity over hub arc
 //
-// -minFixCos <int: 0, INT_MAX>; min fixed cost over hub arc
+// -minFixCos <int: 0, 10000>; min fixed cost over hub arc
 //
-// -maxFixCos <int: 0, INT_MAX>; max fixed cost over hub arc
+// -maxFixCos <int: 0, 10000>; max fixed cost over hub arc
 //
-// -minComCap <int: 0, INT_MAX>; min commodity-specific capacity over hub arc
+// -minComCap <int: 0, 10000>; min commodity-specific capacity over hub arc
 //
-// -maxComCap <int: 0, INT_MAX>; max commodity-specific capacity over hub arc
+// -maxComCap <int: 0, 10000>; max commodity-specific capacity over hub arc
 //
 // -ratZeroFix <int: 0, 100>; percent of random hub arcs with fixed cost set to
 // zero; if this option is inactive, default percentage is 0
@@ -877,44 +877,44 @@
 // that are sequentially connected. End nodes in the round are connected to the
 // hub node.
 //
-// -minSatsPerHub <int: 0, INT_MAX); minimum number of satellites per hub
+// -minSatsPerHub <int: 0, 1000); minimum number of satellites per hub
 //
-// -maxSatsPerHub <int: 0, INT_MAX); maximum number of satellites per hub
+// -maxSatsPerHub <int: 0, 1000); maximum number of satellites per hub
 //
-// -minSatsRoundSize <int: 1, INT_MAX); minimum number of satellites in a round
+// -minSatsRoundSize <int: 1, 1000); minimum number of satellites in a round
 //
-// -maxSatsRoundSize <int: 1, INT_MAX);	maximum number of satellites in a round
+// -maxSatsRoundSize <int: 1, 1000);	maximum number of satellites in a round
 //	
-// -nbAddSatArcSampTailHead <int: 0, INT_MAX>; total number of additional random
+// -nbAddSatArcSampTailHead <int: 0, 10000>; total number of additional random
 // arcs between satellite nodes generated by sampling over tail (origin) and
 // head (destination) nodes; if this option is inactive, default value is 0
 //
-// -nbAddSatArcPerSampHead <int: 0, INT_MAX>; number of additional random arcs 
+// -nbAddSatArcPerSampHead <int: 0, 10000>; number of additional random arcs 
 // between satellite nodes per tail (origin) node generated by sampling over 
 // head (destination) nodes; if this option is inactive, default value is 0
 //	
-// -minSatVarCos <int: 0, INT_MAX>; min commodity-specific variable cost for
+// -minSatVarCos <int: 0, 10000>; min commodity-specific variable cost for
 // arcs involving at least one satellite node
 //
-// -maxSatVarCos <int: 0, INT_MAX>; max commodity-specific variable cost for
+// -maxSatVarCos <int: 0, 10000>; max commodity-specific variable cost for
 // arcs involving at least one satellite node
 //
-// -minSatArcCap <int: 1, INT_MAX>; min overall capacity for arcs involving
+// -minSatArcCap <int: 0, 10000>; min overall capacity for arcs involving
 // at least one satellite node
 //
-// -maxSatArcCap <int: 1, INT_MAX>; max overall capacity for arcs involving at
+// -maxSatArcCap <int: 0, 10000>; max overall capacity for arcs involving at
 // least one satellite node
 //
-// -minSatFixCos <int: 0, INT_MAX>; min fixed cost for arcs involving at least
+// -minSatFixCos <int: 0, 10000>; min fixed cost for arcs involving at least
 // one satellite node
 //
-// -maxSatFixCos <int: 0, INT_MAX>; max fixed cost for arcs involving at least
+// -maxSatFixCos <int: 0, 10000>; max fixed cost for arcs involving at least
 // one satellite node
 //
-// -minSatComCap <int: 0, INT_MAX>; min commodity-specific capacity for arcs 
+// -minSatComCap <int: 0, 10000>; min commodity-specific capacity for arcs 
 // involving at least one satellite node
 //
-// -maxSatComCap <int: 0, INT_MAX>; max commodity-specific capacity for arcs
+// -maxSatComCap <int: 0, 10000>; max commodity-specific capacity for arcs
 // involving at least one satellite node
 //
 // -ratSatZeroFix <int: 0, 100>; percentage of random satellite arcs with fixed
@@ -973,7 +973,7 @@
 // minFixCos <= maxFixCos
 // minArcCap <= maxArcCap		
 // 
-// if (!equalizeComCaps)
+// if (!equalComCaps)
 // {
 // 		minComCap <= maxComCap
 // 		maxComCap <= minComVol
@@ -981,7 +981,7 @@
 // 		maxArcCap <= numbCom * minComCap			
 // }	
 // 	
-// if (gridConnect)
+// if (1 <= secTopology <= 3)
 // {
 //     	lengthX * lengthY >= 2            
 // }
@@ -994,7 +994,9 @@
 // if (!hubsAndSats)
 // {
 //		if (oneSrcOneSnk)
-// 		{ 				
+// 		{
+//			!eqSrcsEqSnks
+//			
 // 			if (1 <= secTopology <= 3)
 //			{
 //				(lengthX * lengthY) * ((lengthX * lengthY) - 1) >= numbCom					
@@ -1029,7 +1031,7 @@
 //		minSatVarCos <= maxSatVarCos		
 //		minSatArcCap <= maxSatArcCap			
 //		
-//		if (!equalComCaps)
+//		if (!equalSatComCaps)
 //		{
 //			minSatComCap <= maxSatComCap			
 //			maxSatComCap <= minComVol
@@ -1039,7 +1041,7 @@
 //			
 //		if (oneSrcOneSnk)
 //		{
-//			if (equSrcsEquSnks)
+//			!eqSrcsEqSnks
 //				
 //			if (1 <= secTopology <= 3)
 //			{
@@ -1109,8 +1111,7 @@
 //
 // Docker instruction:
 //
-// docker run --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_gen_image /determ_gen +v \
-// +F /inout/docker_determ_config_oneSrcOneSnk_12oct2026-17h09.par
+// docker run --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_gen_image /determ_gen +v +F /inout/docker_determ_config_oneSrcOneSnk_12oct2026-17h09.par
 //
 // 5.1.2 Configuration files (input)
 // *********************************
@@ -1166,8 +1167,7 @@
 //
 // Docker instruction:
 //
-// docker run --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_gen_image /determ_gen +v \
-// +F /inout/docker_determ_config_eqSrcsEqSnks_12oct2026-17h09.par
+// docker run --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_gen_image /determ_gen +v +F /inout/docker_determ_config_eqSrcsEqSnks_12oct2026-17h09.par
 //
 // 5.2.2 Configuration files (input)
 // *********************************

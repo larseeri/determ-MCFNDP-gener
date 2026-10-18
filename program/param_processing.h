@@ -31,8 +31,12 @@
 #include <map>
 #include <sstream>
 #include <string>
+#include <algorithm>
+#include <cctype>
+#include <cstdlib>
 
 using namespace std;
+
 
 namespace PARAM
 {
@@ -52,6 +56,9 @@ namespace PARAM
 
 // requesting verbose mode when looking for configuration file
 #define CONFIG_VERBOSE_MODE "+v"
+
+// requesting for help (display documentation)
+#define CONFIG_HELP_MODE "+H"
 
 // Class ParamProcessing handles parsing of parameter values supplied
 // in configuration file and/or on instruction line.
@@ -108,6 +115,14 @@ class ParamProcessing
     bool assignParamValue(const string &cmdString, const string &configFileString, char *var) const;
 
     bool assignParamValue(const string &cmdString, const string &configFileString, string &var) const;
+	
+	bool assignParamValue(const string &cmdString, const string &configFileString, int &var) const;
+	
+	bool assignParamValue(const string &cmdString, const string &configFileString, double &var) const;
+	
+	bool isDigitsOnly(const string&) const;
+	
+	bool isNumeric(const string&) const;
 
     // assignParamValue determines the value to be assigned to a parameter.
     // It will return false if the parameter value is available neither from
@@ -140,7 +155,7 @@ class ParamProcessing
     // as follows:
     //
     // evalOrder = BEFORE, printFrequency = 1000.
-    //
+    //		
 
   private:
     // mapping from name of parameter to its value, according to instruction
@@ -162,6 +177,9 @@ class ParamProcessing
 
     // flags display of parameter value when parsing
     bool verbose;
+	
+	// flags display of documentation
+	bool requestHelp;
 
     // These methods used in parsing configuration parameters:
 
@@ -190,19 +208,29 @@ class ParamProcessing
 	  {	  
 		  return paramToValueMapFromCmdLine;
 	  }	
+	  
+	  bool getRequestHelp() const
+	  {	  
+		  return requestHelp;
+	  }
+	  
 };
 
-const int lineLength = 256;
 
 inline ParamProcessing::ParamProcessing(int argc, char **argv, string fileName)
-    : nbArg(argc), vectArg(argv), verbose(false)
+    : nbArg(argc), vectArg(argv), verbose(false), requestHelp(false)
 {
 
-    // configuration file name as passed to constructor
+    // default configuration file is passed to constructor
     configFileName = fileName;
 
     // attempt to find configuration file name in instruction line
     parseConfigFileNameFromCmdLine();
+	
+	// will not proceed to parse configuration file or rest of instruction line
+	// if help is requested
+	if (requestHelp)		
+		return;
 
     // parse the configuration file
     bool found = parseConfigFile(configFileName);
@@ -255,6 +283,10 @@ inline void ParamProcessing::parseConfigFileNameFromCmdLine()
             {
                 verbose = true;
             }
+			else if (strcmp(vectArg[a], CONFIG_HELP_MODE) == 0)
+            {
+                requestHelp = true;
+            }			
             //
             else if (isalpha(vectArg[a][1]))
                 cerr << "********* config prefix [" << vectArg[a] << "] unknown.\n";
@@ -312,7 +344,8 @@ inline void ParamProcessing::parseCmdLine()
 // Parses configuration parameter values supplied in configuration file.
 inline bool ParamProcessing::parseConfigFile(const string &infileName)
 {
-    char line[lineLength];
+    //EL: char line[lineLength];
+	string line;
     ifstream inStr;
 
     // checking if configuration file exists
@@ -342,7 +375,8 @@ inline bool ParamProcessing::parseConfigFile(const string &infileName)
     if (verbose)
         cout << "****** Begin parsing this configuration file: " << infileName << "\n" << endl;
 
-    inStr.getline(line, lineLength);
+	// EL: inStr.getline(line, lineLength);
+    getline(inStr, line);
     while (inStr)
     {
         istringstream configLine(line);
@@ -350,7 +384,7 @@ inline bool ParamProcessing::parseConfigFile(const string &infileName)
         string key;
         configLine >> key;
 
-        string value = parseConfigLine(configLine);
+        string rawValue = parseConfigLine(configLine);
 
         int pos = (key[0] == PARAM_PREFIX) ? 1 : 0;
 
@@ -358,15 +392,25 @@ inline bool ParamProcessing::parseConfigFile(const string &infileName)
         if (isalpha(key[pos]))
 
         {
-            found = 1;
+			found = 1;
+			
+			// Find the first character of rawValue that is equal to '#'
+			auto it = find_if(rawValue.begin(), rawValue.end(), [](unsigned char c) {
+			return c=='#';
+			});
+    
+			// Extract everything up to that character
+			string_view cleanValue(rawValue.data(), distance(rawValue.begin(), it));
+					            
             if (verbose)
-                cout << "****** configuration file -- parameter [" << key.substr(pos) << "] = [" << value << "]" << endl;
+                cout << "****** configuration file -- parameter [" << key.substr(pos) << "] = [" << cleanValue << "]" << endl;
 
             // stores in map
-            paramToValueMapFromConfigFile[key.substr(pos)] = value;
+            paramToValueMapFromConfigFile[key.substr(pos)] = cleanValue;
         }
 
-        inStr.getline(line, lineLength);
+		getline(inStr, line);
+        //EL: inStr.getline(line, lineLength);
     }
 
     if (verbose)
@@ -374,6 +418,76 @@ inline bool ParamProcessing::parseConfigFile(const string &infileName)
 
     return found;
 }
+
+// //ORIG
+// // Parses configuration parameter values supplied in configuration file.
+// inline bool ParamProcessing::parseConfigFile(const string &infileName)
+// {
+    // //EL: char line[lineLength];
+	// string line;
+    // ifstream inStr;
+
+    // // checking if configuration file exists
+    // if (!filesystem::is_regular_file(infileName.c_str()))
+    // {
+        // cerr << "\nERROR:" << endl;
+        // cerr << "No configuration file was specified in instruction line and\n";
+        // cerr << "the default configuration file " << infileName.c_str() << "\nspecified in main.cpp could not be found."
+             // << endl;
+        // cerr << "EXECUTION ABORTED\n" << endl;
+        // exit(1);
+    // }
+
+    // // attempting to open configuration file
+    // inStr.open(infileName.c_str());
+
+    // if (!inStr.is_open())
+    // {
+        // cerr << "\nERROR:" << endl;
+        // cerr << "The configuration file " << infileName.c_str() << " could not be opened." << endl;
+        // cerr << "EXECUTION ABORTED\n" << endl;
+        // exit(1);
+    // }
+
+    // bool found = 0;
+
+    // if (verbose)
+        // cout << "****** Begin parsing this configuration file: " << infileName << "\n" << endl;
+
+	// // EL: inStr.getline(line, lineLength);
+    // getline(inStr, line);
+    // while (inStr)
+    // {
+        // istringstream configLine(line);
+
+        // string key;
+        // configLine >> key;
+
+        // string value = parseConfigLine(configLine);
+
+        // int pos = (key[0] == PARAM_PREFIX) ? 1 : 0;
+
+        // // ensures that it is not a comment
+        // if (isalpha(key[pos]))
+
+        // {
+            // found = 1;
+            // if (verbose)
+                // cout << "****** configuration file -- parameter [" << key.substr(pos) << "] = [" << value << "]" << endl;
+
+            // // stores in map
+            // paramToValueMapFromConfigFile[key.substr(pos)] = value;
+        // }
+
+		// getline(inStr, line);
+        // //EL: inStr.getline(line, lineLength);
+    // }
+
+    // if (verbose)
+        // cout << "\n****** End parsing this configuration file: " << infileName << endl;
+
+    // return found;
+// }
 
 // Parses a line of the configuration file.
 inline string ParamProcessing::parseConfigLine(istringstream &configLine)
@@ -383,8 +497,8 @@ inline string ParamProcessing::parseConfigLine(istringstream &configLine)
     configLine >> inString;
 
     if (!inString.empty() && (inString.substr(0, 1) == "\""))
-    {
-        size_t pos = inString.substr(1, lineLength).find('"');
+    {		
+        size_t pos = inString.substr(1, inString.length()).find('"');
         outString = inString.substr(1, pos);
     }
     else
@@ -393,6 +507,29 @@ inline string ParamProcessing::parseConfigLine(istringstream &configLine)
     }
 
     return outString;
+}
+
+inline bool ParamProcessing::isDigitsOnly(const string& str) const
+{
+    // Avoid checking empty strings
+    if (str.empty())
+		return false; 
+    
+    // cast to unsigned char prevents undefined behavior with negative values
+    return all_of(str.begin(), str.end(), [](unsigned char c) { 
+        return isdigit(c); 
+    });
+}
+
+inline bool ParamProcessing::isNumeric(const string& str) const {
+    if (str.empty()) return false;
+
+    char* endPtr;
+    // Attempt to convert string to a double
+    strtod(str.c_str(), &endPtr);
+
+    // If endPtr points to the null terminator, the entire string was parsed successfully
+    return *endPtr == '\0';
 }
 
 // Determines value to be assigned to a parameter.
@@ -419,6 +556,108 @@ inline bool ParamProcessing::assignParamValue(const string &cmdString, const str
             istringstream istr((*itF).second);
             istr >> var;
         }
+        else
+            ok = false;
+    }
+
+    return ok;
+}
+
+// Determines value to be assigned to a parameter. Specialized to double.
+inline bool ParamProcessing::assignParamValue(const string &cmdString, const string &configFileString, double &var) const
+{
+    bool ok = true;
+	string temp;
+
+    // attempt to retrieve from data collected from instruction line
+    map<string, string>::const_iterator itL = paramToValueMapFromCmdLine.find(cmdString);
+
+    if (itL != paramToValueMapFromCmdLine.end())
+    {
+        temp = (*itL).second;		
+		if (isNumeric(temp))
+		{
+			var = stod(temp);		
+		}
+		else
+		{			
+			cerr << "\nERROR: While processing the command line, the value received for option\n" 
+				<< cmdString << " was \"" << temp << "\" and could not be interpreted as a floating-point number." << endl;				
+			cerr << "EXECUTION ABORTED\n" << endl;
+			exit(1);
+		}		
+    }
+    else
+    {
+        // if unavailable, attempt to retrieve from data collected from configuration file(s)
+        map<string, string>::const_iterator itF = paramToValueMapFromConfigFile.find(configFileString);
+
+        if (itF != paramToValueMapFromConfigFile.end())
+        {
+            temp = (*itF).second;			
+			if (isNumeric(temp))
+			{
+				var = stod(temp);		
+			}
+			else
+			{			
+				cerr << "\nERROR: While processing the configuration file, the value received for option\n" 
+					<< configFileString << " was \"" << temp << "\" and could not be interpreted as a floating-point number." << endl;				
+				cerr << "EXECUTION ABORTED\n" << endl;
+				exit(1);
+			}			
+        }		
+        else
+            ok = false;
+    }
+
+    return ok;
+}
+
+// Determines value to be assigned to a parameter. Specialized to integer.
+inline bool ParamProcessing::assignParamValue(const string &cmdString, const string &configFileString, int &var) const
+{
+    bool ok = true;
+	string temp;
+
+    // attempt to retrieve from data collected from instruction line
+    map<string, string>::const_iterator itL = paramToValueMapFromCmdLine.find(cmdString);
+
+    if (itL != paramToValueMapFromCmdLine.end())
+    {
+        temp = (*itL).second;		
+		if (isDigitsOnly(temp))
+		{
+			var = stoi(temp);		
+		}
+		else
+		{			
+			cerr << "\nERROR: While processing the command line, the value received for option\n" 
+				<< cmdString << " was \"" << temp << "\" and could not be interpreted as a positive integer." << endl;				
+			cerr << "EXECUTION ABORTED\n" << endl;
+			exit(1);
+		}		
+    }
+    else
+    {
+        // if unavailable, attempt to retrieve from data collected from configuration file(s)
+        map<string, string>::const_iterator itF = paramToValueMapFromConfigFile.find(configFileString);
+
+        if (itF != paramToValueMapFromConfigFile.end())
+        {
+            temp = (*itF).second;			
+			if (isDigitsOnly(temp))
+			{
+				var = stoi(temp);		
+			}
+			else
+			{			
+				cerr << "\nERROR: While processing the configuration file, the value received for option\n" 
+					<< configFileString << " was \"" << temp << "\" and could not be interpreted as a positive integer." << endl;				
+				cerr << "EXECUTION ABORTED\n" << endl;
+				exit(1);
+			}			
+        }		
         else
             ok = false;
     }

@@ -376,6 +376,8 @@ struct Data
     void readParam(string nameOnCommLine, string nameInFile, bool &var);
 	
 	void readParam(string nameOnCommLine, string nameInFile, double &var);
+	
+	void readParam(string nameOnCommLine, string nameInFile, int &var);
 
     void printHelpAndExit();
 

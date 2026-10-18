@@ -28,31 +28,26 @@ Data::Data(int argc, char **argv, string fileName)
     : // paramProcessing() launches the initial processing of configuration
       // settings: builds key, value maps for parameters specified in files
       // and in instruction line.
-    paramProcessing(argc, argv, fileName), secTopology(3), gridConnect(false), toralConnect(false), cylConnect(false),
+    paramProcessing(argc, argv, fileName), secTopology(3), gridConnect(false), toralConnect(true), cylConnect(false),
     flatConnect(false), circConnect(false), randConnect(false), fromFile(false), noParallelArcs(false),
     oneSourceOneSink(false), equSourcesEquSinks(false), noStdOutFile(false), generLpOutFile(false),
     generMpsOutFile(false), generTexOutFile(false), integCapacs(false), integCommCapacs(false), equalizeComCaps(false),
 	equalizeVarCosts(false),
     stream(101), seed(101), lengthX(2), lengthY(2), numbNodes(4), numbCommods(1), numbAddRandArcs_SamplTailsHeads(0),
     numbAddRandArcsPerNode_SamplHeads(0), minNumbSources(1), maxNumbSources(1), minNumbSinks(1), maxNumbSinks(1),
-    minCommVol(0), maxCommVol(10000), minFixedCost(0), maxFixedCost(10000), minVarCost(0), maxVarCost(10000),
-    minArcCapac(1), maxArcCapac(10000), minCommCapac(0), maxCommCapac(10000), adjCapacsDown(false), adjFactCapacs(1),
+    minCommVol(1), maxCommVol(10000), minFixedCost(0), maxFixedCost(10000), minVarCost(0), maxVarCost(10000),
+    minArcCapac(1), maxArcCapac(10000), minCommCapac(1), maxCommCapac(10000), adjCapacsDown(false), adjFactCapacs(1),
     adjFixCostsUp(false), adjFactFixCosts(1), ratioZeroFixedCost(0), ratioTotVolCapac(0), ratioZeroCommCapac(0),
     ratioMaxCommCapac(0), maxIterNoParallelArcs(10), shortOutFileName("./outfile"),
-    longBasicGraphFileName("./basic_graph.gra"),hubSat(false),minSatsPerHub(5),maxSatsPerHub(5),	
-	minSatsRoundSize(1),maxSatsRoundSize(5),	
+    longBasicGraphFileName("./basic_graph.gra"), hubSat(false), minSatsPerHub(2),maxSatsPerHub(4),	
+	minSatsRoundSize(1),maxSatsRoundSize(4),	
 	numbAddSatRandArcs_SamplTailsHeads(0),numbAddSatRandArcsPerNode_SamplHeads(0),minSatFixedCost(0),maxSatFixedCost(10000),minSatVarCost(0),maxSatVarCost(10000),
 	minSatArcCapac(1),maxSatArcCapac(10000),
-	minSatCommCapac(0),maxSatCommCapac(10000),adjSatCapacsDown(false),adjSatFactCapacs(1),adjSatFixCostsUp(false),
+	minSatCommCapac(1),maxSatCommCapac(10000),adjSatCapacsDown(false),adjSatFactCapacs(1),adjSatFixCostsUp(false),
 	adjSatFactFixCosts(1),ratioSatZeroFixedCost(0),ratioSatTotVolCapac(0),ratioSatZeroCommCapac(0),ratioSatMaxCommCapac(0), equalizeSatComCaps(false),
 	equalizeSatVarCosts(false)	  
 {
-
-    bool help = false;
-
-    readParam("help", "help", help);
-
-    if (help)
+    if (paramProcessing.getRequestHelp())
     {
         printHelpAndExit();
     }
@@ -74,16 +69,16 @@ Data::Data(int argc, char **argv, string fileName)
     // these are inactive if oneSourceOneSink
     if (!oneSourceOneSink)
     {
-        readParam("minNbSrc", "minNbSrc", minNumbSources, 1, INT_MAX);
-        readParam("maxNbSrc", "maxNbSrc", maxNumbSources, 1, INT_MAX);
-        readParam("minNbSnk", "minNbSnk", minNumbSinks, 1, INT_MAX);
-        readParam("maxNbSnk", "maxNbSnk", maxNumbSinks, 1, INT_MAX);
+        readParam("minNbSrc", "minNbSrc", minNumbSources, 1, 1000);
+        readParam("maxNbSrc", "maxNbSrc", maxNumbSources, 1, 1000);
+        readParam("minNbSnk", "minNbSnk", minNumbSinks, 1, 1000);
+        readParam("maxNbSnk", "maxNbSnk", maxNumbSinks, 1, 1000);
     }
 
     readParam("eqSrcsEqSnks", "eqSrcsEqSnks", equSourcesEquSinks);
     readParam("stream", "stream", stream, 0, INT_MAX);
     readParam("seed", "seed", seed, 0, INT_MAX);
-	readParam("numbCom", "numbCom", numbCommods, 0, INT_MAX);
+	readParam("numbCom", "numbCom", numbCommods, 1, 1000);
 	readParam("shortOutFileName", "shortOutFileName", shortOutFileName);
 	verifyOutputPath(shortOutFileName);
     readParam("longBasicGraphFileName", "longBasicGraphFileName", longBasicGraphFileName);
@@ -96,9 +91,9 @@ Data::Data(int argc, char **argv, string fileName)
     readParam("equalComCaps", "equalComCaps", equalizeComCaps);
 	readParam("equalVarCosts", "equalVarCosts", equalizeVarCosts);
     readParam("noStdOut", "noStdOut", noStdOutFile);
-	readParam("minComVol", "minComVol", minCommVol, 1, INT_MAX);
-    readParam("maxComVol", "maxComVol", maxCommVol, 1, INT_MAX);
-	readParam("noParalArc", "noParalArc", noParallelArcs, maxIterNoParallelArcs, 1, INT_MAX);
+	readParam("minComVol", "minComVol", minCommVol, 1, 10000);
+    readParam("maxComVol", "maxComVol", maxCommVol, 1, 10000);
+	readParam("noParalArc", "noParalArc", noParallelArcs, maxIterNoParallelArcs, 1, 100);
 	
 	///////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////
@@ -113,21 +108,21 @@ Data::Data(int argc, char **argv, string fileName)
     // useful to activate only if grid-like secTopology
     if (secTopology >= 1 && secTopology <= 3)
     {
-        readParam("lengthX", "lengthX", lengthX, 1, INT_MAX);
-        readParam("lengthY", "lengthY", lengthY, 1, INT_MAX);
+        readParam("lengthX", "lengthX", lengthX, 1, 1000); //EL:
+        readParam("lengthY", "lengthY", lengthY, 1, 1000); //EL:
     }  	
 	
-    readParam("numbNodes", "numbNodes", numbNodes, 1, INT_MAX);    
-    readParam("nbAddArcSampTailHead", "nbAddArcSampTailHead", numbAddRandArcs_SamplTailsHeads, 0, INT_MAX);
-    readParam("nbAddArcPerSampHead", "nbAddArcPerSampHead", numbAddRandArcsPerNode_SamplHeads, 0, INT_MAX);
-    readParam("minVarCos", "minVarCos", minVarCost, 0, INT_MAX);
-    readParam("maxVarCos", "maxVarCos", maxVarCost, 0, INT_MAX);
-    readParam("minArcCap", "minArcCap", minArcCapac, 1, INT_MAX);
-    readParam("maxArcCap", "maxArcCap", maxArcCapac, 1, INT_MAX);
-    readParam("minFixCos", "minFixCos", minFixedCost, 0, INT_MAX);
-    readParam("maxFixCos", "maxFixCos", maxFixedCost, 0, INT_MAX);
-    readParam("minComCap", "minComCap", minCommCapac, 0, INT_MAX);
-    readParam("maxComCap", "maxComCap", maxCommCapac, 0, INT_MAX);
+    readParam("numbNodes", "numbNodes", numbNodes, 1, 10000);    
+    readParam("nbAddArcSampTailHead", "nbAddArcSampTailHead", numbAddRandArcs_SamplTailsHeads, 0, 1000);
+    readParam("nbAddArcPerSampHead", "nbAddArcPerSampHead", numbAddRandArcsPerNode_SamplHeads, 0, 1000);
+    readParam("minVarCos", "minVarCos", minVarCost, 0, 10000);
+    readParam("maxVarCos", "maxVarCos", maxVarCost, 0, 10000);
+    readParam("minArcCap", "minArcCap", minArcCapac, 0, 10000);
+    readParam("maxArcCap", "maxArcCap", maxArcCapac, 0, 10000);
+    readParam("minFixCos", "minFixCos", minFixedCost, 0, 10000);
+    readParam("maxFixCos", "maxFixCos", maxFixedCost, 0, 10000);
+    readParam("minComCap", "minComCap", minCommCapac, 0, 10000);
+    readParam("maxComCap", "maxComCap", maxCommCapac, 0, 10000);
     readParam("ratZeroFix", "ratZeroFix", ratioZeroFixedCost, 0, 100);
     readParam("ratTotVolCap", "ratTotVolCap", ratioTotVolCapac, 0, 100);
     readParam("ratZeroComCap", "ratZeroComCap", ratioZeroCommCapac, 0, 100);
@@ -151,28 +146,29 @@ Data::Data(int argc, char **argv, string fileName)
 	// (i.e., when parameter hubsAndSats is present or explicitly set to true)
 	
 	if (hubSat)
-	{
-		
-		readParam("minSatsPerHub", "minSatsPerHub", minSatsPerHub, 0, INT_MAX);
-		readParam("maxSatsPerHub", "maxSatsPerHub", maxSatsPerHub, 0, INT_MAX);	
-		readParam("minSatsRoundSize", "minSatsRoundSize", minSatsRoundSize, 1, INT_MAX);
-		readParam("maxSatsRoundSize", "maxSatsRoundSize", maxSatsRoundSize, 1, INT_MAX);	
+	{		
+		readParam("minSatsPerHub", "minSatsPerHub", minSatsPerHub, 0, 1000);
+		readParam("maxSatsPerHub", "maxSatsPerHub", maxSatsPerHub, 0, 1000);	
+		readParam("minSatsRoundSize", "minSatsRoundSize", minSatsRoundSize, 1, 1000);
+		readParam("maxSatsRoundSize", "maxSatsRoundSize", maxSatsRoundSize, 1, 1000);	
 		readParam("adjSatCapacsDown", "adjSatCapacsDown", adjSatCapacsDown, adjSatFactCapacs, 0.0001, 10000.);
 		readParam("adjSatFixCostsUp", "adjSatFixCostsUp", adjSatFixCostsUp, adjSatFactFixCosts, 0.0001, 10000.);	
-		readParam("nbAddSatArcSampTailHead", "nbAddSatArcSampTailHead", numbAddSatRandArcs_SamplTailsHeads, 0, INT_MAX);
-		readParam("nbAddSatArcPerSampHead", "nbAddSatArcPerSampHead", numbAddSatRandArcsPerNode_SamplHeads, 0, INT_MAX);
-		readParam("minSatVarCos", "minSatVarCos", minSatVarCost, 0, INT_MAX);
-		readParam("maxSatVarCos", "maxSatVarCos", maxSatVarCost, 0, INT_MAX);
-		readParam("minSatArcCap", "minSatArcCap", minSatArcCapac, 1, INT_MAX);
-		readParam("maxSatArcCap", "maxSatArcCap", maxSatArcCapac, 1, INT_MAX);
-		readParam("minSatFixCos", "minSatFixCos", minSatFixedCost, 0, INT_MAX);
-		readParam("maxSatFixCos", "maxSatFixCos", maxSatFixedCost, 0, INT_MAX);
-		readParam("minSatComCap", "minSatComCap", minSatCommCapac, 0, INT_MAX);
-		readParam("maxSatComCap", "maxSatComCap", maxSatCommCapac, 0, INT_MAX);
+		readParam("nbAddSatArcSampTailHead", "nbAddSatArcSampTailHead", numbAddSatRandArcs_SamplTailsHeads, 0, 1000);
+		readParam("nbAddSatArcPerSampHead", "nbAddSatArcPerSampHead", numbAddSatRandArcsPerNode_SamplHeads, 0, 1000);
+		readParam("minSatVarCos", "minSatVarCos", minSatVarCost, 0, 10000);
+		readParam("maxSatVarCos", "maxSatVarCos", maxSatVarCost, 0, 10000);
+		readParam("minSatArcCap", "minSatArcCap", minSatArcCapac, 0, 10000);
+		readParam("maxSatArcCap", "maxSatArcCap", maxSatArcCapac, 0, 10000);
+		readParam("minSatFixCos", "minSatFixCos", minSatFixedCost, 0, 10000);
+		readParam("maxSatFixCos", "maxSatFixCos", maxSatFixedCost, 0, 10000);
+		readParam("minSatComCap", "minSatComCap", minSatCommCapac, 0, 10000);
+		readParam("maxSatComCap", "maxSatComCap", maxSatCommCapac, 0, 10000);
 		readParam("ratSatZeroFix", "ratSatZeroFix", ratioSatZeroFixedCost, 0, 100);
 		readParam("ratSatTotVolCap", "ratSatTotVolCap", ratioSatTotVolCapac, 0, 100);
 		readParam("ratSatZeroComCap", "ratSatZeroComCap", ratioSatZeroCommCapac, 0, 100);
 		readParam("ratSatMaxComCap", "ratSatMaxComCap", ratioSatMaxCommCapac, 0, 100);
+		readParam("equalSatComCaps", "equalSatComCaps", equalizeSatComCaps);
+		readParam("equalSatVarCosts", "equalSatVarCosts", equalizeSatVarCosts);		
 	}
 
     switch (secTopology)
@@ -258,8 +254,8 @@ Data::Data(int argc, char **argv, string fileName)
 		cerr << "EXECUTION ABORTED\n" << endl;
 		
 		cerr << "Information about this error and its remedies is available\n"
-			<< "either onscreen by launching the program with the \"help\" option\n"
-			<< "or from the USER_GUIDE stored in the online repository." << endl;		
+			<< "either onscreen by launching the program with the \"+H\" option\n"
+			<< "or examine the document USERGUIDE_DETERM.md in the online repository." << endl;		
 		exit(1);
 	}
 
@@ -278,8 +274,8 @@ void Data::displayError(string error)
 	cerr << "EXECUTION ABORTED\n" << endl;
 	
 	cerr << "To learn about the sources of this error and its remedies,\n"
-			<< "either launch the program with the \"help\" option to display the user guide,\n"
-			<< "or examine the document USER_GUIDE.md in the online repository." << endl;		
+			<< "either launch the program with the \"+H\" option to display the user guide,\n"
+			<< "or examine the document USERGUIDE_DETERM.md in the online repository." << endl;		
 	exit(1);
 }
 
@@ -299,8 +295,8 @@ template <class T> void Data::verifyParam(string name, const T &var, const T min
 		cerr << "EXECUTION ABORTED\n" << endl;
 		
 		cerr << "To learn about the sources of this error and its remedies,\n"
-			<< "either launch the program with the \"help\" option to display the user guide,\n"
-			<< "or examine the document USER_GUIDE.md in the online repository." << endl;		
+			<< "either launch the program with the \"+H\" option to display the user guide,\n"
+			<< "or examine the document USERGUIDE_DETERM.md in the online repository." << endl;		
 		exit(1);
     }
 }
@@ -406,19 +402,19 @@ void Data::crossValidateParams()
 		if (minSatArcCapac > maxSatArcCapac)
 			displayError("minSatArcCap > maxSatArcCap");
 		
-		if (!equalizeComCaps)
+		if (!equalizeSatComCaps)
 		{
 			if (minSatCommCapac > maxSatCommCapac)
-				displayError("minSatComCap > maxSatComCap, whereas equalizeComCaps does not hold");	
+				displayError("minSatComCap > maxSatComCap, whereas equalizeSatComCaps does not hold");	
 			
 			if (maxSatCommCapac > minCommVol)
-				displayError("maxSatComCap > minComVol, whereas equalizeComCaps does not hold");
+				displayError("maxSatComCap > minComVol, whereas equalizeSatComCaps does not hold");
 
 			if (maxSatCommCapac > minSatArcCapac)
-				displayError("maxComCap > minArcCap, whereas equalizeComCaps does not hold");
+				displayError("maxSatComCap > minSatArcCap, whereas equalizeSatComCaps does not hold"); //El:
 
 			if (maxSatArcCapac > numbCommods * minSatCommCapac)
-				displayError("maxSatArcCap > numbCom * minSatComCap, whereas equalizeComCaps does not hold");
+				displayError("maxSatArcCap > numbCom * minSatComCap, whereas equalizeSatComCaps does not hold");
 		}
 			
 		if (oneSourceOneSink)
@@ -513,6 +509,18 @@ void Data::readParam(string nameOnCommLine, string nameInFile, bool &var)
 {
     paramProcessing.assignParamValue(nameOnCommLine, nameInFile, var);
 }
+
+void Data::readParam(string nameOnCommLine, string nameInFile, int &var)
+{
+    paramProcessing.assignParamValue(nameOnCommLine, nameInFile, var);
+}
+
+void Data::readParam(string nameOnCommLine, string nameInFile, double &var)
+{
+    paramProcessing.assignParamValue(nameOnCommLine, nameInFile, var);
+}
+
+
 
 void Data::printHelpAndExit()
 {
@@ -1699,7 +1707,7 @@ void Data::printHelpAndExit()
 	printf("determ_eqSrcsEqSnks_12oct2026-17h09.pdf\n");
 	printf("\n");
     
-    exit(1);
+    exit(0);
 }
 
 
