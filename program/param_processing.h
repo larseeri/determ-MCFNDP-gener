@@ -272,7 +272,7 @@ inline void ParamProcessing::parseConfigFileNameFromCmdLine()
                         cerr << "\nERROR: " << endl;
                         cerr << "The configuration file " << configFileName
                              << "\nspecified in instruction line could not be found." << endl;
-                        cerr << "EXECUTION ABORTED\n" << endl;
+                        cerr << "EXECUTION ABORTED" << endl;
                         exit(1);
                     }
 
@@ -355,7 +355,7 @@ inline bool ParamProcessing::parseConfigFile(const string &infileName)
         cerr << "No configuration file was specified in instruction line and\n";
         cerr << "the default configuration file " << infileName.c_str() << "\nspecified in main.cpp could not be found."
              << endl;
-        cerr << "EXECUTION ABORTED\n" << endl;
+        cerr << "EXECUTION ABORTED" << endl;
         exit(1);
     }
 
@@ -366,7 +366,7 @@ inline bool ParamProcessing::parseConfigFile(const string &infileName)
     {
         cerr << "\nERROR:" << endl;
         cerr << "The configuration file " << infileName.c_str() << " could not be opened." << endl;
-        cerr << "EXECUTION ABORTED\n" << endl;
+        cerr << "EXECUTION ABORTED" << endl;
         exit(1);
     }
 
@@ -434,7 +434,7 @@ inline bool ParamProcessing::parseConfigFile(const string &infileName)
         // cerr << "No configuration file was specified in instruction line and\n";
         // cerr << "the default configuration file " << infileName.c_str() << "\nspecified in main.cpp could not be found."
              // << endl;
-        // cerr << "EXECUTION ABORTED\n" << endl;
+        // cerr << "EXECUTION ABORTED" << endl;
         // exit(1);
     // }
 
@@ -445,7 +445,7 @@ inline bool ParamProcessing::parseConfigFile(const string &infileName)
     // {
         // cerr << "\nERROR:" << endl;
         // cerr << "The configuration file " << infileName.c_str() << " could not be opened." << endl;
-        // cerr << "EXECUTION ABORTED\n" << endl;
+        // cerr << "EXECUTION ABORTED" << endl;
         // exit(1);
     // }
 
@@ -577,13 +577,23 @@ inline bool ParamProcessing::assignParamValue(const string &cmdString, const str
         temp = (*itL).second;		
 		if (isNumeric(temp))
 		{
-			var = stod(temp);		
+			try
+			{			
+				var = stod(temp);
+			}
+			catch (const out_of_range& e)
+			{			
+				cerr << "\nERROR: While processing the command line, the value received for option\n" 
+					<< cmdString << " was \"" << temp << "\" and was too large to be interpreted as a floating-point number." << endl;				
+				cerr << "EXECUTION ABORTED" << endl;
+				exit(1);				
+			}
 		}
 		else
 		{			
 			cerr << "\nERROR: While processing the command line, the value received for option\n" 
 				<< cmdString << " was \"" << temp << "\" and could not be interpreted as a floating-point number." << endl;				
-			cerr << "EXECUTION ABORTED\n" << endl;
+			cerr << "EXECUTION ABORTED" << endl;
 			exit(1);
 		}		
     }
@@ -597,13 +607,23 @@ inline bool ParamProcessing::assignParamValue(const string &cmdString, const str
             temp = (*itF).second;			
 			if (isNumeric(temp))
 			{
-				var = stod(temp);		
+				try
+				{			
+					var = stod(temp);
+				}
+				catch (const out_of_range& e)
+				{			
+					cerr << "\nERROR: While processing the configuration file, the value received for option\n" 
+						<< configFileString << " was \"" << temp << "\" and was too large to be interpreted as a floating-point number." << endl;				
+					cerr << "EXECUTION ABORTED" << endl;
+					exit(1);				
+				}				
 			}
 			else
 			{			
 				cerr << "\nERROR: While processing the configuration file, the value received for option\n" 
 					<< configFileString << " was \"" << temp << "\" and could not be interpreted as a floating-point number." << endl;				
-				cerr << "EXECUTION ABORTED\n" << endl;
+				cerr << "EXECUTION ABORTED" << endl;
 				exit(1);
 			}			
         }		
@@ -627,14 +647,24 @@ inline bool ParamProcessing::assignParamValue(const string &cmdString, const str
     {
         temp = (*itL).second;		
 		if (isDigitsOnly(temp))
-		{
-			var = stoi(temp);		
+		{			
+			try
+			{			
+				var = stoi(temp);
+			}
+			catch (const out_of_range& e)
+			{			
+				cerr << "\nERROR: While processing the command line, the value received for option\n" 
+					<< cmdString << " was \"" << temp << "\" and was too large to be interpreted as a proper integer." << endl;				
+				cerr << "EXECUTION ABORTED" << endl;
+				exit(1);				
+			}				
 		}
 		else
 		{			
 			cerr << "\nERROR: While processing the command line, the value received for option\n" 
-				<< cmdString << " was \"" << temp << "\" and could not be interpreted as a positive integer." << endl;				
-			cerr << "EXECUTION ABORTED\n" << endl;
+				<< cmdString << " was \"" << temp << "\" and could not be interpreted as a proper integer." << endl;				
+			cerr << "EXECUTION ABORTED" << endl;
 			exit(1);
 		}		
     }
@@ -647,14 +677,24 @@ inline bool ParamProcessing::assignParamValue(const string &cmdString, const str
         {
             temp = (*itF).second;			
 			if (isDigitsOnly(temp))
-			{
-				var = stoi(temp);		
+			{				
+				try
+				{			
+					var = stoi(temp);
+				}
+				catch (const out_of_range& e)
+				{			
+					cerr << "\nERROR: While processing the configuration file, the value received for option\n" 
+						<< configFileString << " was \"" << temp << "\" and was too large to be interpreted as a proper integer." << endl;				
+					cerr << "EXECUTION ABORTED" << endl;
+					exit(1);				
+				}				
 			}
 			else
 			{			
 				cerr << "\nERROR: While processing the configuration file, the value received for option\n" 
-					<< configFileString << " was \"" << temp << "\" and could not be interpreted as a positive integer." << endl;				
-				cerr << "EXECUTION ABORTED\n" << endl;
+					<< configFileString << " was \"" << temp << "\" and could not be interpreted as a proper integer." << endl;				
+				cerr << "EXECUTION ABORTED" << endl;
 				exit(1);
 			}			
         }		
@@ -799,7 +839,7 @@ inline void ParamProcessing::displayError(string error) const
 	{
 		cerr << option + " " + value << endl;	
 	}
-	cerr << "EXECUTION ABORTED\n" << endl;
+	cerr << "EXECUTION ABORTED" << endl;
     exit(1);
 }
 

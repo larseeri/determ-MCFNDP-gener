@@ -76,8 +76,8 @@ Data::Data(int argc, char **argv, string fileName)
     }
 
     readParam("eqSrcsEqSnks", "eqSrcsEqSnks", equSourcesEquSinks);
-    readParam("stream", "stream", stream, 0, INT_MAX);
-    readParam("seed", "seed", seed, 0, INT_MAX);
+    readParam("stream", "stream", stream, 0, 1000000);
+    readParam("seed", "seed", seed, 0, 1000000);
 	readParam("numbCom", "numbCom", numbCommods, 1, 1000);
 	readParam("shortOutFileName", "shortOutFileName", shortOutFileName);
 	verifyOutputPath(shortOutFileName);
@@ -117,12 +117,12 @@ Data::Data(int argc, char **argv, string fileName)
     readParam("nbAddArcPerSampHead", "nbAddArcPerSampHead", numbAddRandArcsPerNode_SamplHeads, 0, 1000);
     readParam("minVarCos", "minVarCos", minVarCost, 0, 10000);
     readParam("maxVarCos", "maxVarCos", maxVarCost, 0, 10000);
-    readParam("minArcCap", "minArcCap", minArcCapac, 0, 10000);
-    readParam("maxArcCap", "maxArcCap", maxArcCapac, 0, 10000);
+    readParam("minArcCap", "minArcCap", minArcCapac, 1, 10000);
+    readParam("maxArcCap", "maxArcCap", maxArcCapac, 1, 10000);
     readParam("minFixCos", "minFixCos", minFixedCost, 0, 10000);
     readParam("maxFixCos", "maxFixCos", maxFixedCost, 0, 10000);
-    readParam("minComCap", "minComCap", minCommCapac, 0, 10000);
-    readParam("maxComCap", "maxComCap", maxCommCapac, 0, 10000);
+    readParam("minComCap", "minComCap", minCommCapac, 1, 10000);
+    readParam("maxComCap", "maxComCap", maxCommCapac, 1, 10000);
     readParam("ratZeroFix", "ratZeroFix", ratioZeroFixedCost, 0, 100);
     readParam("ratTotVolCap", "ratTotVolCap", ratioTotVolCapac, 0, 100);
     readParam("ratZeroComCap", "ratZeroComCap", ratioZeroCommCapac, 0, 100);
@@ -157,12 +157,12 @@ Data::Data(int argc, char **argv, string fileName)
 		readParam("nbAddSatArcPerSampHead", "nbAddSatArcPerSampHead", numbAddSatRandArcsPerNode_SamplHeads, 0, 1000);
 		readParam("minSatVarCos", "minSatVarCos", minSatVarCost, 0, 10000);
 		readParam("maxSatVarCos", "maxSatVarCos", maxSatVarCost, 0, 10000);
-		readParam("minSatArcCap", "minSatArcCap", minSatArcCapac, 0, 10000);
-		readParam("maxSatArcCap", "maxSatArcCap", maxSatArcCapac, 0, 10000);
+		readParam("minSatArcCap", "minSatArcCap", minSatArcCapac, 1, 10000);
+		readParam("maxSatArcCap", "maxSatArcCap", maxSatArcCapac, 1, 10000);
 		readParam("minSatFixCos", "minSatFixCos", minSatFixedCost, 0, 10000);
 		readParam("maxSatFixCos", "maxSatFixCos", maxSatFixedCost, 0, 10000);
-		readParam("minSatComCap", "minSatComCap", minSatCommCapac, 0, 10000);
-		readParam("maxSatComCap", "maxSatComCap", maxSatCommCapac, 0, 10000);
+		readParam("minSatComCap", "minSatComCap", minSatCommCapac, 1, 10000);
+		readParam("maxSatComCap", "maxSatComCap", maxSatCommCapac, 1, 10000);
 		readParam("ratSatZeroFix", "ratSatZeroFix", ratioSatZeroFixedCost, 0, 100);
 		readParam("ratSatTotVolCap", "ratSatTotVolCap", ratioSatTotVolCapac, 0, 100);
 		readParam("ratSatZeroComCap", "ratSatZeroComCap", ratioSatZeroCommCapac, 0, 100);
@@ -471,7 +471,7 @@ void Data::verifyOutputPath(string fullPath)
 			cerr << "Output file path " << fullPath << " was specified.\n" 
 				<< "However, folder " << folderPath << " is unreachable.\n"
 				<< "Make sure to create individual folders on output file path\nand to grant sufficient access rights." << endl;
-			cerr << "EXECUTION ABORTED\n" << endl;
+			cerr << "EXECUTION ABORTED" << endl;
 			exit(1);
 		}
 	}	

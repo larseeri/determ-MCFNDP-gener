@@ -49,6 +49,31 @@ bool isDigitsOnly(const string& str)
     });
 }
 
+bool can_convert_to_int(double val, string underMess, string overMess)
+{
+    
+    // if (std::isnan(val))
+	// {       
+	   // cerr << "ERROR: Numerical conversion error " << isnanMess << ".\n"		
+			// << "EXECUTION ABORTED" << endl;
+			// exit(1);	   
+    // }    
+    if (val < static_cast<double>(INT_MIN))
+	{
+		cerr << "ERROR: " << underMess << "\n"		
+			<< "EXECUTION ABORTED" << endl;
+			exit(1);
+		
+	}
+	else if (val > static_cast<double>(INT_MAX))
+	{
+		cerr << "ERROR: " << overMess << "\n"		
+			<< "EXECUTION ABORTED" << endl;
+			exit(1);
+    }
+	return true;
+}
+
 int CommodNode::count = 0;
 
 // Constructor
@@ -1002,13 +1027,11 @@ void Graph::defCommsEquSourcesEquSinks()
 
         surplus = 0;
 
+		// note that totalSupply >= 0 and surplus >= 0 always
         for (int n = 0; n < numbNodes; n++)
         {			
             if (omark[n])
             {				
-                //if (idxOrig == 0)
-                //    idxOrig = n;
-
                 temp = rnd.getRandom(0, (int)(commods[k].volume / nbSources) + 1);
                 commods[k].commodNodes[n].volume = surplus + temp;
                 totalSupply += commods[k].commodNodes[n].volume;
@@ -1037,13 +1060,11 @@ void Graph::defCommsEquSourcesEquSinks()
 		
         surplus = 0;
 
+		// note that totalDemand >= 0 and surplus >= 0 always
         for (int n = 0; n < numbNodes; n++)
         {			
             if (dmark[n])
             {				
-                //if (idxDest == 0)
-                //    idxDest = n;
-
                 temp = rnd.getRandom(0, (int)(commods[k].volume / nbSinks) + 1);
                 commods[k].commodNodes[n].volume = -(surplus + temp);
                 totalDemand -= commods[k].commodNodes[n].volume;
@@ -1056,8 +1077,8 @@ void Graph::defCommsEquSourcesEquSinks()
 		while (!dmark[node]);
         commods[k].commodNodes[node].volume -= surplus;
 		
-        totalDemand -= surplus;		
-		unassDemand = commods[k].volume + totalDemand;		
+        totalDemand += surplus;		
+		unassDemand = commods[k].volume - totalDemand;		
 		
 		while (unassDemand != 0)
 		{		
@@ -1069,14 +1090,7 @@ void Graph::defCommsEquSourcesEquSinks()
 			totalDemand--;
 			unassDemand--;
 		}		
-		
-		cout << "commod: " << k << " totalSupply: " << totalSupply 
-			<< " totalDemand: " << totalDemand << endl;	
-		
     }	
-	
-	cout << "end Graph::defCommsEquSourcesEquSinks()" << endl;
-	
 }
 
 // // ORIG
@@ -1199,14 +1213,12 @@ void Graph::defCommsEquSourcesEquSinks_sat()
         int totalDemand = 0;
 
         surplus = 0;
-
+		
+		// note that totalSupply >= 0 and surplus >= 0 always
         for (int n = numbNodes; n < numbNodes + numbSatNodes; n++)
         {
             if (omark[n])
             {
-                //if (idxOrig == 0)
-                //    idxOrig = n;
-
                 temp = rnd.getRandom(0, (int)(commods[k].volume / nbSources) + 1);
                 commods[k].commodNodes[n].volume = surplus + temp;
                 totalSupply += commods[k].commodNodes[n].volume;
@@ -1233,14 +1245,12 @@ void Graph::defCommsEquSourcesEquSinks_sat()
 		}
 
         surplus = 0;
-
+		
+		// note that totalDemand >= 0 and surplus >= 0 always
         for (int n = numbNodes; n < numbNodes + numbSatNodes; n++)
         {
             if (dmark[n])
             {
-                //if (idxDest == 0)
-                //    idxDest = n;
-
                 temp = rnd.getRandom(1, (int)(commods[k].volume / nbSinks));
                 commods[k].commodNodes[n].volume = -(surplus + temp);
                 totalDemand -= commods[k].commodNodes[n].volume;
@@ -1253,8 +1263,8 @@ void Graph::defCommsEquSourcesEquSinks_sat()
 		while (!dmark[node]);
         commods[k].commodNodes[node].volume -= surplus;
 		
-        totalDemand -= surplus;		
-		unassDemand = commods[k].volume + totalDemand;		
+        totalDemand += surplus;		
+		unassDemand = commods[k].volume - totalDemand;		
 		
 		while (unassDemand != 0)
 		{		
@@ -1356,7 +1366,8 @@ void Graph::defCommsEquSourcesEquSinks_sat()
 // can be on any node.
 void Graph::defCommsDefault()
 {
-    VectBool2 mark(numbCommods, VectBool(numbNodes, false));
+    VectBool2 omark(numbCommods, VectBool(numbNodes, false));
+	VectBool2 dmark(numbCommods, VectBool(numbNodes, false));
 
     for (int k = 0; k < numbCommods; k++)
     {
@@ -1369,16 +1380,14 @@ void Graph::defCommsDefault()
         int surplus = 0, totalSupply = 0, totalDemand = 0, node, temp;
 		int unassSupply = 0, unassDemand = 0;
 
+		// note that totalSupply >= 0 and surplus >= 0 always		
         for (int s = 0; s < commods[k].numbOrig; s++)
         {
             do
                 node = rnd.getRandom(0, numbNodes);
-            while (mark[k][node]);
+            while (omark[k][node]);
 
-            //if (s == 0)
-            //    index = node;
-
-            mark[k][node] = true;
+            omark[k][node] = true;
             temp = rnd.getRandom(1, (int)(commods[k].volume / commods[k].numbOrig));
             commods[k].commodNodes[node].volume = surplus + temp;
             totalSupply += commods[k].commodNodes[node].volume;
@@ -1387,7 +1396,7 @@ void Graph::defCommsDefault()
 
 		do 
 			node = rnd.getRandom(0, numbNodes);
-		while (!mark[k][node]);
+		while (!omark[k][node]);
         commods[k].commodNodes[node].volume += surplus;
 		
         totalSupply += surplus;		
@@ -1397,24 +1406,22 @@ void Graph::defCommsDefault()
 		{		
 			do 
 				node = rnd.getRandom(0, numbNodes);
-			while (!mark[k][node]);
+			while (!omark[k][node]);
 			
 			commods[k].commodNodes[node].volume++;		
 			unassSupply--;
 		}		
 
         surplus = 0;
-
+		
+		// note that totalDemand >= 0 and surplus >= 0 always
         for (int s = 0; s < commods[k].numbDest; s++)
         {
             do
                 node = rnd.getRandom(0, numbNodes);
-            while (mark[k][node]);
+            while (dmark[k][node]);
 
-            //if (s == 0)
-            //    index = node;
-
-            mark[k][node] = true;
+            dmark[k][node] = true;
             temp = rnd.getRandom(1, (int)(commods[k].volume / commods[k].numbDest));
             commods[k].commodNodes[node].volume = -(surplus + temp);
             totalDemand -= commods[k].commodNodes[node].volume;
@@ -1423,17 +1430,17 @@ void Graph::defCommsDefault()
 		
 		do 
 			node = rnd.getRandom(0, numbNodes);
-		while (!mark[k][node]);
+		while (!dmark[k][node]);
         commods[k].commodNodes[node].volume -= surplus;
 		
-        totalDemand -= surplus;		
-		unassDemand = commods[k].volume + totalDemand;		
+        totalDemand += surplus;		
+		unassDemand = commods[k].volume - totalDemand;		
 		
 		while (unassDemand != 0)
 		{		
 			do 
 				node = rnd.getRandom(0, numbNodes);
-			while (!mark[k][node]);
+			while (!dmark[k][node]);
 			
 			commods[k].commodNodes[node].volume--;		
 			unassDemand--;
@@ -1510,7 +1517,8 @@ void Graph::defCommsDefault()
 // are exclusively on satellite nodes.
 void Graph::defCommsDefault_sat()
 {
-    VectBool2 mark(numbCommods, VectBool(numbNodes + numbSatNodes, false));
+    VectBool2 omark(numbCommods, VectBool(numbNodes + numbSatNodes, false));
+	VectBool2 dmark(numbCommods, VectBool(numbNodes + numbSatNodes, false));
 
     for (int k = 0; k < numbCommods; k++)
     {
@@ -1522,26 +1530,24 @@ void Graph::defCommsDefault_sat()
     {
         int surplus = 0, totalSupply = 0, totalDemand = 0, node, temp;
 		int unassSupply = 0, unassDemand = 0;
-
+		
+        // note that totalSupply >= 0 and surplus >= 0 always
         for (int s = 0; s < commods[k].numbOrig; s++)
         {
             do
                 node = rnd.getRandom(numbNodes, numbSatNodes);
-            while (mark[k][node]);
-
-            //if (s == 0)
-            //    index = node;
-
-            mark[k][node] = true;
+            while (omark[k][node]);
+			
+            omark[k][node] = true;
             temp = rnd.getRandom(1, (int)(commods[k].volume / commods[k].numbOrig));
             commods[k].commodNodes[node].volume = surplus + temp;
             totalSupply += commods[k].commodNodes[node].volume;
             surplus = (int)(commods[k].volume / commods[k].numbOrig) - temp;
-        };
+        }
 		
 		do 
 			node = rnd.getRandom(numbNodes, numbSatNodes);
-		while (!mark[k][node]);
+		while (!omark[k][node]);
         commods[k].commodNodes[node].volume += surplus;
 		
         totalSupply += surplus;		
@@ -1551,7 +1557,7 @@ void Graph::defCommsDefault_sat()
 		{		
 			do 
 				node = rnd.getRandom(numbNodes, numbSatNodes);
-			while (!mark[k][node]);
+			while (!omark[k][node]);
 			
 			commods[k].commodNodes[node].volume++;		
 			unassSupply--;
@@ -1559,16 +1565,17 @@ void Graph::defCommsDefault_sat()
 		
         surplus = 0;
 
+		// note that totalDemand >= 0 and surplus >= 0 always
         for (int s = 0; s < commods[k].numbDest; s++)
         {
             do
                 node = rnd.getRandom(numbNodes, numbSatNodes);
-            while (mark[k][node]);
+            while (dmark[k][node]);
 
             //if (s == 0)
             //    index = node;
 
-            mark[k][node] = true;
+            dmark[k][node] = true;
             temp = rnd.getRandom(1, (int)(commods[k].volume / commods[k].numbDest));
             commods[k].commodNodes[node].volume = -(surplus + temp);
             totalDemand -= commods[k].commodNodes[node].volume;
@@ -1577,17 +1584,17 @@ void Graph::defCommsDefault_sat()
 
 		do 
 			node = rnd.getRandom(numbNodes, numbSatNodes);
-		while (!mark[k][node]);
+		while (!dmark[k][node]);
         commods[k].commodNodes[node].volume -= surplus;
 		
-        totalDemand -= surplus;		
-		unassDemand = commods[k].volume + totalDemand;		
+        totalDemand += surplus;		
+		unassDemand = commods[k].volume - totalDemand;		
 		
 		while (unassDemand != 0)
 		{		
 			do 
 				node = rnd.getRandom(numbNodes, numbSatNodes);
-			while (!mark[k][node]);
+			while (!dmark[k][node]);
 			
 			commods[k].commodNodes[node].volume--;		
 			unassDemand--;
@@ -1696,26 +1703,32 @@ void Graph::adjustArcCapacities()
 		double q = (static_cast<double>(numbArcs) * totalVolume) / totalCapac;
 
 		if (data->adjFactCapacs >= 1)
-		{		
+		{	
+			
 			for (int a = 0; a < numbArcs; a++)
-			{
-				arcs[a].capac = min(totalVolume, (int)((q / data->adjFactCapacs) * arcs[a].capac) + 1);
+			{				
+				arcs[a].capac = min(totalVolume, static_cast<int>((q / data->adjFactCapacs) * arcs[a].capac) + 1);
 				
 				for(int k = 0; k < numbCommods; k++)
-				{			
-					arcs[a].commodsOnArc[k].capac = min(commods[k].volume, (int)((q / data->adjFactCapacs) * arcs[a].commodsOnArc[k].capac) + 1);
+				{														
+					arcs[a].commodsOnArc[k].capac = min(commods[k].volume, static_cast<int>((q / data->adjFactCapacs) * arcs[a].commodsOnArc[k].capac) + 1);
 				}		
 			}
 		}
 		else
 		{
+			string overMess = R"(Numerical overflow while increasing arc capacities: value of option\n 
+						adjCapacsDown is too small in relation to total volume and existing capacities.)";
+								
 			for (int a = 0; a < numbArcs; a++)
 			{
-				arcs[a].capac = (int)((q / data->adjFactCapacs) * arcs[a].capac) + 1;
+				if (can_convert_to_int((q / data->adjFactCapacs) * arcs[a].capac, "", overMess))				
+					arcs[a].capac = static_cast<int>((q / data->adjFactCapacs) * arcs[a].capac) + 1;
 				
 				for(int k = 0; k < numbCommods; k++)
 				{			
-					arcs[a].commodsOnArc[k].capac = (int)((q / data->adjFactCapacs) * arcs[a].commodsOnArc[k].capac) + 1;
+					if (can_convert_to_int((q / data->adjFactCapacs) * arcs[a].commodsOnArc[k].capac, "", overMess))			
+						arcs[a].commodsOnArc[k].capac = static_cast<int>((q / data->adjFactCapacs) * arcs[a].commodsOnArc[k].capac) + 1;
 				}		
 			}			
 		}		
@@ -1751,26 +1764,31 @@ void Graph::adjustArcCapacities_sat()
         double q = (static_cast<double>(numbSatArcs) * totalVolume) / totalCapac;
 
 		if (data->adjSatFactCapacs >= 1)
-		{		
+		{
 			for (int a = numbArcs; a < numbArcs + numbSatArcs; a++)
-			{
-				arcs[a].capac = min(totalVolume, (int)((q / data->adjSatFactCapacs) * arcs[a].capac) + 1);
+			{							
+				arcs[a].capac = min(totalVolume, static_cast<int>((q / data->adjSatFactCapacs) * arcs[a].capac) + 1);				
 			
 				for(int k = 0; k < numbCommods; k++)
-				{
-					arcs[a].commodsOnArc[k].capac = min(commods[k].volume, (int)((q / data->adjSatFactCapacs) * arcs[a].commodsOnArc[k].capac) + 1);		
+				{									
+					arcs[a].commodsOnArc[k].capac = min(commods[k].volume, static_cast<int>((q / data->adjSatFactCapacs) * arcs[a].commodsOnArc[k].capac) + 1);		
 				}
 			}			
 		}	
 		else
-		{		
+		{	
+			string overMess = R"(Numerical overflow while increasing arc capacities: value of option\n
+								"adjCapacsDown is too small in relation to total volume and existing capacities.)";
+	
 			for (int a = numbArcs; a < numbArcs + numbSatArcs; a++)
-			{
-				arcs[a].capac = (int)((q / data->adjSatFactCapacs) * arcs[a].capac) + 1;
+			{				
+				if (can_convert_to_int((q / data->adjSatFactCapacs) * arcs[a].capac, "", overMess))				
+					arcs[a].capac = static_cast<int>((q / data->adjSatFactCapacs) * arcs[a].capac) + 1;
 			
 				for(int k = 0; k < numbCommods; k++)
-				{
-					arcs[a].commodsOnArc[k].capac = (int)((q / data->adjSatFactCapacs) * arcs[a].commodsOnArc[k].capac) + 1;		
+				{					
+					if (can_convert_to_int((q / data->adjSatFactCapacs) * arcs[a].commodsOnArc[k].capac, "", overMess))
+						arcs[a].commodsOnArc[k].capac = static_cast<int>((q / data->adjSatFactCapacs) * arcs[a].commodsOnArc[k].capac) + 1;		
 				}
 			}			
 		}		
@@ -1811,12 +1829,17 @@ void Graph::adjustFixedCosts()
         totalCommodCost = totalVolume * (totalCommodCost / numbCommods);
 
         double q = totalFixedCost / totalCommodCost;
+		
+		string overMess = R"(Numerical overflow while adjusting relative magnitude of fixed and variable costs:\n
+						"value of option adjFixCostsUp is too large in relation to existing fixed and variable costs.)";
 
         for (int a = 0; a < numbArcs; a++)
-            arcs[a].cost = (int)((data->adjFactFixCosts / q) * arcs[a].cost) + 1;
+		{						
+			if (can_convert_to_int((data->adjFactFixCosts / q) * arcs[a].cost, "", overMess))	
+				arcs[a].cost = static_cast<int>((data->adjFactFixCosts / q) * arcs[a].cost) + 1;
+		}
     }
 }
-
 
 // Only used if hubs-and-satellites primary topology: adjust satellite arcs
 // (satellite arcs connect at least one satellite node).
@@ -1839,10 +1862,16 @@ void Graph::adjustFixedCosts_sat()
 
         totalCommodCost = totalVolume * (totalCommodCost / numbCommods);
 
-        double q = totalFixedCost / totalCommodCost;
+        double q = totalFixedCost / totalCommodCost;		
+		
+		string overMess = R"(Numerical overflow while adjusting relative magnitude of fixed and variable costs:\n
+						"value of option adjFixCostsUp is too large in relation to existing fixed and variable costs.)";	
 
         for (int a = numbArcs; a < numbArcs + numbSatArcs; a++)
-            arcs[a].cost = (int)((data->adjSatFactFixCosts / q) * arcs[a].cost) + 1;
+		{
+			if (can_convert_to_int((data->adjSatFactFixCosts / q) * arcs[a].cost, "", overMess))
+				arcs[a].cost = static_cast<int>((data->adjSatFactFixCosts / q) * arcs[a].cost) + 1;			
+		}
     }
 }
 
@@ -1977,29 +2006,40 @@ void Graph::readBasicGraph(string longBasicGraphFileName, const VectCommodOnArc 
     string dummy;
     int low, high; // low and high values for nodes
     int orig, dest;
-	string origStr, destStr;
+	string origStr, destStr, lowStr, highStr;
 
     inFile.getline(line, 1024);
     inFile.getline(line, 1024);
-    inFile >> dummy >> dummy >> low;
-    inFile >> dummy >> dummy >> high;
+    inFile >> dummy >> dummy >> lowStr;
+    inFile >> dummy >> dummy >> highStr;
+	
+	if (isDigitsOnly(lowStr) && isDigitsOnly(highStr))
+	{
+		low = stoi(lowStr);
+		high = stoi(highStr);		
+	}
+	else
+	{			
+		cerr << "\nERROR: While reading " + longBasicGraphFileName + ", the tokens \""
+			<< lowStr << "\" and \"" << highStr << "\" could not be interpreted\n"
+			<< "as the low and high node numbers." << endl;
+	}
 
     inFile.getline(line, 1024);
     inFile.getline(line, 1024);
     inFile.getline(line, 1024);
     inFile.getline(line, 1024);
-
-    //inFile >> orig >> dest;
 
     bool foundError = false;
+	bool readArc = false;
 
     while (inFile >> origStr >> destStr)
     {		
-		
 		if (isDigitsOnly(origStr) && isDigitsOnly(destStr))
 		{
 			orig = stoi(origStr);
-			dest = stoi(destStr);		
+			dest = stoi(destStr);
+			readArc = true;
 		}
 		else
 		{			
@@ -2051,10 +2091,18 @@ void Graph::readBasicGraph(string longBasicGraphFileName, const VectCommodOnArc 
         //inFile >> orig >> dest;
     }
 
-    inFile.close();    
+    inFile.close();  
+
+	if (!readArc)
+	{
+		cerr << "\nERROR: While reading " + longBasicGraphFileName + ", no valid arc could be found." << endl;
+		cerr << "EXECUTION ABORTED" << endl;
+        exit(1);		
+	}	
 	
 	if (foundError)
     {
+		cerr << "EXECUTION ABORTED" << endl;
         exit(1);
     }	
 
@@ -2064,11 +2112,11 @@ void Graph::readBasicGraph(string longBasicGraphFileName, const VectCommodOnArc 
     {
         cerr << "\nERROR: While reading " + longBasicGraphFileName + ", " << temp << " nodes have been detected\n"
             << "whereas the value specified for option numbNodes is " << numbNodes << ".\n"
-			<< "The value of numbNodes should be corrected to be at least as large the number of detected nodes." << endl;
-			
+			<< "The value of numbNodes should be corrected to be at least as large the number of detected nodes."
+			<< "EXECUTION ABORTED" << endl;
             exit(1);
-    }		
-
+    }
+	
     numbNodes = temp;	
 }
 

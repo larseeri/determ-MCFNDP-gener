@@ -525,11 +525,9 @@
 //
 // Remarks:
 // - Under the point-to-point primary topology, the LaTeX representations are
-//  unavailable (i) if lengthX > 10 or lengthY > 10,
-//  when 1 <= secTopology <= 3, (ii) if numbNodes > 100, when secTopology == 0
-// or secTopology >= 4, (iii) if numbCom > 15; other specific conditions 
-// depending on values of oneSrcOneSnk, lengthX, lengthY, numbNodes and numbCom
-// are managed and reported by the program;
+//  available
+// (i) if lengthX <=10, lengthY <= 10 and numbCom <= 15  when 1 <= secTopology <= 3,
+// (ii) if numbNodes <= 36 and numbCom <= 15 when secTopology == 4.
 // - Ulterior processing of the TEX file by a LaTeX compiler may require up to
 // several minutes depending on complexity.
 // - The LaTeX representations produced in connection with 
@@ -538,29 +536,42 @@
 // (iii) topologies that are read from a file (configuration option 
 // secTopology 5) are treated as generic, unstructured graphs. For legibility,
 // these representations are only available when total number of nodes is not
-// greater than 12 and number of commodities is not greater than 4.
+// greater than 12 and numbCom <= 4.
 //
 // -noStdOut <> (no value supplied); do not save output with STD format
 //
-// -seed <int: 0, INT_MAX>; seed of the pseudo-random generator
+// -seed <int: 0, 1000000>; seed of the pseudo-random generator
 //
-// -stream <int: 0, INT_MAX>; stream of the pseudo-random generator
+// -stream <int: 0, 1000000>; stream of the pseudo-random generator
 //
-// -numbCom <int: 0, 1000>; number of commodities
+// -numbCom <int: 1, 1000>; number of commodities
 //
 // -oneSrcOneSnk <> (no value supplied); select randomly one source and one 
 // sink for each commodity; (source, sink) pairs must be different across all
 // commodities
 //
-// -eqSrcsEqSnks <> (no value supplied); impose identical sources over all
-// commodities and identical sinks over all commodities; common source nodes
-// and common sink nodes are selected randomly according to minNbSrc, maxNbSrc,
-// minNbSnk, maxNbSnk
+// -eqSrcsEqSnks <> (no value supplied); If commodity volumes that
+// are randomly generated according to minComVol, maxComVol are all at least
+// equal to the numbers of source nodes and sink nodes that are randomly
+// generated according to minNbSrc, maxNbSrc, minNbSnk, maxNbSnk, then all
+// commodities will share common source nodes and common sink nodes.
+// More generally: 
+// (i) Commodities whose volumes are not smaller than the number of source
+// nodes will share the same source nodes. However, commodities that have 
+// volumes smaller than the number of source nodes will only share source
+// nodes for which they have positive volume.
+// (ii) Commodities whose volumes are not smaller than the number of sink
+// nodes will share the same sink nodes. However, commodities that have 
+// volumes smaller than the number of sink nodes will only share sink.
+// (iii) These conditions implicitly exclude that a node be simultaneously
+// a sink and a source.
 //
 // Remark:
 // oneSrcOneSnk and eqSrcsEqSnks cannot be both active; if oneSrcOneSnk and
 // eqSrcsEqSnks are both inactive, then sources and sinks are selected
-// randomly
+// randomly according to minNbSrc, maxNbSrc, minNbSnk, maxNbSnk. In this case
+// any node can be simultaneously a sink for one or more commodities and
+// source for one or more other commodities. 
 //
 // -minNbSrc <int: 1, 1000>; min number of sources; inactive under
 // oneSrcOneSnk
@@ -760,7 +771,7 @@
 // the primary topology would be set to point-to-point. Obviously, the
 // original hubs-and-satellites characterization would be lost.
 //
-// -noParalArc <int: 1, INT_MAX>; when adding random arcs, avoid parallel arcs
+// -noParalArc <int: 1, 100>; when adding random arcs, avoid parallel arcs
 // and set to this figure the maximum number of failed attempts to add a non-
 // parallel arc. If reached, decrease the number of random arcs to be added
 // by one; if this option is inactive, no attempt will be made to avoid 
@@ -807,17 +818,17 @@
 // -maxVarCos <int: 0, 10000>; max commodity-specific variable cost over hub
 // arc
 //
-// -minArcCap <int: 0, 10000>; min arc overall capacity over hub arc
+// -minArcCap <int: 1, 10000>; min arc overall capacity over hub arc
 //
-// -maxArcCap <int: 0, 10000>; max arc overall capacity over hub arc
+// -maxArcCap <int: 1, 10000>; max arc overall capacity over hub arc
 //
 // -minFixCos <int: 0, 10000>; min fixed cost over hub arc
 //
 // -maxFixCos <int: 0, 10000>; max fixed cost over hub arc
 //
-// -minComCap <int: 0, 10000>; min commodity-specific capacity over hub arc
+// -minComCap <int: 1, 10000>; min commodity-specific capacity over hub arc
 //
-// -maxComCap <int: 0, 10000>; max commodity-specific capacity over hub arc
+// -maxComCap <int: 1, 10000>; max commodity-specific capacity over hub arc
 //
 // -ratZeroFix <int: 0, 100>; percent of random hub arcs with fixed cost set to
 // zero; if this option is inactive, default percentage is 0
@@ -899,10 +910,10 @@
 // -maxSatVarCos <int: 0, 10000>; max commodity-specific variable cost for
 // arcs involving at least one satellite node
 //
-// -minSatArcCap <int: 0, 10000>; min overall capacity for arcs involving
+// -minSatArcCap <int: 1, 10000>; min overall capacity for arcs involving
 // at least one satellite node
 //
-// -maxSatArcCap <int: 0, 10000>; max overall capacity for arcs involving at
+// -maxSatArcCap <int: 1, 10000>; max overall capacity for arcs involving at
 // least one satellite node
 //
 // -minSatFixCos <int: 0, 10000>; min fixed cost for arcs involving at least
@@ -911,10 +922,10 @@
 // -maxSatFixCos <int: 0, 10000>; max fixed cost for arcs involving at least
 // one satellite node
 //
-// -minSatComCap <int: 0, 10000>; min commodity-specific capacity for arcs 
+// -minSatComCap <int: 1, 10000>; min commodity-specific capacity for arcs 
 // involving at least one satellite node
 //
-// -maxSatComCap <int: 0, 10000>; max commodity-specific capacity for arcs
+// -maxSatComCap <int: 1, 10000>; max commodity-specific capacity for arcs
 // involving at least one satellite node
 //
 // -ratSatZeroFix <int: 0, 100>; percentage of random satellite arcs with fixed
