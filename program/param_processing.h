@@ -44,17 +44,17 @@ namespace PARAM
 // default value of boolean variables
 #define DEFAULT_BOOL true
 
-// prefix of all parameters, except configuration file related
+// prefix of all option keys in innstruction line,
+// except help, verbosity and path of configuration file
 #define PARAM_PREFIX '-'
 
-// prefix of parameters related to configuration file and to reading
-// of configuration file
+// prefix of options related to help, verbosity and path of configuration file
 #define CONFIG_PREFIX '+'
 
-// prefix of non-default configuration file name
+// stating new configuration file name
 #define CONFIG_FILE_KEY "+F"
 
-// requesting verbose mode when looking for configuration file
+// requesting verbose mode when parsing option values
 #define CONFIG_VERBOSE_MODE "+v"
 
 // requesting for help (display documentation)
@@ -216,7 +216,6 @@ class ParamProcessing
 	  
 };
 
-
 inline ParamProcessing::ParamProcessing(int argc, char **argv, string fileName)
     : nbArg(argc), vectArg(argv), verbose(false), requestHelp(false)
 {
@@ -269,10 +268,10 @@ inline void ParamProcessing::parseConfigFileNameFromCmdLine()
 
                     if (!filesystem::is_regular_file(configFileName))
                     {
-                        cerr << "\nERROR: " << endl;
-                        cerr << "The configuration file " << configFileName
-                             << "\nspecified in instruction line could not be found." << endl;
-                        cerr << "EXECUTION ABORTED" << endl;
+                        cerr << "\nERROR:\n"
+							<< "The configuration file " << configFileName << "\n"
+                            << "\nspecified in instruction line could not be found.\n"
+							<< "EXECUTION ABORTED" << endl;
                         exit(1);
                     }
 
@@ -351,11 +350,10 @@ inline bool ParamProcessing::parseConfigFile(const string &infileName)
     // checking if configuration file exists
     if (!filesystem::is_regular_file(infileName.c_str()))
     {
-        cerr << "\nERROR:" << endl;
-        cerr << "No configuration file was specified in instruction line and\n";
-        cerr << "the default configuration file " << infileName.c_str() << "\nspecified in main.cpp could not be found."
-             << endl;
-        cerr << "EXECUTION ABORTED" << endl;
+        cerr << "\nERROR:\n"
+			<< "No configuration file was specified in instruction line and\n"
+			<< "the default configuration file " << infileName.c_str() << "\nspecified in main.cpp could not be found.\n"
+            << "EXECUTION ABORTED" << endl;
         exit(1);
     }
 
@@ -364,9 +362,9 @@ inline bool ParamProcessing::parseConfigFile(const string &infileName)
 
     if (!inStr.is_open())
     {
-        cerr << "\nERROR:" << endl;
-        cerr << "The configuration file " << infileName.c_str() << " could not be opened." << endl;
-        cerr << "EXECUTION ABORTED" << endl;
+        cerr << "\nERROR:\n"
+			<< "The configuration file " << infileName.c_str() << " could not be opened.\n"
+			<< "EXECUTION ABORTED" << endl;
         exit(1);
     }
 
@@ -418,76 +416,6 @@ inline bool ParamProcessing::parseConfigFile(const string &infileName)
 
     return found;
 }
-
-// //ORIG
-// // Parses configuration parameter values supplied in configuration file.
-// inline bool ParamProcessing::parseConfigFile(const string &infileName)
-// {
-    // //EL: char line[lineLength];
-	// string line;
-    // ifstream inStr;
-
-    // // checking if configuration file exists
-    // if (!filesystem::is_regular_file(infileName.c_str()))
-    // {
-        // cerr << "\nERROR:" << endl;
-        // cerr << "No configuration file was specified in instruction line and\n";
-        // cerr << "the default configuration file " << infileName.c_str() << "\nspecified in main.cpp could not be found."
-             // << endl;
-        // cerr << "EXECUTION ABORTED" << endl;
-        // exit(1);
-    // }
-
-    // // attempting to open configuration file
-    // inStr.open(infileName.c_str());
-
-    // if (!inStr.is_open())
-    // {
-        // cerr << "\nERROR:" << endl;
-        // cerr << "The configuration file " << infileName.c_str() << " could not be opened." << endl;
-        // cerr << "EXECUTION ABORTED" << endl;
-        // exit(1);
-    // }
-
-    // bool found = 0;
-
-    // if (verbose)
-        // cout << "****** Begin parsing this configuration file: " << infileName << "\n" << endl;
-
-	// // EL: inStr.getline(line, lineLength);
-    // getline(inStr, line);
-    // while (inStr)
-    // {
-        // istringstream configLine(line);
-
-        // string key;
-        // configLine >> key;
-
-        // string value = parseConfigLine(configLine);
-
-        // int pos = (key[0] == PARAM_PREFIX) ? 1 : 0;
-
-        // // ensures that it is not a comment
-        // if (isalpha(key[pos]))
-
-        // {
-            // found = 1;
-            // if (verbose)
-                // cout << "****** configuration file -- parameter [" << key.substr(pos) << "] = [" << value << "]" << endl;
-
-            // // stores in map
-            // paramToValueMapFromConfigFile[key.substr(pos)] = value;
-        // }
-
-		// getline(inStr, line);
-        // //EL: inStr.getline(line, lineLength);
-    // }
-
-    // if (verbose)
-        // cout << "\n****** End parsing this configuration file: " << infileName << endl;
-
-    // return found;
-// }
 
 // Parses a line of the configuration file.
 inline string ParamProcessing::parseConfigLine(istringstream &configLine)
@@ -583,17 +511,19 @@ inline bool ParamProcessing::assignParamValue(const string &cmdString, const str
 			}
 			catch (const out_of_range& e)
 			{			
-				cerr << "\nERROR: While processing the command line, the value received for option\n" 
-					<< cmdString << " was \"" << temp << "\" and was too large to be interpreted as a floating-point number." << endl;				
-				cerr << "EXECUTION ABORTED" << endl;
+				cerr << "\nERROR\n:"
+					<< "While processing the command line, the value received for option " << cmdString << "\n" 
+					<< " was \"" << temp << "\" and was too large to be interpreted as a floating-point number.\n"				
+					<< "EXECUTION ABORTED" << endl;
 				exit(1);				
 			}
 		}
 		else
 		{			
-			cerr << "\nERROR: While processing the command line, the value received for option\n" 
-				<< cmdString << " was \"" << temp << "\" and could not be interpreted as a floating-point number." << endl;				
-			cerr << "EXECUTION ABORTED" << endl;
+			cerr << "\nERROR\n"
+				<< "While processing the command line, the value received for option " << cmdString << "\n" 
+				<<  "was \"" << temp << "\" and could not be interpreted as a floating-point number.\n"				
+				<< "EXECUTION ABORTED" << endl;
 			exit(1);
 		}		
     }
@@ -613,18 +543,20 @@ inline bool ParamProcessing::assignParamValue(const string &cmdString, const str
 				}
 				catch (const out_of_range& e)
 				{			
-					cerr << "\nERROR: While processing the configuration file, the value received for option\n" 
-						<< configFileString << " was \"" << temp << "\" and was too large to be interpreted as a floating-point number." << endl;				
-					cerr << "EXECUTION ABORTED" << endl;
+					cerr << "\nERROR:\n"
+						<< "While processing the configuration file, the value received for option " << configFileString << "\n" 
+						<< "was \"" << temp << "\" and was too large to be interpreted as a floating-point number.\n"				
+						<< "EXECUTION ABORTED" << endl;
 					exit(1);				
 				}				
 			}
 			else
 			{			
-				cerr << "\nERROR: While processing the configuration file, the value received for option\n" 
-					<< configFileString << " was \"" << temp << "\" and could not be interpreted as a floating-point number." << endl;				
-				cerr << "EXECUTION ABORTED" << endl;
-				exit(1);
+				cerr << "\nERROR:\n"
+					<< "While processing the configuration file, the value received for option " << configFileString << "\n" 
+					<< "was \"" << temp << "\" and could not be interpreted as a floating-point number.\n"				
+					<< "EXECUTION ABORTED" << endl;
+					exit(1);		
 			}			
         }		
         else
@@ -654,16 +586,18 @@ inline bool ParamProcessing::assignParamValue(const string &cmdString, const str
 			}
 			catch (const out_of_range& e)
 			{			
-				cerr << "\nERROR: While processing the command line, the value received for option\n" 
-					<< cmdString << " was \"" << temp << "\" and was too large to be interpreted as a proper integer." << endl;				
-				cerr << "EXECUTION ABORTED" << endl;
+				cerr << "\nERROR:\n"
+					<< "While processing the command line, the value received for option\n" 
+					<< cmdString << " was \"" << temp << "\" and was too large to be interpreted as a proper integer.\n"				
+					<< "EXECUTION ABORTED" << endl;
 				exit(1);				
 			}				
 		}
 		else
 		{			
-			cerr << "\nERROR: While processing the command line, the value received for option\n" 
-				<< cmdString << " was \"" << temp << "\" and could not be interpreted as a proper integer." << endl;				
+			cerr << "\nERROR:\n"
+				<< "While processing the command line, the value received for option\n" 
+				<< cmdString << " was \"" << temp << "\" and could not be interpreted as a proper positive integer." << endl;				
 			cerr << "EXECUTION ABORTED" << endl;
 			exit(1);
 		}		
@@ -684,17 +618,19 @@ inline bool ParamProcessing::assignParamValue(const string &cmdString, const str
 				}
 				catch (const out_of_range& e)
 				{			
-					cerr << "\nERROR: While processing the configuration file, the value received for option\n" 
-						<< configFileString << " was \"" << temp << "\" and was too large to be interpreted as a proper integer." << endl;				
-					cerr << "EXECUTION ABORTED" << endl;
+					cerr << "\nERROR:\n"
+						<< "While processing the configuration file, the value received for option\n" 
+						<< configFileString << " was \"" << temp << "\" and was too large to be interpreted as a proper integer.\n"				
+						<< "EXECUTION ABORTED" << endl;
 					exit(1);				
 				}				
 			}
 			else
 			{			
-				cerr << "\nERROR: While processing the configuration file, the value received for option\n" 
-					<< configFileString << " was \"" << temp << "\" and could not be interpreted as a proper integer." << endl;				
-				cerr << "EXECUTION ABORTED" << endl;
+				cerr << "\nERROR:\n"
+					<< "While processing the configuration file, the value received for option\n" 
+					<< configFileString << " was \"" << temp << "\" and could not be interpreted as a proper positive integer.\n"			
+					<< "EXECUTION ABORTED" << endl;
 				exit(1);
 			}			
         }		
@@ -832,9 +768,9 @@ inline void ParamProcessing::checkBooleanInput(istringstream& iss, const string&
 
 inline void ParamProcessing::displayError(string error) const
 {
-    cerr << "\nERROR: " + error << endl;    	
-	cerr << "Configuration file name: " << getConfigFileName() << endl;	
-	cerr << "Content of command line:" << endl;	
+    cerr << "\nERROR:\n" << error    	
+		<< "Configuration file name: " << getConfigFileName() << "\n"	
+		<< "Content of command line:" << endl;	
 	for (const auto& [option, value] : getParamToValueMapFromCmdLine())
 	{
 		cerr << option + " " + value << endl;	

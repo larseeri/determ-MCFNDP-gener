@@ -243,19 +243,19 @@ Data::Data(int argc, char **argv, string fileName)
         break;
 
     default:
-		cerr << "\nERROR:" << endl;
-        cerr << "secTopology must fall in {0, 1, 2, 3, 4, 5}." << endl;
-        cerr << "Configuration file name: " << paramProcessing.getConfigFileName() << endl;	
-		cerr << "Content of command line:" << endl;	
+		cerr << "\nERROR:\n"
+			<< "secTopology must fall in {0, 1, 2, 3, 4, 5}.\n"
+			<< "Configuration file name: " << paramProcessing.getConfigFileName() << "\n"	
+			<< "Content of command line:" << endl;	
 		for (const auto& [option, value] : paramProcessing.getParamToValueMapFromCmdLine())
 		{
 			cerr << option + " " + value << endl;	
 		}
-		cerr << "EXECUTION ABORTED\n" << endl;
+		cerr << "EXECUTION ABORTED" << endl;
 		
-		cerr << "Information about this error and its remedies is available\n"
+		cerr << "Information about this error and its solution is available\n"
 			<< "either onscreen by launching the program with the \"+H\" option\n"
-			<< "or examine the document USERGUIDE_DETERM.md in the online repository." << endl;		
+			<< "or in the document USERGUIDE_DETERM.md available in the online repository." << endl;		
 		exit(1);
 	}
 
@@ -264,18 +264,18 @@ Data::Data(int argc, char **argv, string fileName)
 
 void Data::displayError(string error)
 {
-    cerr << "\nERROR: " + error << endl;    	
-	cerr << "Configuration file name: " << paramProcessing.getConfigFileName() << endl;	
-	cerr << "Content of command line:" << endl;	
+    cerr << "\nERROR: " << error << "\n"   	
+		<< "Configuration file name: " << paramProcessing.getConfigFileName() << "\n"	
+		<< "Content of command line:" << endl;	
 	for (const auto& [option, value] : paramProcessing.getParamToValueMapFromCmdLine())
 	{
 		cerr << option + " " + value << endl;	
 	}
-	cerr << "EXECUTION ABORTED\n" << endl;
-	
-	cerr << "To learn about the sources of this error and its remedies,\n"
-			<< "either launch the program with the \"+H\" option to display the user guide,\n"
-			<< "or examine the document USERGUIDE_DETERM.md in the online repository." << endl;		
+	cerr << "EXECUTION ABORTED" << endl;
+		
+	cerr << "Information about this error and its solution is available\n"
+		<< "either onscreen by launching the program with the \"+H\" option\n"
+		<< "or in the document USERGUIDE_DETERM.md available in the online repository." << endl;		
 	exit(1);
 }
 
@@ -284,19 +284,19 @@ template <class T> void Data::verifyParam(string name, const T &var, const T min
 {
     if (var < minVal || var > maxVal)
     {
-		cerr << "\nERROR:" << endl;
-        cerr << name << " must be within [" << minVal << " , " << maxVal << "]." << endl;
-        cerr << "Configuration file name: " << paramProcessing.getConfigFileName() << endl;	
-		cerr << "Content of command line:" << endl;	
+		cerr << "\nERROR: "
+			<< name << " must be within [" << minVal << " , " << maxVal << "].\n"
+			<< "Configuration file name: " << paramProcessing.getConfigFileName() << "\n"	
+			<< "Content of command line:" << endl;	
 		for (const auto& [option, value] : paramProcessing.getParamToValueMapFromCmdLine())
 		{
 			cerr << option << " " << value << endl;	
 		}
-		cerr << "EXECUTION ABORTED\n" << endl;
+		cerr << "EXECUTION ABORTED" << endl;
 		
-		cerr << "To learn about the sources of this error and its remedies,\n"
-			<< "either launch the program with the \"+H\" option to display the user guide,\n"
-			<< "or examine the document USERGUIDE_DETERM.md in the online repository." << endl;		
+		cerr << "Information about this error and its solution is available\n"
+			<< "either onscreen by launching the program with the \"+H\" option\n"
+			<< "or in the document USERGUIDE_DETERM.md available in the online repository." << endl;		
 		exit(1);
     }
 }
@@ -305,7 +305,7 @@ template <class T> void Data::verifyParam(string name, const T &var, const T min
 void Data::crossValidateParams()
 {
     if (minCommVol > maxCommVol)
-        displayError("minCommVol > maxCommVol");
+        displayError("minComVol > maxComVol");
 
     if (minVarCost > maxVarCost)
         displayError("minVarCos > maxVarCos");
@@ -319,16 +319,16 @@ void Data::crossValidateParams()
 	if (!equalizeComCaps)
 	{
 		if (minCommCapac > maxCommCapac)
-			displayError("minComCap > maxComCap, whereas equalizeComCaps does not hold");
+			displayError("minComCap > maxComCap, whereas equalComCaps does not hold");
 
 		if (maxCommCapac > minCommVol)
-			displayError("maxComCap > minComVol, whereas equalizeComCaps does not hold");
+			displayError("maxComCap > minComVol, whereas equalComCaps does not hold");
 
 		if (maxCommCapac > minArcCapac)
-			displayError("maxComCap > minArcCap, whereas equalizeComCaps does not hold");
+			displayError("maxComCap > minArcCap, whereas equalComCaps does not hold");
 
 		if (maxArcCapac > numbCommods * minCommCapac)
-			displayError("maxArcCap > numbCom * minComCap, whereas equalizeComCaps does not hold");
+			displayError("maxArcCap > numbCom * minComCap, whereas equalComCaps does not hold");
 	}	
 	
 	if (gridConnect)
@@ -405,16 +405,16 @@ void Data::crossValidateParams()
 		if (!equalizeSatComCaps)
 		{
 			if (minSatCommCapac > maxSatCommCapac)
-				displayError("minSatComCap > maxSatComCap, whereas equalizeSatComCaps does not hold");	
+				displayError("minSatComCap > maxSatComCap, whereas equalSatComCaps does not hold");	
 			
 			if (maxSatCommCapac > minCommVol)
-				displayError("maxSatComCap > minComVol, whereas equalizeSatComCaps does not hold");
+				displayError("maxSatComCap > minComVol, whereas equalSatComCaps does not hold");
 
 			if (maxSatCommCapac > minSatArcCapac)
-				displayError("maxSatComCap > minSatArcCap, whereas equalizeSatComCaps does not hold"); //El:
+				displayError("maxSatComCap > minSatArcCap, whereas equalSatComCaps does not hold"); //El:
 
 			if (maxSatArcCapac > numbCommods * minSatCommCapac)
-				displayError("maxSatArcCap > numbCom * minSatComCap, whereas equalizeSatComCaps does not hold");
+				displayError("maxSatArcCap > numbCom * minSatComCap, whereas equalSatComCaps does not hold");
 		}
 			
 		if (oneSourceOneSink)

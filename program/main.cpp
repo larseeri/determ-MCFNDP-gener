@@ -62,7 +62,7 @@
 // - Under the hubs-and-satellites primary topology (option hubsAndSats),
 // there are two classes of nodes: hub nodes and satellite nodes. Only 
 // satellite nodes can be sources or sinks of commodity volumes. Two classes
-// of arcs must also are distinguished: (i) hub arcs connecting hub nodes and
+// of arcs must also be distinguished: (i) hub arcs connecting hub nodes and
 // (ii) satellite arcs connecting two satellite nodes or a satellite node and
 // a hub node. In this context, the secondary topology option specifies basic
 // connections between hub nodes. Sets of satellite nodes, called rounds, are
@@ -77,7 +77,7 @@
 // point-to-point primary topology and concerns only hub nodes in the
 // hubs-and-satellites primary topology. It can either (i) be grid-like (the
 // grid can be laid either on a torus, a cylinder or a flat bounded surface), 
-// (ii) be based on a circle, (iii) be explicited in a file, or (iv) be
+// (ii) be based on a circle, (iii) be specified in a file, or (iv) be
 // entirely random generated. (ia) Under the toral secondary topology, non-
 // random arcs are initially created to build the structure of a torus with
 // major and minor circumferences respectively equal to values of options 
@@ -157,10 +157,10 @@
 //
 // This assumes that determ_config.par and newParamfile.par are located at the
 // root of the /program folder. Otherwise, their absolute paths or their paths
-// relative to the /program folder must be explicited.
+// relative to the /program folder must be specified.
 //
 // The default configuration file determ_config.par has initially been filled
-// with illustrative values and and should be edited appropriately if no 
+// with illustrative values and should be edited appropriately if no 
 // replacement configuration file is indicated on the command line with option
 // key +F.
 //
@@ -265,7 +265,7 @@
 // When secondary topology is set between 1 and 4, the program will save the
 // basic graph (i.e., including nodes and arcs, but excluding random arcs,
 // costs and capacities) in a plain text file whose default name, 
-// basicGraph.gra, may be replaced using the parameter longBasicGraphFileName.
+// basic_graph.gra, may be replaced using the parameter longBasicGraphFileName.
 // The name specified using the latter should include the extension. The 
 // content of the file will appear like this:
 //
@@ -451,6 +451,10 @@
 // instance, <string> means that a string is expected whereas <> means that no
 // value is expected.
 //
+// Important:
+// File paths specified in the instruction line or in a configuration file
+// must not contain any blank space.
+//
 // 4.1 Options available in instruction line only (Linux or Docker)
 // ****************************************************************
 //
@@ -462,7 +466,7 @@
 // +v <> (no value supplied); requests verbosity while parsing options in
 // instruction line or configuration file
 //
-// +H <> (no value supplied); display documentation
+// +H <> (no value supplied); display complete documentation
 //
 // Remark:
 // An unknown option key following '+' in the instruction line is disregarded.
@@ -483,10 +487,14 @@
 // - Unknown option keys (following '-' or not) at beginning of lines in a
 // configuration file are disregarded.
 //
+// -hubsAndSats <> (no value supplied); implement hubs-and-satellite primary
+// topology; if absent or explicitly set to false, the point-to-point primary
+// topology is instead implemented
+//
 // 4.2.1 Options that are available under the point-to-point or hubs-and-satellites primary topologies
 // ***************************************************************************************************
-// (That is, when the option hubsAndSats is either (i) absent and implicity set
-// to false, or (ii) present without value and implicity set to true or (iii) 
+// (That is, when the option hubsAndSats is either (i) absent and implicitly set
+// to false, or (ii) present without value and implicitly set to true or (iii) 
 // present and explicitly set to true or false.)	
 //
 // -shortOutFileName <string>; short name (without extension) of output file;
@@ -528,10 +536,10 @@
 //  available
 // (i) if lengthX <=10, lengthY <= 10 and numbCom <= 15  when 1 <= secTopology <= 3,
 // (ii) if numbNodes <= 36 and numbCom <= 15 when secTopology == 4.
-// - Ulterior processing of the TEX file by a LaTeX compiler may require up to
+// - Subsequent processing of the TEX file by a LaTeX compiler may require up to
 // several minutes depending on complexity.
 // - The LaTeX representations produced in connection with 
-// (i) hubs-and-satellites primary topologies (configuration option hubSat),
+// (i) hubs-and-satellites primary topologies (configuration option hubsAndSats),
 // (ii) random secondary topologies (configuration option secTopology 0),
 // (iii) topologies that are read from a file (configuration option 
 // secTopology 5) are treated as generic, unstructured graphs. For legibility,
@@ -562,7 +570,8 @@
 // nodes for which they have positive volume.
 // (ii) Commodities whose volumes are not smaller than the number of sink
 // nodes will share the same sink nodes. However, commodities that have 
-// volumes smaller than the number of sink nodes will only share sink.
+// volumes smaller than the number of sink nodes will only share sink
+// nodes for which they have negative volume.
 // (iii) These conditions implicitly exclude that a node be simultaneously
 // a sink and a source.
 //
@@ -602,7 +611,7 @@
 // inclDesignObjCommCap allow to select particular formulations of the 
 // linear programming statement of the MCFNDP.
 //
-// By default, (i.e, when options inclDesignObjCap and inclDesignObjCommCap
+// By default, (i.e., when options inclDesignObjCap and inclDesignObjCommCap
 // are omitted or explicitly set to false) design variables are altogether
 // absent: (i) the objective omits fixed costs as if all existing arcs are
 // costlessly opened), (ii) overall capacity constraints for all arcs are
@@ -626,7 +635,7 @@
 //
 // 4.2.2 Options available under the point-to-point primary topology
 // *****************************************************************
-// (That is, when option hubsAndSats is either (i) absent and implicity set to
+// (That is, when option hubsAndSats is either (i) absent and implicitly set to
 // false, or (ii) present and explicitly set to false.)
 //	
 // -secTopology <int: 0, 1, 2, 3, 4, 5>; 
@@ -641,7 +650,7 @@
 // Important:
 // Whenever secTopology is set to 5 so that a basic graph is read from a file
 // (whose name is specified with option longBasicGraphFileName), value of 
-// option numbNodes must be set to a number larger than the exact number
+// option numbNodes must be set to a number not smaller than the exact number
 // of nodes found in this file.
 //
 // -longBasicGraphFileName <string>; long name (including extension) of file
@@ -659,7 +668,7 @@
 // {1, 2, 3} (inactive otherwise)
 //
 // -numbNodes <int: 1, 10000>; number of nodes under random or circular
-// secondary topology; (overriden by lengthX * lengthY under grid secondary
+// secondary topology; (overridden by lengthX * lengthY under grid secondary
 // topology)
 //
 // -nbAddArcSampTailHead <int: 0, 1000>; total number of additional random
@@ -747,7 +756,7 @@
 //
 // 4.2.3 Options available under the hubs-and-satellites primary topology
 // **********************************************************************
-// (That is, when option hubsAndSats is (i) present and implicity set to true, or
+// (That is, when option hubsAndSats is (i) present and implicitly set to true, or
 // (ii) present and explicitly set to true.)
 //
 // -minComVol <int: 1, 10000>; min commodity volume
@@ -802,7 +811,7 @@
 // secTopology is in {1, 2, 3} (inactive otherwise)
 //
 // -numbNodes <int: 1, 10000>; number of hub nodes under random or circular
-// hub topology; (overriden by lengthX * lengthY under grid secondary topology)
+// hub topology; (overridden by lengthX * lengthY under grid secondary topology)
 //
 // -nbAddArcSampTailHead <int: 0, 1000>; total number of additional random
 // arcs between hub nodes generated by sampling over tail (origin) and head 
