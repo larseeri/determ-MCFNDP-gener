@@ -1001,27 +1001,27 @@ COLUMNS
     Y_39        K_39_2         -100      
     MARK0000  'MARKER'                 'INTEND'
 RHS
-    rhs         N_2_0          5         
-    rhs         N_2_1          30        
-    rhs         N_2_2          27        
-    rhs         N_3_0          48        
-    rhs         N_3_1          35        
-    rhs         N_3_2          63        
-    rhs         N_4_0          98        
-    rhs         N_4_1          96        
-    rhs         N_4_2          69        
-    rhs         N_5_0          49        
-    rhs         N_5_1          39        
-    rhs         N_5_2          41        
-    rhs         N_8_0          -130      
-    rhs         N_8_1          -144      
-    rhs         N_8_2          -138      
-    rhs         N_9_0          -247      
-    rhs         N_9_1          -163      
-    rhs         N_9_2          -204      
-    rhs         N_11_0         -99       
-    rhs         N_11_1         -241      
-    rhs         N_11_2         -248      
+    rhs         N_2_0          17        
+    rhs         N_2_1          58        
+    rhs         N_2_2          34        
+    rhs         N_3_0          55        
+    rhs         N_3_1          30        
+    rhs         N_3_2          47        
+    rhs         N_4_0          33        
+    rhs         N_4_1          51        
+    rhs         N_4_2          105       
+    rhs         N_5_0          95        
+    rhs         N_5_1          61        
+    rhs         N_5_2          14        
+    rhs         N_8_0          -27       
+    rhs         N_8_1          -10       
+    rhs         N_8_2          -60       
+    rhs         N_9_0          -75       
+    rhs         N_9_1          -87       
+    rhs         N_9_2          -27       
+    rhs         N_11_0         -98       
+    rhs         N_11_1         -103      
+    rhs         N_11_2         -113      
 BOUNDS
  BV BOUND       Y_0            
  BV BOUND       Y_1            
