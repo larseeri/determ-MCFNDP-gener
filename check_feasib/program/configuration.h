@@ -26,32 +26,27 @@
 
 #include <cstring>
 #include <filesystem>
-// #include <boost/filesystem.hpp>
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <vector>
+#include <string_view>
 
 using namespace std;
 
-// prefix of all parameters, except configuration file related
+
+// prefix of all parameters instruction line parameters, except help and verbosity
 #define PARAM_PREFIX '-'
 
-// unused
-// prefix of parameters related to configuration file and to reading
-// of configuration file
+// prefix of options related to help and verbosity
 #define CONFIG_PREFIX '+'
 
-// unused
-// prefix of non-default configuration file name
-#define CONFIG_FILE_KEY "+F"
+// requesting help
+#define CONFIG_HELP_MODE "+H"
 
-// requesting verbose mode when looking for configuration file
+// requesting verbosity when parsing instruction line
 #define CONFIG_VERBOSE_MODE "+v"
-
-// maximum length of lines in configuration file
-const int lineLength = 256;
 
 // input and output formats available
 enum IO_FORMAT
@@ -60,6 +55,15 @@ enum IO_FORMAT
     GSTD, // generic STD
     RSTD, // restricted STD
 };
+
+constexpr string_view to_string(IO_FORMAT format) {
+    switch (format) {
+        case IO_FORMAT::DOW:   return "DOW";
+        case IO_FORMAT::GSTD: return "GSTD";
+        case IO_FORMAT::RSTD:  return "RSTD";
+    }
+    return "Unknown";
+}
 
 // Types of elements (i.e. commodity volumes, total arc
 // capacities, capacities per arc and commodity, fixed costs per arc,
@@ -123,15 +127,11 @@ struct Configuration
 
     // flags displaying parameter values when parsing
     bool verbose;
-
-	// unused
-    // name of configuration file
-    string configFileName;
-
+	
     // format of input and output instances: DOW, GSTD or RSTD
     IO_FORMAT instanceFormat;
     
-    // name of file containing determistic MCFND network (default or
+    // name of file containing determistic MCFND instance (default or
     // modified with option key I)
     string inputInstFileName;
 
@@ -139,30 +139,17 @@ struct Configuration
     VectTypes allTypes;    
 
     Configuration(int argc, char **argv, string configFileName);
-
-	// unused
+	
     void printHelpAndExit();
 
 	// unused
-    void printUsageAndExit(char ExecName[], bool anonymous);
-
-	// unused
-    // While traversing command line, attempts to find (i) name of
-    // of a configuation file and (ii) request of verbosity.
-    void parseConfigFileNameFromCmdLine();
-
-	// unused
-    // Processes keys or (key, value) pairs specified on non-comment line of
-    // configuration file.
-    bool processConfigFile();
+    void printUsageAndExit(char ExecName[], bool anonymous);	
 
     // Parses command line.
-    void parseCmdLine();
-
-	// unused
-    // Parses key or (key, value) pair found on a line of the configuration
-    // file.
-    void parseKeyValue(string key, string value);
+    void parseCmdLine();	
+	
+	// While traversing command line, seeks flags for verbose or help modes.
+    void parseConfigModesFromCmdLine();	
 
 	// unused
     // Removes quotes from value in (key, value) pair on a non-comment line
@@ -170,11 +157,7 @@ struct Configuration
     string removeQuotes(istringstream &configLine);
 
     // Verifies configuration values.
-    void verify();
-	
-	// unused
-	// Verifies that output path is valid.
-	void verifyOutputPath(string);
+    void verifyInputInstance();	
 	
 };
 

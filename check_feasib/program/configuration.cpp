@@ -25,8 +25,8 @@
 
 // Constructor
 Configuration::Configuration(int argc, char **argv, string _configFileName)
-    : nbArg(argc), vectArg(argv), verbose(false), configFileName(_configFileName), instanceFormat(GSTD),
-      inputInstFileName("./base_network.dow")
+    : nbArg(argc), vectArg(argv), verbose(false), instanceFormat(GSTD),
+      inputInstFileName("./base_network.std")
 {
     if (nbArg == 2 && (strcmp(vectArg[1], "-h") == 0 || strcmp(vectArg[1], "-H") == 0))
         printHelpAndExit();
@@ -35,13 +35,9 @@ Configuration::Configuration(int argc, char **argv, string _configFileName)
     allTypes.push_back(CAP_ARC);                
     allTypes.push_back(CAP_COMMOD);                
     allTypes.push_back(FIXED_COST);                
-    allTypes.push_back(VAR_COST);
-	
-    parseConfigFileNameFromCmdLine();
-    //processConfigFile();
+    allTypes.push_back(VAR_COST);	 
 	
     parseCmdLine();
-    verify();
 }
 
 // Parses command line.
@@ -59,12 +55,21 @@ void Configuration::parseCmdLine()
         {
 
             key = &vectArg[a][1];
+			
+			if (strlen(vectArg[a]) > 2)
+			{
+				cerr << "\nERROR:\n"
+					<< "Option key " << vectArg[a] << " was received in instruction line.\n"
+					<< "However, it comprises MORE than one character whereas it must have ONLY ONE.\n"			
+					<< "EXECUTION ABORTED" << endl;
+					exit(1);     
+			}			
 
             if (a < nbArg - 1)
             {
                 value = vectArg[a + 1];
 
-                if (((vectArg[a + 1][0] == PARAM_PREFIX) || (vectArg[a + 1][0] == CONFIG_PREFIX)) &&
+                if ((vectArg[a + 1][0] == PARAM_PREFIX) &&
                     isalpha(vectArg[a + 1][1]))
                     value = "";
                 else
@@ -74,7 +79,7 @@ void Configuration::parseCmdLine()
                 value = "";
 
             if (verbose)
-                cout << "****** command line -- parameter [" << key << "] = [" << value << "]" << endl;
+                cout << "****** command line -- option key and value [" << key << "] [" << value << "]" << endl;
 
             switch (*key)
             {
@@ -94,21 +99,28 @@ void Configuration::parseCmdLine()
                     instanceFormat = RSTD;
                     break;
                 }
-                ////printUsageAndExit(vectArg[0], false);
-                break;           
+				else
+				{				
+					cerr << "\nERROR:\n"
+						<< "Option key F in instruction line can only be followed\n"
+						<< "by one of the three following values: D, G, R.\n"
+						<< "However, value " << *value <<  " was received.\n"
+						<< "EXECUTION ABORTED" << endl;
+					exit(1);                
+					break;    
+				}					
             case 'I':
                 inputInstFileName = value;
-                break;
-            // help
-            case 'H':
-                printHelpAndExit();
-                break;
-            case 'h':
-                printHelpAndExit();
+				verifyInputInstance();
                 break;
             default:
-                ////printUsageAndExit(vectArg[0], false);
-                break;
+				cerr << "\nERROR:\n"
+					<< "Only the following option keys are admissible in\n"
+					<< "the instruction line: F, I.\n"
+					<< "However, the key " << *key <<  " was received.\n"
+					<< "EXECUTION ABORTED" << endl;
+				exit (1);                
+				break;   
             }
         }
 
@@ -118,191 +130,49 @@ void Configuration::parseCmdLine()
     cout << "\n****** End parsing configuration parameters from the command line.\n";
 }
 
-// unused
-// Parses key or (key, value) pair found on a line of the configuration file.
-inline void Configuration::parseKeyValue(string key, string value)
+// While traversing command line, seeks flags for verbose or help modes.
+void Configuration::parseConfigModesFromCmdLine()
 {
-    switch (key[0])
-    {
-    case 'F':
-        if (value == "D")
-        {
-            instanceFormat = DOW;
-            break;
-        }
-        else if (value == "G")
-        {
-            instanceFormat = GSTD;
-            break;
-        }
-        else if (value == "R")
-        {
-            instanceFormat = RSTD;
-            break;
-        }
-        ////printUsageAndExit(0, true);
-        break;   
-    case 'I':
-        inputInstFileName = value;
-        break;
-    // help
-    case 'H':
-        printHelpAndExit();
-        break;
-    case 'h':
-        printHelpAndExit();
-        break;
-    default:
-        ////printUsageAndExit(0, true);
-        break;
-    }
-}
-
-// Verifies configuration values.
-void Configuration::verify()
-{	
-    if (inputInstFileName == "")
-    {
-        cerr << "\nERROR:\n";
-        cerr << "No deterministic base instance file was specified.\n";
-        cerr << "Use option -I" << endl;
-        exit(1);
-    }
-    else if (!filesystem::exists(inputInstFileName))
-    {
-        cerr << "\nERROR:\n";
-        cerr << "The specified deterministic base instance file could not be found.\n";
-        cerr << "Use option -I" << endl;
-        exit(1);
-    }	
-}
-
-// unused
-// While traversing command line, attempts to find (i) name of
-// of a configuration file and (ii) request of verbosity.
-void Configuration::parseConfigFileNameFromCmdLine()
-{
-    bool foundFile = false;
-
     for (int a = 1; a < nbArg; a++)
     {
         if (vectArg[a][0] == CONFIG_PREFIX)
         {
-            if (strcmp(vectArg[a], CONFIG_FILE_KEY) == 0)
-            {
-                // checks if configuration file name is specified on cmd line
-                if (a < nbArg - 1)
-                {
-                    configFileName = vectArg[a + 1];
-                    foundFile = true;
-                }
-            }
-            else if (strcmp(vectArg[a], CONFIG_VERBOSE_MODE) == 0)
+            if (strcmp(vectArg[a], CONFIG_VERBOSE_MODE) == 0)
             {
                 verbose = true;
-            }
-            //
+            }			
+			else if (strcmp(vectArg[a], CONFIG_HELP_MODE) == 0)
+            {
+                printHelpAndExit();
+            }            
             else if (isalpha(vectArg[a][1]))
                 cerr << "****** configuration prefix [" << vectArg[a] << "] unknown.\n";
         }
     }
     if (verbose)
     {
-        cout << "\n********* VERBOSE MODE *********\n\n";
-
-        if (foundFile)
-            cout << "****** configuration file name [" << CONFIG_FILE_KEY << "] = [" << configFileName << "]\n";
-
-        cout << endl;
+        cout << "\n********* VERBOSE MODE *********\n" << endl;        
     }
 }
 
-// unused
-// Processes keys or (key, value) pairs specified on a non-comment lines of
-// configuration file.
-bool Configuration::processConfigFile()
-{
-    char line[lineLength];
-    ifstream inStr;
-
-    // checking if configuration file exists
-    if (!filesystem::is_regular_file(configFileName))
+void Configuration::verifyInputInstance()
+{	
+    if (inputInstFileName == "")
     {
-        cerr << "\nERROR:" << endl;
-        cerr << "The specified configuration file " << configFileName << " could not be found." << endl;
-        cerr << "EXECUTION ABORTED\n" << endl;
+        cerr << "\nERROR:\n"
+			<< "No instance file was specified.\n"
+			<< "Use option -I\n"
+			<< "EXECUTION ABORTED" << endl;
         exit(1);
     }
-
-    inStr.open(configFileName);
-
-    if (!inStr.is_open())
+    else if (!filesystem::exists(inputInstFileName))
     {
-        cerr << "\nERROR:" << endl;
-        cerr << "The specified configuration file " << configFileName << " could not be opened." << endl;
-        cerr << "EXECUTION ABORTED\n" << endl;
+        cerr << "\nERROR:\n"
+			<< "The specified instance file " << inputInstFileName << "\n"
+			<< "could not be found. Use option -I\n"
+			<< "EXECUTION ABORTED" << endl;
         exit(1);
-    }
-
-    bool found = 0;
-    
-    cout << "\n****** Begin parsing this configuration file: " << configFileName << "]\n\n";
-
-    inStr.getline(line, lineLength);
-    while (inStr)
-    {
-        istringstream configLine(line);
-
-        string key;
-        configLine >> key;
-        string value = removeQuotes(configLine);
-
-        int pos = (key[0] == PARAM_PREFIX) ? 1 : 0;
-
-        // ensures that it is not a comment
-        if (isalpha(key[pos]))
-        {
-            found = 1;
-            if (verbose)
-                cout << "****** configuration file -- parameter [" << key.substr(pos) << "] = [" << value << "]\n";
-            parseKeyValue(key.substr(pos), value);
-        }
-        inStr.getline(line, lineLength);
-    }
-	
-	cout << "\n****** End parsing this configuration file: " << configFileName << endl;
-
-    return found;
-}
-
-// unused
-// Removes quotes from value in (key, value) pair on a non-comment line
-// of the configuration file.
-inline string Configuration::removeQuotes(istringstream &configLine)
-{
-    char caract = '\0';
-    string outString("");
-
-    configLine >> caract;
-
-    if (configLine)
-    {
-        if (caract == '"')
-        {
-            char temp0[lineLength];
-            temp0[0] = '\0';
-            configLine.getline(temp0, lineLength, '"');
-            outString = temp0;
-        }
-        else
-        {
-            string temp1;
-            configLine >> temp1;
-            outString = caract + temp1;
-        }
-    }
-
-    return outString;
+    }	
 }
 
 // unused

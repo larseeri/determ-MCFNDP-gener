@@ -76,7 +76,7 @@ bool CPXModel::testInstance()
 
     cplex.solve();
 
-    return (cplex.getStatus() == IloAlgorithm::Optimal);
+    return (cplex.getStatus() == IloAlgorithm::Optimal || cplex.getStatus() == IloAlgorithm::Feasible);
 }
 
 // Modifies model to reflect network under testing.
@@ -255,7 +255,7 @@ bool HIGHSModel::testInstance()
 
     const HighsModelStatus &model_status = highs.getModelStatus();
 
-    return (model_status == HighsModelStatus::kOptimal);
+    return (model_status == HighsModelStatus::kOptimal || model_status == HighsModelStatus::kModelEmpty);
 }
 
 void HIGHSModel::setUpperRows()
@@ -290,28 +290,71 @@ void HIGHSModel::setHIGHSAMatrix()
 {
     int countAll = 0;
     for (int row = 0; row < numbRows; row++)
-    {
-        bool first = true;
-        for (int col = 0; col < numbCols; col++)
-        {
-            if (prelAMatrix[row][col] != 0)
-            {
-                highsModel.lp_.a_matrix_.index_.push_back(col);
-                highsModel.lp_.a_matrix_.value_.push_back(prelAMatrix[row][col]);
+    {		
+		bool foundInRow = false;
+		// handles empty rows of flow constraints about isolated nodes
+		for (int col = 0; col < numbCols; col++)
+        {		
+			if (prelAMatrix[row][col] != 0)
+				foundInRow = true;		
+		}
+		if (!foundInRow)
+		{
+			highsModel.lp_.a_matrix_.index_.push_back(0);
+            highsModel.lp_.a_matrix_.value_.push_back(prelAMatrix[row][0]);
+			highsModel.lp_.a_matrix_.start_.push_back(countAll);
+			countAll++;		
+		}
+		else
+		{
+			bool first = true;
+			for (int col = 0; col < numbCols; col++)
+			{
+				if (prelAMatrix[row][col] != 0)
+				{
+					highsModel.lp_.a_matrix_.index_.push_back(col);
+					highsModel.lp_.a_matrix_.value_.push_back(prelAMatrix[row][col]);
 
-                if (first)
-                {
-                    highsModel.lp_.a_matrix_.start_.push_back(countAll);
-                    first = false;
-                }
-                countAll++;
-            }
-        }
+					if (first)
+					{
+						highsModel.lp_.a_matrix_.start_.push_back(countAll);
+						first = false;
+					}
+					countAll++;
+				}
+			}
+		}			
     }
     highsModel.lp_.a_matrix_.start_.push_back(countAll);
 }
 
-// Modifies model to reflect network under testing.
+// ORIG
+// void HIGHSModel::setHIGHSAMatrix()
+// {
+    // int countAll = 0;
+    // for (int row = 0; row < numbRows; row++)
+    // {
+        // bool first = true;
+        // for (int col = 0; col < numbCols; col++)
+        // {
+            // if (prelAMatrix[row][col] != 0)
+            // {
+                // highsModel.lp_.a_matrix_.index_.push_back(col);
+                // highsModel.lp_.a_matrix_.value_.push_back(prelAMatrix[row][col]);
+
+                // if (first)
+                // {
+                    // highsModel.lp_.a_matrix_.start_.push_back(countAll);
+                    // first = false;
+                // }
+                // countAll++;
+            // }
+        // }
+    // }
+    // highsModel.lp_.a_matrix_.start_.push_back(countAll);
+// }
+
+// Modifies model to reflect instance under testing.
 // Cases DOW or RSTD: one source node and one sink node per commodity.
 void HIGHSModel_DowRStd::updateValues()
 {
@@ -355,7 +398,7 @@ void HIGHSModel_DowRStd::updateValues()
     }
 }
 
-// Modifies model to reflect network under testing.
+// Modifies model to reflect instance under testing.
 // Case GSTD: not one source node and one sink node per commodity.
 void HIGHSModel_GStd::updateValues()
 {

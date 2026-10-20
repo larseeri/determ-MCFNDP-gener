@@ -26,7 +26,7 @@
 // USER GUIDE
 //
 // This application verifies if a specified instance of the deterministic
-// multi-commodity, capacitated, fixed charge network design (MCFND) problem is
+// multi-commodity, capacitated, fixed charge network design problem (MCFNDP) is
 // feasible. It does so by (i) opening all existing arcs in the network,
 // (ii) setting the fixed cost over each arc to 0, (iii) setting the variable
 // cost over each arc-commodity pair to 1, (iv) leaving unchanged demanded and
@@ -37,7 +37,7 @@
 // This user guide comprises the following sections:
 // 1 Building and running the program directly from the Linux command line
 // 2 Running the program through Docker instructions
-// 3 Format of the deterministic MCFND instance file
+// 3 Format of the deterministic MCFNDP instance file
 // 4 Detailed examples
 //
 // 1 Building and running the program directly from the Linux command line
@@ -99,12 +99,15 @@
 //
 // where the two available main options are
 //
-// F <char>; format of file containing the deterministic MCFND network;
-// D: DOW, G: STD; default: G
+// F <char>; format of file containing the deterministic MCFNDP instance;
+// D: DOW, R: RSTD, G: GSTD, default: G (see Section 3 below for details)
 //
-// I <string>; path of file where the deterministic MCFND network is to be
+// I <string>; path of file where the deterministic MCFNDP instance is to be
 // read; default value is './network.std'; (see further
 // below about Docker instructions)
+//
+// Important:
+// The path specified with option key I must not contain any blank space.
 //
 // The result is displayed on standard output as follows:
 //
@@ -117,11 +120,10 @@
 // The verbosity option +v can be used to obtain more information about the
 // the option parsing process.
 //
-// To display the complete documentation about the application, run
+// To display the complete documentation about the application and the
+// available options, run
 //
-// ./determ_feasib -H
-// or
-// ./determ_feasib -h
+// ./determ_gen +H
 //
 // See Section 4 below for examples of instructions when the program is run
 // with command line instructions.
@@ -181,18 +183,18 @@
 //
 // Hence, the following command line instruction:
 //
-// ./determ_feasib +v -F formatOfNetwork -I pathOfNetworkFile
+// ./determ_feasib +v -F formatOfInstance -I pathOfInstanceFile
 //
 // corresponds to the following Docker instruction:
 //
-// docker run --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_feasib_image /determ_feasib +v -F formatOfNetwork -I /inout/networkFile
+// docker run --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_feasib_image /determ_feasib +v -F formatOfInstance -I /inout/instanceFile
 //
 // Important: 
 // When running the program through Docker instructions, all input and output
 // files must be located inside the docker/inout subfolder. Within the Docker 
 // instructions and the configuration files, this subfolder must be denoted
-// /inout since it is located at the root of the Docker container. Hence, a
-// network file located at docker/inout/networkFile.std will be
+// /inout since it is located at the root of the Docker container. Hence, an
+// instance file located at docker/inout/networkFile.std will be
 // specified in the Docker instruction or inside the configuration file with
 // -I /inout/networkFile.std.
 //
@@ -242,29 +244,40 @@
 // See Section 4 below for examples of configuration files and instructions
 // when the program is run through Docker.
 //
-// 3 Format of the deterministic MCFND instance file
-// *************************************************
+// 3 Format of the deterministic MCFNDP instance file
+// **************************************************
 //
-// By default, the name of the file describing the base deterministic MCFND
-// network is './network.std' (Linux instructions),
+// By default, the name of the file describing the deterministic MCFNDP
+// instance is './network.std' (Linux instructions),
 // './inout/network.std' (Docker instructions) and the default input format
 // is STD. This name may be changed with option I and the input format can
 // be indicated accordingly with option F.
 //
 // Important:
 // It is critical that the content of the file describing the base
-// deterministic MCFND instance and the indicated format of its content match
+// deterministic MCFNDP instance and the indicated format of its content match
 // together.
 //
-// DOW and STD formats are commonly used to store deterministic MCFND instances
+// DOW and STD formats are commonly used to store deterministic MCFNDP instances
 // in text files. These formats are described in files DOW-format-desc.txt and
-// STD-format-desc.txt. The application can read from these two formats. One of
-// these three formats may be selected with option F.
-// a- DOW presupposes that (i) for each arc, capacities and variable
+// STD-format-desc.txt. The application can read from these two formats and also
+// recognized a specialization of STD.
+// The three following formats may be selected with option F.
+// a- DOW (option value D) presupposes that (i) for each arc, capacities and variable
 // costs are identical for all commodities and (ii) each commodity has a
 // single source node (at which volume > 0) and a single sink node (at which
 // volume < 0).
-// b- STD imposes neither (i), nor (ii).
+// b- GSTD (option value G) designates the STD format. STD is fully generic 
+// and imposes neither (i), nor (ii).
+// c- RSTD (option R) designates a specialization of STD in which condition (ii)
+// above is imposed. It defined for convenience and for the purposes only of
+// the present application.
+//
+// Important:
+// The STD and DOW formats specify that negative arc capacities and negative
+// commodity-specific capacities be interpreted as infinite. When reading
+// instance files in GSTD, RSTD or DOW format, negative capacities are set
+// to 1E+9.
 //
 // Example
 // *******
@@ -274,8 +287,8 @@
 // ./determ_feasib -I instB.std -F G 
 //
 // It is interpreted as follows:
-// -I instB.std: deterministic network is to be read from file instB.std
-// -F G: format of the latter is STD
+// -I instB.std: instance to be read from file instB.std
+// -F G: format of the latter is GSTD, that is, generic STD
 //
 // 4 Detailed examples
 // *******************
@@ -296,9 +309,9 @@
 // 4.1.1 DOW format
 // ****************
 //
-// In the deterministic network, there is one source and one sink for each 
+// In the MCFNDP instance, there is one source and one sink for each 
 // commodity and no differentiation of variable costs and capacities according
-// to commodities. The network is received in the DOW format.
+// to commodities. The instance is received in the DOW format.
 //
 // 4.1.1.1 Operation of the feasibility tester
 // *******************************************
@@ -311,17 +324,17 @@
 //
 // docker run --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_feasib_image /determ_feasib +v -F D -I /inout/determ_oneSrcOneSnk_12oct2026-17h09.dow
 //
-// Location of deterministic network file (input):
+// Location of instance file (input):
 // /examples/oneSrcOneSnk/determ_oneSrcOneSnk_12oct2026-17h09.dow
 //
 // Displayed output:
 //
 // Verifying feasibility: SUCCESS
 //
-// 4.1.1.2 Origin of the deterministic network
-// *******************************************
+// 4.1.1.2 Origin of the MCFNDP instance
+// *************************************
 //
-// The deterministic network was originally produced by the determistic
+// The MCFNDP instance was originally produced by the deterministic
 // generator as follows.
 //
 // Linux command line instruction:
@@ -344,7 +357,7 @@
 // 4.1.2 STD format
 // ****************
 //
-// Similar to 4.1.1, except that the network is received in the STD format
+// Similar to 4.1.1, except that the instance is received in the STD format
 //
 // 4.1.2.1 Operation of the feasibility tester
 // *******************************************
@@ -357,15 +370,15 @@
 //
 // docker run --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_feasib_image /determ_feasib +v -F G -I /inout/determ_oneSrcOneSnk_12oct2026-17h09.std
 //
-// Location of deterministic network file (input):
+// Location of instance file (input):
 // /examples/oneSrcOneSnk/determ_oneSrcOneSnk_12oct2026-17h09.std
 //
 // Displayed output:
 //
 // Verifying feasibility: SUCCESS
 //
-// 4.1.2.2 Origin the base deterministic network
-// *********************************************
+// 4.1.2.2 Origin of the MCFNDP instance
+// *************************************
 //
 // Similar to 4.1.1.2.
 //
@@ -398,10 +411,10 @@
 //
 // Verifying feasibility: SUCCESS
 //
-// 4.2.1.2 Origin of the base deterministic network
-// ************************************************
+// 4.2.1.2 Origin of the MCFNDP instance
+// *************************************
 //
-// The base deterministic network was originally produced by the determistic
+// The MCFNDP instance was originally produced by the deterministic
 // generator as follows.
 //
 // Linux command line instruction:
@@ -467,18 +480,31 @@ int main(int argc, char **argv)
 
     if (!is.is_open())
     {
-        cerr << "\nERROR: " << endl;
-        cerr << "The file " << params.inputInstFileName
-             << " containing the base deterministic network could not be opened." << endl;
-        cerr << "EXECUTION ABORTED\n" << endl;
+        cerr << "\nERROR:\n"
+			<< "The file " << params.inputInstFileName
+            << "containing the MCFNDP instance could not be opened.\n"
+			<< "EXECUTION ABORTED\n" << endl;
         exit(1);
     }
-
-    // read base deterministic network from source;
-    // input operator is defined in instance.h;
-    // InstanceDow::read() or InstanceStd::read() is called
-    is >> *inst;
-
+	
+	try
+	{
+		// read deterministic MCFNDP instance from source;
+		// input operator is defined in instance.h;
+		// InstanceDow::read() or InstanceStd::read() is called
+		is >> *inst;
+	}	
+	catch (...)
+	{
+		cerr << "ERROR:\n"
+			<< "An exception occured while attempting to read file " << params.inputInstFileName << "\n"
+			<< "The expected format of this file according to value of option key F in instruction line is "
+			<< to_string(params.instanceFormat) << ".\n"
+			<< "Ascertain that file and format are consistent.\n"
+			<< "EXECUTION ABORTED\n" << endl;
+        exit(1);		
+	}
+	
     // create solution model for feasibility testing
     Model *model;
 

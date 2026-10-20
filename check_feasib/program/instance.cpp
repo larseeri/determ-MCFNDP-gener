@@ -79,16 +79,27 @@ void Instance::allocate()
 // Reads a base deterministic MCFND network stored in DOW format.
 void InstanceDow::read(istream &is)
 {
+	cout << "\n****** Begin reading DOW instance " << params->inputInstFileName << "." << endl;	
+	
     string line, dummy;
     double capac, volume, varCost, fixedCost;
     int countArc = 0, countDemand = 0, countComm = 0;
 
     getline(is, line);
+	
+	if (line != " MULTIGEN.DAT:")
+	{	
+		cerr << "\nERROR:\n"
+			<< "The file " << params->inputInstFileName << " specified with option key I\n"
+			<< "does not conform to the expected DOW format specified with option key F.\n"
+			<< "EXECUTION ABORTED" << endl;
+			exit(1);	
+	}
 
     is >> numbNodes >> numbArcs >> numbCommods;
 
     allocate();
-
+	
     for (int a = 0; a < numbArcs; a++)
     {
         Arc arc(numbCommods);
@@ -96,10 +107,24 @@ void InstanceDow::read(istream &is)
 
         is >> arc.orig >> arc.dest >> varCost
             >> capac >> fixedCost
-            >> dummy >> idxArc;
+            >> dummy >> idxArc;			
+			
+		if (arc.orig > numbArcs || arc.dest > numbArcs)
+		{
+			cerr << "\nERROR:\n"
+				<< "At least one of the two node indexes (" << arc.orig << ", " << arc.dest << ") stated\n"
+				<< "in conection with an arc listed in instance file " << params->inputInstFileName << "\n"
+				<< "exceeds the total number of nodes stated at beginning of file.\n"
+				<< "EXECUTION ABORTED" << endl;
+				exit(1);		
+		}			
 
         arc.orig--;
         arc.dest--;
+		
+		if (capac < 0)
+			capac = 100000000;
+		
         elems[CAP_ARC][countArc] = capac;
         elems[FIXED_COST][countArc] = fixedCost;
         nodes[arc.orig].arcOut.push_back(countArc);
@@ -116,6 +141,15 @@ void InstanceDow::read(istream &is)
 
         arcs[idxArc] = arc;
     }
+	
+	if (countArc != numbArcs)
+	{
+		cerr << "\nERROR:\n"
+			<< "The number of arcs " << countArc << " detected in instance file " << params->inputInstFileName << "\n"
+			<< "does not agree with the number of arcs " << numbArcs << " stated at beginning of file.\n"
+			<< "EXECUTION ABORTED" << endl;
+			exit(1);		
+	}
 
     for (int k = 0; k < numbCommods; k++)
     {
@@ -125,6 +159,8 @@ void InstanceDow::read(istream &is)
         commods[k].dest--;
         elems[DEMAND][countDemand++] = volume;
     }
+	
+	cout << "\n****** End reading DOW instance " << params->inputInstFileName << ".\n" << endl;
 }
 
 // Reads a deterministic MCFNDP stored in restricted STD format.
@@ -132,8 +168,11 @@ void InstanceDow::read(istream &is)
 // and a single sink node for each commodity.
 void InstanceRStd::read(istream &is)
 {
+	cout << "\n****** Begin reading RSTD instance " << params->inputInstFileName << "." << endl;	
+		
     string line, dummy;
-    int numbComm, idxComm, idxNode, capac, volume, varCost, fixedCost;
+    int numbComm, idxComm, idxNode;
+	double capac, volume, varCost, fixedCost;
     int countArc = 0, countDemand = 0, countComm = 0;
 
     is >> numbNodes >> numbArcs >> numbCommods;
@@ -146,29 +185,78 @@ void InstanceRStd::read(istream &is)
 
         is >> arc.orig >> arc.dest >> fixedCost // arc.cost
             >> capac >> numbComm;
+			
+		if (arc.orig > numbArcs || arc.dest > numbArcs)
+		{
+			cerr << "\nERROR:\n"
+				<< "At least one of the two node indexes (" << arc.orig << ", " << arc.dest << ") stated\n"
+				<< "in conection with an arc listed in instance file " << params->inputInstFileName << "\n"
+				<< "exceeds the total number of nodes stated at beginning of file.\n"
+				<< "EXECUTION ABORTED" << endl;
+				exit(1);		
+		}	
+
+		if (numbCommods < numbComm)
+		{
+			cerr << "\nERROR:\n"
+				<< "In instance file " << params->inputInstFileName << " the number of commodities " << numbComm
+				<< "stated in connection with arc (" << arc.orig << ", " << arc.dest << ") for which the\n"
+				<< "capacities are zero exceeds the number of commodities stated at beginning of file.\n"
+				<< "EXECUTION ABORTED" << endl;
+				exit(1);		
+		}	
 
         arc.orig--;
         arc.dest--;
+		
+		if (capac < 0)
+			capac = 100000000;
+		
         elems[CAP_ARC][countArc] = capac;
         elems[FIXED_COST][countArc] = fixedCost;
         nodes[arc.orig].arcOut.push_back(countArc);
         nodes[arc.dest].arcIn.push_back(countArc);
-        countArc++;
-
+        countArc++;		
+		
         for (int k = 0; k < numbComm; k++)
         {
             is >> idxComm;
+			
+			if (idxComm > numbCommods)
+			{
+				cerr << "\nERROR:\n"
+					<< "The commodity index " << idxComm << " stated while listing the costs and capacities\n"
+					<< "in connection with arc ("<< arc.orig << ", " << arc.dest << ") in instance file\n"
+					<< params->inputInstFileName << " exceeds the total number of commodities at beginning of file.\n"
+					<< "EXECUTION ABORTED" << endl;
+					exit(1);
+			}
+			
             idxComm--;
             is >> varCost // arc.comms[idxComm].cost
                 >> capac;
+				
+			if (capac < 0)
+				capac = 100000000;
 
-            elems[CAP_COMMOD][countComm] = capac;
-            elems[VAR_COST][countComm] = varCost;
+			//EL: replaced 19oct2026-3h35: elems[CAP_COMMOD][countComm] = capac;
+            //EL: replaced 19oct2026-3h35: elems[VAR_COST][countComm] = varCost;
+            elems[CAP_COMMOD][a * k + (idxComm - 1)] = capac;
+            elems[VAR_COST][a * k + (idxComm - 1)] = varCost;
             countComm++;
         }
-
+		
         arcs[a] = arc;
     }
+	
+	if (countArc != numbArcs)
+	{
+		cerr << "\nERROR:\n"
+			<< "The number of arcs detected in instance file " << params->inputInstFileName << "\n"
+			<< "does not agree with the number of arcs stated at beginning of file.\n"
+			<< "EXECUTION ABORTED" << endl;
+			exit(1);		
+	}	
 
     for (int k = 0; k < numbCommods * 2; k++)
     {
@@ -185,28 +273,57 @@ void InstanceRStd::read(istream &is)
             elems[DEMAND][countDemand++] = volume;
         }
     }
+	
+	cout << "\n****** End reading RSTD instance " << params->inputInstFileName << "\n." << endl;
 }
 
 // Reads a deterministic MCFNDP stored in generic STD format.
 void InstanceGStd::read(istream &is)
 {
+	cout << "\n****** Begin reading GSTD instance " << params->inputInstFileName << "." << endl;
+	
     string line, dummy;
-    int numbComm, idxComm, idxNode, capac, volume, varCost, fixedCost;
+    int numbComm, idxComm, idxNode;
+	double capac, volume, varCost, fixedCost;
     int countArc = 0, countComm = 0;
 
-    is >> numbNodes >> numbArcs >> numbCommods;
+	is >> numbNodes >> numbArcs >> numbCommods;	
 
     allocate();
 
     for (int a = 0; a < numbArcs; a++)
     {
         Arc arc(numbCommods);
+		
+		is >> arc.orig >> arc.dest >> fixedCost // arc.cost
+				>> capac >> numbComm;
+			
+		if (arc.orig > numbArcs || arc.dest > numbArcs)
+		{
+			cerr << "\nERROR:\n"
+				<< "At least one of the two node indexes (" << arc.orig << ", " << arc.dest << ") stated\n"
+				<< "in conection with an arc listed in instance file " << params->inputInstFileName << "\n"
+				<< "exceeds the total number of nodes stated at beginning of file.\n"
+				<< "EXECUTION ABORTED" << endl;
+				exit(1);		
+		}	
 
-        is >> arc.orig >> arc.dest >> fixedCost // arc.cost
-            >> capac >> numbComm;
+		if (numbCommods < numbComm)
+		{
+			cerr << "\nERROR:\n"
+				<< "In instance file " << params->inputInstFileName << " the number of commodities " << numbComm
+				<< "stated in connection with arc (" << arc.orig << ", " << arc.dest << ") for which the\n"
+				<< "capacities are zero exceeds the number of commodities stated at beginning of file.\n"
+				<< "EXECUTION ABORTED" << endl;
+				exit(1);		
+		}	
 
         arc.orig--;
         arc.dest--;
+		
+		if (capac < 0)
+			capac = 100000000;
+		
         elems[CAP_ARC][countArc] = capac;
         elems[FIXED_COST][countArc] = fixedCost;
         nodes[arc.orig].arcOut.push_back(countArc);
@@ -214,19 +331,47 @@ void InstanceGStd::read(istream &is)
         countArc++;
 
         for (int k = 0; k < numbComm; k++)
-        {
-            is >> idxComm;
-            idxComm--;
-            is >> varCost // arc.comms[idxComm].cost
-                >> capac;
+        {			
+					
+			is >> idxComm;
+			
+			if (idxComm > numbCommods)
+			{
+				cerr << "\nERROR:\n"
+					<< "The commodity index " << idxComm << " stated while listing the costs and capacities\n"
+					<< "in connection with arc ("<< arc.orig << ", " << arc.dest << ") in instance file\n"
+					<< params->inputInstFileName << "exceeds the total number of commodities at beginning of file.\n"
+					<< "EXECUTION ABORTED" << endl;
+					exit(1);
+			}
+			
+            idxComm--;			
+						
+			is >> varCost // arc.comms[idxComm].cost
+					>> capac;			
+				
+			if (capac < 0)
+				capac = 100000000;
 
-            elems[CAP_COMMOD][countComm] = capac;
-            elems[VAR_COST][countComm] = varCost;
+            //EL: replaced 19oct2026-3h35: elems[CAP_COMMOD][countComm] = capac;
+            //EL: replaced 19oct2026-3h35: elems[VAR_COST][countComm] = varCost;
+			elems[CAP_COMMOD][a * k + (idxComm - 1)] = capac;
+            elems[VAR_COST][a * k + (idxComm - 1)] = varCost;
+			
             countComm++;
-        }
+        }		
 
         arcs[a] = arc;
     }
+	
+	if (countArc != numbArcs)
+	{
+		cerr << "\nERROR:\n"
+			<< "The number of arcs detected in instance file " << params->inputInstFileName << "\n"
+			<< "does not agree with the number of arcs stated at beginning of file.\n"
+			<< "EXECUTION ABORTED" << endl;
+			exit(1);		
+	}	
 
     for (int k = 0; k < numbCommods; k++)
     {
@@ -253,6 +398,8 @@ void InstanceGStd::read(istream &is)
     {
         elems[DEMAND][k] = commods[k].origVolume;
     }
+	
+	cout << "\n****** End reading GSTD instance " << params->inputInstFileName << ".\n" << endl;
 }
 
 
