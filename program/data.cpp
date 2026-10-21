@@ -108,8 +108,8 @@ Data::Data(int argc, char **argv, string fileName)
     // useful to activate only if grid-like secTopology
     if (secTopology >= 1 && secTopology <= 3)
     {
-        readParam("lengthX", "lengthX", lengthX, 1, 1000); //EL:
-        readParam("lengthY", "lengthY", lengthY, 1, 1000); //EL:
+        readParam("lengthX", "lengthX", lengthX, 1, 1000);
+        readParam("lengthY", "lengthY", lengthY, 1, 1000);
     }  	
 	
     readParam("numbNodes", "numbNodes", numbNodes, 1, 10000);    
@@ -260,6 +260,61 @@ Data::Data(int argc, char **argv, string fileName)
 	}
 
     crossValidateParams();	
+	
+	scanWarnUnaccKeysFromCmdLine();
+	
+	scanWarnUnaccKeysFromConfigFile();
+	
+}
+
+// Warns of remaining, unaccounted content in instruction line map. 
+void Data::scanWarnUnaccKeysFromCmdLine()
+{
+	if (paramProcessing.isVerbose())
+		cout << "\n****** Begin scanning for unaccounted [key] [value] pairs in instruction line." << endl;
+	
+	if (!paramProcessing.getParamToValueMapFromCmdLine().empty())
+	{		
+		 cout << "\nWARNING:\n"
+				<< "The following [key] [value] pairs have been found in instruction line\n"
+				<< "and cannot be accounted for:\n" << endl;		
+	
+		for (const auto& [option, value] : paramProcessing.getParamToValueMapFromCmdLine())
+			cout << "[" << option << "] [" << value << "]" << endl;
+	}	
+	else
+	{
+		if (paramProcessing.isVerbose())
+			cout << "\nNo unaccounted [key] [value] pairs have been found in instruction line.\n" << endl;		
+	}
+	
+	if (paramProcessing.isVerbose())
+		cout << "\n****** End scanning for unaccounted [key] [value] pairs in instruction line." << endl;	
+}
+
+// Warns of remaining, unaccounted content in configuration file map. 
+void Data::scanWarnUnaccKeysFromConfigFile()
+{
+	if (paramProcessing.isVerbose())
+		cout << "\n****** Begin scanning for unaccounted [key] [value] pairs in configuration file." << endl;
+	
+	if (!paramProcessing.getParamToValueMapFromConfigFile().empty())
+	{		
+		 cout << "\nWARNING:\n"
+				<< "The following [key] [value] pairs have been found in configuration file\n"
+				<< "and cannot be accounted for:\n" << endl;		
+	
+		for (const auto& [option, value] : paramProcessing.getParamToValueMapFromConfigFile())
+			cout << "[" << option << "] [" << value << "]" << endl;
+	}	
+	else
+	{
+		if (paramProcessing.isVerbose()) 
+			cout << "\nNo unaccounted [key] [value] pairs have been found in configuration file.\n" << endl;		
+	}
+	
+	if (paramProcessing.isVerbose())
+		cout << "\n****** End scanning for unaccounted [key] [value] pairs in configuration file." << endl;	
 }
 
 void Data::displayError(string error)
@@ -411,7 +466,7 @@ void Data::crossValidateParams()
 				displayError("maxSatComCap > minComVol, whereas equalSatComCaps does not hold");
 
 			if (maxSatCommCapac > minSatArcCapac)
-				displayError("maxSatComCap > minSatArcCap, whereas equalSatComCaps does not hold"); //El:
+				displayError("maxSatComCap > minSatArcCap, whereas equalSatComCaps does not hold");
 
 			if (maxSatArcCapac > numbCommods * minSatCommCapac)
 				displayError("maxSatArcCap > numbCom * minSatComCap, whereas equalSatComCaps does not hold");
@@ -467,11 +522,11 @@ void Data::verifyOutputPath(string fullPath)
 	
 		if (!filesystem::exists(folderPath) || !filesystem::is_directory(folderPath))			
 		{			
-			cerr << "\nERROR: " << endl;    
-			cerr << "Output file path " << fullPath << " was specified.\n" 
+			cerr << "\nERROR:\n"   
+				<< "Output file path " << fullPath << " was specified.\n" 
 				<< "However, folder " << folderPath << " is unreachable.\n"
-				<< "Make sure to create individual folders on output file path\nand to grant sufficient access rights." << endl;
-			cerr << "EXECUTION ABORTED" << endl;
+				<< "Make sure to create individual folders on output file path\nand to grant sufficient access rights.\n"
+				<< "EXECUTION ABORTED" << endl;
 			exit(1);
 		}
 	}	

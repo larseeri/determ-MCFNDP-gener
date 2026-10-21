@@ -487,7 +487,7 @@
 // - Unknown option keys (following '-' or not) at beginning of lines in a
 // configuration file are disregarded.
 //
-// -hubsAndSats <> (no value supplied); implement hubs-and-satellite primary
+// -hubsAndSats <> (no value supplied); implement hubs-and-satellites primary
 // topology; if absent or explicitly set to false, the point-to-point primary
 // topology is instead implemented
 //
@@ -504,7 +504,7 @@
 // absolute path or path relative to the /program folder may be added
 //
 // Remark:
-// DOW, STD and TEX formats describe the generated network; DOW and STD
+// DOW, STD and TEX formats describe the generated instance; DOW and STD
 // (a.k.a. Canad format) are text formats specified in files
 // DOW-format-desc.txt and STD-format-desc.txt; STD is a generic format valid
 // for any MCFNDP, DOW requires that (i) for each arc, capacities and variable
@@ -528,8 +528,8 @@
 //
 // -lpOut <> (no value supplied); save output with human readable LP format
 //
-// -texOut <> (no value supplied); generate and save LaTeX code representing
-// network;
+// -texOut <> (no value supplied); generate and save LaTeX code for 
+// representing the instance;
 //
 // Remarks:
 // - Under the point-to-point primary topology, the LaTeX representations are
@@ -575,12 +575,13 @@
 // (iii) These conditions implicitly exclude that a node be simultaneously
 // a sink and a source.
 //
-// Remark:
-// oneSrcOneSnk and eqSrcsEqSnks cannot be both active; if oneSrcOneSnk and
-// eqSrcsEqSnks are both inactive, then sources and sinks are selected
-// randomly according to minNbSrc, maxNbSrc, minNbSnk, maxNbSnk. In this case
-// any node can be simultaneously a sink for one or more commodities and
-// source for one or more other commodities. 
+// Remarks:
+// - oneSrcOneSnk and eqSrcsEqSnks cannot be both active; if oneSrcOneSnk and
+// eqSrcsEqSnks are both inactive, then sources and sinks are selected randomly
+// according to minNbSrc, maxNbSrc, minNbSnk, maxNbSnk.
+// - When sources and sinks are selected randomly, any node can be
+// simultaneously a sink for one or more commodities and source for one or more
+// other commodities.
 //
 // -minNbSrc <int: 1, 1000>; min number of sources; inactive under
 // oneSrcOneSnk
@@ -609,7 +610,7 @@
 // formulation of this problem (objective and constraints). LP and MPS are
 // respectively human- and machine-readable. Options inclDesignObjCap and
 // inclDesignObjCommCap allow to select particular formulations of the 
-// linear programming statement of the MCFNDP.
+// linear programming statement of the MCFNDP with LP and MPS.
 //
 // By default, (i.e., when options inclDesignObjCap and inclDesignObjCommCap
 // are omitted or explicitly set to false) design variables are altogether
@@ -648,10 +649,15 @@
 // without costs and capacities) from file
 //
 // Important:
-// Whenever secTopology is set to 5 so that a basic graph is read from a file
-// (whose name is specified with option longBasicGraphFileName), value of 
+// - Whenever secTopology is set to 5 so that a basic graph is read from a file
+// (whose name is specified with option longBasicGraphFileName), value of
 // option numbNodes must be set to a number not smaller than the exact number
 // of nodes found in this file.
+// - Whenever secTopology is set to 0 so that arcs are all randomly generated,
+// no guarantee is made that the resulting instance will be feasible. This
+// contrasts with settings 1 to 4 where the non-random arcs that are initially 
+// generated produce a strongly connected graph and have sufficient capacity to
+// carry all outstanding commodity volumes.
 //
 // -longBasicGraphFileName <string>; long name (including extension) of file
 // where basic graph (excluding random arcs, capacities and costs ) will be
@@ -771,7 +777,7 @@
 // /program folder may be added
 //
 // Important:
-// Under the hubs-and-satellite primary topology, secTopology cannot be
+// Under the hubs-and-satellites primary topology, secTopology cannot be
 // set to 5. That is, the topology cannot be read from a basic graph file.
 // However, a basic graph file will be written if 1 <= secTopology <= 4.
 // In this case, the graph will be saved unstructured, without information
@@ -801,7 +807,7 @@
 // bounded surface, 4 circular.
 //
 // Important:
-// Under the hubs-and-satellite primary topology, option secTopology cannot be
+// Under the hubs-and-satellites primary topology, option secTopology cannot be
 // set to 5. That is, the topology cannot be read from a basic graph file.
 //
 // -lengthX <int: 1, 1000>; length along X axis if hub topology option 
@@ -1120,7 +1126,7 @@
 //
 // In this case, there is one source and one sink for each commodity and no
 // differentiation of variable costs and capacities according to commodities.
-// The generated networks can be saved in the DOW and STD formats.
+// The generated instances can be saved in the DOW and STD formats.
 //
 // 5.1.1 Instructions
 // ******************
@@ -1145,10 +1151,10 @@
 // 5.1.3 Generated files
 // *********************
 //
-// numerical representation of the network in DOW format:
+// numerical representation of the instance in DOW format:
 // determ_oneSrcOneSnk_12oct2026-17h09.dow
 //
-// numerical representation of the network in STD format:
+// numerical representation of the instance in STD format:
 // determ_oneSrcOneSnk_12oct2026-17h09.std
 //
 // numerical representation of the basic graph:
@@ -1162,7 +1168,7 @@
 // MPS format:
 // determ_oneSrcOneSnk_12oct2026-17h09.mps
 //
-// graphical representation of the network in TEX format:
+// graphical representation of the instance in TEX format:
 // determ_oneSrcOneSnk_12oct2026-17h09.tex
 //
 // compiled graphical representation:
@@ -1176,7 +1182,7 @@
 // In this case, there are multiple sources and multiple sinks for each
 // commodity. However, sources and sinks are identical across commodities.
 // There is differentiation of variable costs and capacities according to
-// commodities. The generated networks cannot be saved in the DOW format.
+// commodities. The generated instances cannot be saved in the DOW format.
 //
 // 5.2.1 Instructions
 // ******************
@@ -1201,7 +1207,7 @@
 // 5.2.3 Generated files
 // *********************
 //
-// numerical representation of the network in STD format:
+// numerical representation of the instance in STD format:
 // determ_eqSrcsEqSnks_12oct2026-17h09.std
 //
 // numerical representation of the basic graph:
@@ -1215,7 +1221,7 @@
 // MPS format:
 // determ_eqSrcsEqSnks_12oct2026-17h09.mps
 //
-// graphical representation of the network in TEX format:
+// graphical representation of the instance in TEX format:
 // determ_eqSrcsEqSnks_12oct2026-17h09.tex
 //
 // compiled graphical representation:

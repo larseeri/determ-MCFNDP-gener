@@ -37,27 +37,26 @@ void checkIfValidOutputFile(ofstream& os, string fileName)
         }		
 }
 
+bool is_empty_or_whitespace(const string& str) {
+    return str.empty() || all_of(str.begin(), str.end(), [](unsigned char c) {
+        return isspace(c);
+    });
+}
+
 bool isDigitsOnly(const string& str)
-{
-    // Avoid checking empty strings
-    if (str.empty())
+{   
+    if (is_empty_or_whitespace(str))
 		return false; 
     
     // cast to unsigned char prevents undefined behavior with negative values
-    return std::all_of(str.begin(), str.end(), [](unsigned char c) { 
+    return all_of(str.begin(), str.end(), [](unsigned char c) { 
         return isdigit(c); 
     });
 }
 
 bool can_convert_to_int(double val, string underMess, string overMess)
-{
-    
-    // if (std::isnan(val))
-	// {       
-	   // cerr << "ERROR: Numerical conversion error " << isnanMess << ".\n"		
-			// << "EXECUTION ABORTED" << endl;
-			// exit(1);	   
-    // }    
+{    
+  
     if (val < static_cast<double>(INT_MIN))
 	{
 		cerr << "ERROR:\n" << underMess << "\n"		
@@ -235,8 +234,20 @@ void Graph::addArcs()
     }
     // read basic graph from file
     else if (data->fromFile)
-    {		
-        readBasicGraph(data->longBasicGraphFileName, commodsOnArc);
+    {
+		try
+		{
+			readBasicGraph(data->longBasicGraphFileName, commodsOnArc);
+		}		
+		catch (...)
+		{
+			cerr << "ERROR:\n"
+				<< "An exception occurred while attempting to read file " << data->longBasicGraphFileName << "\n"			
+				<< "Ascertain (i) that the file exists and\n"
+				<< "(ii) that it conforms to the format expected from a basic graph file.\n"
+				<< "EXECUTION ABORTED" << endl;
+			exit(1);		
+		}
     }
 
     // generate additional arcs randomly by sampling both tail and head nodes
@@ -1138,8 +1149,15 @@ void Graph::defCommsDefault()
                 node = rnd.getRandom(0, numbNodes);
             while (omark[k][node]);
 
-            omark[k][node] = true;
-            temp = rnd.getRandom(1, (int)(commods[k].volume / commods[k].numbOrig));
+            omark[k][node] = true;			
+			
+			// avoids sources with zero assigned supply when possible
+			if (commods[k].volume >= commods[k].numbOrig)		
+				temp = rnd.getRandom(1, (int)(commods[k].volume / commods[k].numbOrig));
+				// temp == 0 in next case and volume will remain unassigned until ref:300 below
+			else
+				temp = rnd.getRandom(0, (int)(commods[k].volume / commods[k].numbOrig) + 1);
+			
             commods[k].commodNodes[node].volume = surplus + temp;
             totalSupply += commods[k].commodNodes[node].volume;
             surplus = (int)(commods[k].volume / commods[k].numbOrig) - temp;
@@ -1153,6 +1171,7 @@ void Graph::defCommsDefault()
         totalSupply += surplus;		
 		unassSupply = commods[k].volume - totalSupply;
 		
+		// ref:300
 		while (unassSupply != 0)
 		{		
 			do 
@@ -1172,8 +1191,15 @@ void Graph::defCommsDefault()
                 node = rnd.getRandom(0, numbNodes);
             while (dmark[k][node] || omark[k][node]);
 
-            dmark[k][node] = true;
-            temp = rnd.getRandom(1, (int)(commods[k].volume / commods[k].numbDest));
+            dmark[k][node] = true;			
+			            				
+			// avoids sinks with zero assigned demand when possible
+			if (commods[k].volume >= commods[k].numbDest)		
+				temp = rnd.getRandom(1, (int)(commods[k].volume / commods[k].numbDest));
+			// temp == 0 in next case and volume will remain unassigned until ref:301 below
+			else
+				temp = rnd.getRandom(0, (int)(commods[k].volume / commods[k].numbDest) + 1);
+            
             commods[k].commodNodes[node].volume = -(surplus + temp);
             totalDemand -= commods[k].commodNodes[node].volume;
             surplus = (int)(commods[k].volume / commods[k].numbDest) - temp;
@@ -1187,6 +1213,7 @@ void Graph::defCommsDefault()
         totalDemand += surplus;		
 		unassDemand = commods[k].volume - totalDemand;		
 		
+		// ref:301
 		while (unassDemand != 0)
 		{		
 			do 
@@ -1226,8 +1253,15 @@ void Graph::defCommsDefault_sat()
                 node = rnd.getRandom(numbNodes, numbSatNodes);
             while (omark[k][node]);
 			
-            omark[k][node] = true;
-            temp = rnd.getRandom(1, (int)(commods[k].volume / commods[k].numbOrig));
+            omark[k][node] = true;			
+			
+			// avoids sources with zero assigned supply when possible
+			if (commods[k].volume >= commods[k].numbOrig)		
+				temp = rnd.getRandom(1, (int)(commods[k].volume / commods[k].numbOrig));
+			// temp == 0 in next case and volume will remain unassigned until ref:400 below
+			else
+				temp = rnd.getRandom(0, (int)(commods[k].volume / commods[k].numbOrig) + 1);
+			
             commods[k].commodNodes[node].volume = surplus + temp;
             totalSupply += commods[k].commodNodes[node].volume;
             surplus = (int)(commods[k].volume / commods[k].numbOrig) - temp;
@@ -1241,6 +1275,7 @@ void Graph::defCommsDefault_sat()
         totalSupply += surplus;		
 		unassSupply = commods[k].volume - totalSupply;
 		
+		// ref:400
 		while (unassSupply != 0)
 		{		
 			do 
@@ -1260,11 +1295,15 @@ void Graph::defCommsDefault_sat()
                 node = rnd.getRandom(numbNodes, numbSatNodes);
             while (dmark[k][node] || omark[k][node]);
 
-            //if (s == 0)
-            //    index = node;
-
             dmark[k][node] = true;
-            temp = rnd.getRandom(1, (int)(commods[k].volume / commods[k].numbDest));
+			
+			// avoids sinks with zero assigned demand when possible
+			if (commods[k].volume >= commods[k].numbDest)		
+				temp = rnd.getRandom(1, (int)(commods[k].volume / commods[k].numbDest));
+			// temp == 0 in next case and volume will remain unassigned until ref:401 below
+			else
+				temp = rnd.getRandom(0, (int)(commods[k].volume / commods[k].numbDest) + 1);
+			
             commods[k].commodNodes[node].volume = -(surplus + temp);
             totalDemand -= commods[k].commodNodes[node].volume;
             surplus = (int)(commods[k].volume / commods[k].numbDest) - temp;
@@ -1278,6 +1317,7 @@ void Graph::defCommsDefault_sat()
         totalDemand += surplus;		
 		unassDemand = commods[k].volume - totalDemand;		
 		
+		// ref:401
 		while (unassDemand != 0)
 		{		
 			do 
@@ -1543,9 +1583,10 @@ void Graph::output()
             if ((numbNodes + numbSatNodes) <= 12 && numbCommods <= 4)
                 outputTexGeneric(data->shortOutFileName + ".tex");
             else
-                cerr << "\nWARNING:\n"
+                cerr << "\nERROR:\n"
 					<< "LaTeX representations are available under a generic topology\n"
-                    << "only when total number of nodes <= 12 and number of commodities <= 4." << endl;
+                    << "only when total number of nodes <= 12 and number of commodities <= 4.\n"
+					<< "The LaTex representation will not be generated." << endl;
         }
 		// point-to-point primary topology and grid-like secondary topology
         else if (data->gridConnect)
@@ -1561,7 +1602,8 @@ void Graph::output()
             else
                 cerr << "\nERROR:\n"
 					<< "LaTeX representations are available under a grid secondary topology\n"
-                    << "only when lengthX <= 10, lengthY <= 10 and number of commodities <= 15." << endl;
+                    << "only when lengthX <= 10, lengthY <= 10 and number of commodities <= 15.\n"
+					<< "The LaTex representation will not be generated." << endl;
         }
 		// point-to-point primary topology and circular secondary topology
         else if (data->circConnect)
@@ -1577,7 +1619,8 @@ void Graph::output()
             else
                 cerr << "\nERROR:\n"
 					<< "LaTeX representations are available under a circular secondary topology\n"
-                    << "only when number of nodes <= 36 and number of commodities <= 15." << endl;
+                    << "only when number of nodes <= 36 and number of commodities <= 15.\n"
+					<< "The LaTex representation will not be generated." << endl;
         }			
     }
 }
@@ -1607,12 +1650,18 @@ void Graph::readBasicGraph(string longBasicGraphFileName, const VectCommodOnArc 
     string dummy;
     int low, high; // low and high values for nodes
     int orig, dest;
-	string origStr, destStr, lowStr, highStr;
+	string origStr = "", destStr = "", lowStr = "", highStr = "";
 
     inFile.getline(line, 1024);
     inFile.getline(line, 1024);
-    inFile >> dummy >> dummy >> lowStr;
-    inFile >> dummy >> dummy >> highStr;
+	
+	inFile.getline(line, 1024);
+	istringstream iss0(line);		
+    iss0 >> dummy >> dummy >> lowStr;
+	
+	inFile.getline(line, 1024);
+	istringstream iss1(line);	
+    iss1 >> dummy >> dummy >> highStr;
 	
 	if (isDigitsOnly(lowStr) && isDigitsOnly(highStr))
 	{
@@ -1622,8 +1671,8 @@ void Graph::readBasicGraph(string longBasicGraphFileName, const VectCommodOnArc 
 	else
 	{			
 		cerr << "\nERROR:\n"
-			<< "While reading " + longBasicGraphFileName + ", the tokens \"\n"
-			<< lowStr << "\" and \"" << highStr << "\" could not be interpreted\n"
+			<< "While reading " + longBasicGraphFileName + ", the tokens\n"
+			<< "\"" << lowStr << "\" and \"" << highStr << "\" could not be interpreted\n"
 			<< "as the low and high node numbers.\n"
 			<< "EXECUTION ABORTED" << endl;
         exit(1);
@@ -1637,19 +1686,25 @@ void Graph::readBasicGraph(string longBasicGraphFileName, const VectCommodOnArc 
     bool foundError = false;
 	bool readArc = false;
 
-    while (inFile >> origStr >> destStr)
+	while(inFile.getline(line, 1024))
     {		
+		origStr = "";
+		destStr = "";
+
+		istringstream iss3(line);		
+		iss3 >> origStr >> destStr;	
+
 		if (isDigitsOnly(origStr) && isDigitsOnly(destStr))
 		{
 			orig = stoi(origStr);
 			dest = stoi(destStr);
-			readArc = true;
+			readArc = true;			
 		}
 		else
 		{			
 			cerr << "\nERROR:\n"
-				<< "While reading " + longBasicGraphFileName + ", the tokens\n"
-				<< origStr << " and " << destStr << " could not be interpreted as node numbers." << endl;
+				<< "While reading arcs in " + longBasicGraphFileName + ", the tokens\n"
+				<< "\"" << origStr << "\" and \"" << destStr << "\" could not be interpreted as node numbers." << endl;
 
             foundError = true;
 			break;			
@@ -1722,7 +1777,8 @@ void Graph::readBasicGraph(string longBasicGraphFileName, const VectCommodOnArc 
         cerr << "\nERROR:\n"
 			<< "While reading " + longBasicGraphFileName + ", " << temp << " nodes have been detected\n"
             << "whereas the value specified for option numbNodes is " << numbNodes << ".\n"
-			<< "The value of numbNodes should be corrected to be at least as large the number of detected nodes\n."
+			<< "The value of numbNodes should be corrected to be at least as large\n"
+			<< "as the number of detected nodes\n."
 			<< "EXECUTION ABORTED" << endl;
             exit(1);
     }
@@ -1866,9 +1922,7 @@ void Graph::outputLP(string fileName)
     for (int a = 0; a < numbArcs + numbSatArcs; a++)
     {
         for (int k = 0; k < numbCommods; k++)
-        {
-			
-			//// EL: replaced 15oct2026-18h14: coef = (data->oneSourceOneSink) ? arcs[a].commodsOnArc[0].cost : arcs[a].commodsOnArc[k].cost;
+        {			
             coef = arcs[a].commodsOnArc[k].cost;			
             
             obj.addVar(coef, "X", a, k);
@@ -1954,7 +2008,6 @@ void Graph::outputLP(string fileName)
     // Bounds
     outFile << "Bounds" << endl;
 	
-	//// EL: replaced 30sept2026-17h11: if (numbCommods == 1 && (!(data->integCapacs || data->integCommCapacs) || data->oneSourceOneSink))
     if (numbCommods == 1 && (!(data->integCapacs || data->integCommCapacs)))
     {
         for (int a = 0; a < numbArcs + numbSatArcs; a++)
@@ -1965,7 +2018,6 @@ void Graph::outputLP(string fileName)
         }
     }
 
-	//// EL: replaced 30sept2026-17h11: if (!data->integCommCapacs && numbCommods > 1 && !data->oneSourceOneSink)
 	if (!data->integCommCapacs && numbCommods > 1)
     {
         for (int a = 0; a < numbArcs + numbSatArcs; a++)
@@ -2015,10 +2067,6 @@ void Graph::outputMPS(string fileName)
 	
     int coef;
     string varID, ctrID;
-
-	//// EL: replaced 16oct2026-18h11:
-    ////outFile << "NAME  " << fileName << endl << endl;
-    ////outFile << "ROWS  " << fileName << endl << endl;
 	
 	outFile << "NAME  " << fileName << endl;
 	
@@ -2050,7 +2098,6 @@ void Graph::outputMPS(string fileName)
             // objective coefficients
 
             ctrID = "Obj";
-			//// EL: replaced 30sept2026-17h11: coef = (data->oneSourceOneSink) ? arcs[a].commodsOnArc[0].cost : arcs[a].commodsOnArc[k].cost;
             coef = arcs[a].commodsOnArc[k].cost;
             outFile << setw(16) << left << varID << setw(15) << ctrID << setw(10) << coef << endl;
 
@@ -2166,7 +2213,6 @@ void Graph::outputMPS(string fileName)
         }
     }
 
-	//// EL: replaced 30sept2026-17h11: if (numbCommods > 1 && !data->integCommCapacs && !data->oneSourceOneSink)
     if (numbCommods > 1 && !data->integCommCapacs)
     {
         for (int a = 0; a < numbArcs + numbSatArcs; a++)
@@ -2192,7 +2238,7 @@ void Graph::outputMPS(string fileName)
     outFile << "ENDATA" << endl;
 }
 
-// Outputs the code for depicting the graph of the generated network with
+// Outputs the code for depicting the graph of the generated instance with
 // a LaTeX compiler, either (i) when primary topology is point-to-point 
 // as well as purely random or retrieved from a basic graph file (i.e.,
 // results from hubSat == 0 and secondary topology == 0 or 5) or (ii) when primary topology is
@@ -2281,7 +2327,7 @@ void Graph::outputTexGeneric(string fileName)
               "rmargin=1in,bmargin=1in,tmargin=1in}\n\\usepackage{tikz}\n"
               "\\usepackage{multirow}\n\\begin{document}\n\\usetikzlibrary"
               "{shapes.misc, arrows.meta, quotes, decorations.text}\n"
-              "\\section{Generated network with unspecified topology}\n";
+              "\\section{Generated instance with unspecified topology}\n";
 
     outStr << "\\begin{center}\n\\adjustbox{max size={11.5in}{11.5in}}{\n";
 
@@ -2610,7 +2656,7 @@ void Graph::outputTexGeneric(string fileName)
 }
 
 // Outputs the code for depicting the graph of
-// the generated network with a LaTeX compiler,
+// the generated instance with a LaTeX compiler,
 // when primary topology is point-to-point and secondary topology is grid-like (i.e., results
 // from secTopology == 1, 2 or 3).
 void Graph::outputTexGrid(string fileName)
@@ -2691,7 +2737,7 @@ void Graph::outputTexGrid(string fileName)
               "rmargin=1in,bmargin=1in,tmargin=1in}\n\\usepackage{tikz}\n"
               "\\usepackage{multirow}\n\\begin{document}\n\\usetikzlibrary"
               "{shapes.misc, arrows.meta, quotes, decorations.text}\n"
-              "\\section{Generated network based on grid topology}\n";
+              "\\section{Generated instance based on grid topology}\n";
 
     outStr << "\\begin{center}\n\\adjustbox{max size={11.5in}{11.5in}}{\n";
 
@@ -2935,7 +2981,7 @@ void Graph::outputTexGrid(string fileName)
 }
 
 // Outputs the code for depicting the graph of
-// the generated network with a LaTeX compiler,
+// the generated instance with a LaTeX compiler,
 // when base primary topology is point-to-point and secondary topology is circular (i.e., results
 // from secTopology == 4).
 void Graph::outputTexCirc(string fileName)
@@ -3102,7 +3148,7 @@ void Graph::outputTexCirc(string fileName)
               "rmargin=1in,bmargin=1in,tmargin=1in}\n\\usepackage{tikz}\n"
               "\\usepackage{multirow}\n\\begin{document}\n\\usetikzlibrary"
               "{shapes.misc, arrows.meta, quotes, decorations.text}\n"
-              "\\section{Generated network based on circular topology}\n";
+              "\\section{Generated instance based on circular topology}\n";
 
     outStr << "\\begin{center}\n\\adjustbox{max size={11.5in}{11.5in}}{\n";
 

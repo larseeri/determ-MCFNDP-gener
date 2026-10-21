@@ -383,6 +383,10 @@ struct Data
 
     void printUsageAndExit(char ExecName[], bool anonymous);
 	
+	void scanWarnUnaccKeysFromCmdLine();
+	
+	void scanWarnUnaccKeysFromConfigFile();	
+	
 	///////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////
 	
@@ -741,7 +745,7 @@ inline ostream &operator<<(ostream &os, LPStringBuilder &builder)
     return os;
 }
 
-// Defines, builds and saves the network
+// Defines, builds and saves the instance
 struct Graph
 {
     const Data *data;

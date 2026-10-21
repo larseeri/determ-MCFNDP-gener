@@ -108,17 +108,17 @@ class ParamProcessing
     // (This name can be overridden with the instruction line by
     // introducing +F followed by the new file name.)
 
-    template <class T> bool assignParamValue(const string &cmdString, const string &configFileString, T &var) const;
+    template <class T> bool assignParamValue(const string &cmdString, const string &configFileString, T &var);
 
-    bool assignParamValue(const string &cmdString, const string &configFileString, bool &var) const;
+    bool assignParamValue(const string &cmdString, const string &configFileString, bool &var);
 
-    bool assignParamValue(const string &cmdString, const string &configFileString, char *var) const;
+    bool assignParamValue(const string &cmdString, const string &configFileString, char *var);
 
-    bool assignParamValue(const string &cmdString, const string &configFileString, string &var) const;
+    bool assignParamValue(const string &cmdString, const string &configFileString, string &var);
 	
-	bool assignParamValue(const string &cmdString, const string &configFileString, int &var) const;
+	bool assignParamValue(const string &cmdString, const string &configFileString, int &var);
 	
-	bool assignParamValue(const string &cmdString, const string &configFileString, double &var) const;
+	bool assignParamValue(const string &cmdString, const string &configFileString, double &var);
 	
 	bool isDigitsOnly(const string&) const;
 	
@@ -207,13 +207,22 @@ class ParamProcessing
 	  map<string, string> getParamToValueMapFromCmdLine() const
 	  {	  
 		  return paramToValueMapFromCmdLine;
-	  }	
+	  }	  
+	  
+	  map<string, string> getParamToValueMapFromConfigFile() const
+	  {	  
+		  return paramToValueMapFromConfigFile;
+	  }	  
 	  
 	  bool getRequestHelp() const
 	  {	  
 		  return requestHelp;
 	  }
 	  
+	  bool isVerbose() const
+	  {
+		  return verbose;
+	  }	  
 };
 
 inline ParamProcessing::ParamProcessing(int argc, char **argv, string fileName)
@@ -236,7 +245,7 @@ inline ParamProcessing::ParamProcessing(int argc, char **argv, string fileName)
 
     if (!found)
     {
-        cerr << "\nWARNING: The configuration file is empty.\n"
+        cout << "\nWARNING: The configuration file is empty.\n"
 				"If an optional configuration file name was specified in instruction\n"
 				"line with option key +F, this file was empty.\n"
 				"Otherwise, the default configuration file was empty.\n" 
@@ -285,10 +294,12 @@ inline void ParamProcessing::parseConfigFileNameFromCmdLine()
 			else if (strcmp(vectArg[a], CONFIG_HELP_MODE) == 0)
             {
                 requestHelp = true;
-            }			
-            //
+            }          
             else if (isalpha(vectArg[a][1]))
-                cerr << "********* config prefix [" << vectArg[a] << "] unknown.\n";
+			{	
+				cout << "\nWARNING:\n"
+					<< "configuration prefix [" << vectArg[a] << "] unknown.\n";					
+			}
         }
     }
 
@@ -297,7 +308,7 @@ inline void ParamProcessing::parseConfigFileNameFromCmdLine()
         cout << "\n********* VERBOSE MODE *********\n\n";
 
         if (foundFile)
-            cout << "****** config file name [" << CONFIG_FILE_KEY << "] = [" << configFileName << "]\n";
+            cout << "\n****** Configuration file found: " << configFileName << endl;
     }
 }
 
@@ -308,7 +319,8 @@ inline void ParamProcessing::parseCmdLine()
     const char *arg1;
     const char *arg2;
 
-    cout << "\n****** Begin parsing configuration parameters from command line." << endl;
+	if (verbose)
+		cout << "\n****** Begin parsing options from command line." << endl;
 
     while (a < nbArg)
     {
@@ -330,20 +342,20 @@ inline void ParamProcessing::parseCmdLine()
                 arg2 = "";
 
             if (verbose)
-                cout << "****** instruction line -- parameter [" << arg1 << "] = [" << arg2 << "]" << endl;
+                cout << "[" << arg1 << "] = [" << arg2 << "]" << endl;
             paramToValueMapFromCmdLine[arg1] = arg2;
         }
 
         a++;
     }
 
-    cout << "\n****** End parsing configuration parameters from command line.\n" << endl;
+	if (verbose)
+		cout << "\n****** End parsing options from command line.\n" << endl;
 }
 
 // Parses configuration parameter values supplied in configuration file.
 inline bool ParamProcessing::parseConfigFile(const string &infileName)
-{
-    //EL: char line[lineLength];
+{    
 	string line;
     ifstream inStr;
 
@@ -371,9 +383,8 @@ inline bool ParamProcessing::parseConfigFile(const string &infileName)
     bool found = 0;
 
     if (verbose)
-        cout << "****** Begin parsing this configuration file: " << infileName << "\n" << endl;
+        cout << "\n****** Begin parsing options from configuration file " << infileName << "\n" << endl;
 
-	// EL: inStr.getline(line, lineLength);
     getline(inStr, line);
     while (inStr)
     {
@@ -401,18 +412,17 @@ inline bool ParamProcessing::parseConfigFile(const string &infileName)
 			string_view cleanValue(rawValue.data(), distance(rawValue.begin(), it));
 					            
             if (verbose)
-                cout << "****** configuration file -- parameter [" << key.substr(pos) << "] = [" << cleanValue << "]" << endl;
+                cout << "[" << key.substr(pos) << "] = [" << cleanValue << "]" << endl;
 
             // stores in map
             paramToValueMapFromConfigFile[key.substr(pos)] = cleanValue;
         }
 
 		getline(inStr, line);
-        //EL: inStr.getline(line, lineLength);
     }
 
     if (verbose)
-        cout << "\n****** End parsing this configuration file: " << infileName << endl;
+        cout << "\n****** End parsing options from configuration file " << infileName << endl;
 
     return found;
 }
@@ -462,7 +472,7 @@ inline bool ParamProcessing::isNumeric(const string& str) const {
 
 // Determines value to be assigned to a parameter.
 template <class T>
-inline bool ParamProcessing::assignParamValue(const string &cmdString, const string &configFileString, T &var) const
+inline bool ParamProcessing::assignParamValue(const string &cmdString, const string &configFileString, T &var)
 {
     bool ok = true;
 
@@ -492,7 +502,7 @@ inline bool ParamProcessing::assignParamValue(const string &cmdString, const str
 }
 
 // Determines value to be assigned to a parameter. Specialized to double.
-inline bool ParamProcessing::assignParamValue(const string &cmdString, const string &configFileString, double &var) const
+inline bool ParamProcessing::assignParamValue(const string &cmdString, const string &configFileString, double &var)
 {
     bool ok = true;
 	string temp;
@@ -511,16 +521,18 @@ inline bool ParamProcessing::assignParamValue(const string &cmdString, const str
 			}
 			catch (const out_of_range& e)
 			{			
-				cerr << "\nERROR\n:"
+				cerr << "\nERROR:\n"
 					<< "While processing the command line, the value received for option " << cmdString << "\n" 
 					<< " was \"" << temp << "\" and was too large to be interpreted as a floating-point number.\n"				
 					<< "EXECUTION ABORTED" << endl;
 				exit(1);				
 			}
+			
+			paramToValueMapFromCmdLine.erase(cmdString);			
 		}
 		else
 		{			
-			cerr << "\nERROR\n"
+			cerr << "\nERROR:\n"
 				<< "While processing the command line, the value received for option " << cmdString << "\n" 
 				<<  "was \"" << temp << "\" and could not be interpreted as a floating-point number.\n"				
 				<< "EXECUTION ABORTED" << endl;
@@ -548,7 +560,9 @@ inline bool ParamProcessing::assignParamValue(const string &cmdString, const str
 						<< "was \"" << temp << "\" and was too large to be interpreted as a floating-point number.\n"				
 						<< "EXECUTION ABORTED" << endl;
 					exit(1);				
-				}				
+				}
+
+				paramToValueMapFromConfigFile.erase(configFileString);				
 			}
 			else
 			{			
@@ -567,7 +581,7 @@ inline bool ParamProcessing::assignParamValue(const string &cmdString, const str
 }
 
 // Determines value to be assigned to a parameter. Specialized to integer.
-inline bool ParamProcessing::assignParamValue(const string &cmdString, const string &configFileString, int &var) const
+inline bool ParamProcessing::assignParamValue(const string &cmdString, const string &configFileString, int &var)
 {
     bool ok = true;
 	string temp;
@@ -591,7 +605,9 @@ inline bool ParamProcessing::assignParamValue(const string &cmdString, const str
 					<< cmdString << " was \"" << temp << "\" and was too large to be interpreted as a proper integer.\n"				
 					<< "EXECUTION ABORTED" << endl;
 				exit(1);				
-			}				
+			}
+
+			paramToValueMapFromCmdLine.erase(cmdString);			
 		}
 		else
 		{			
@@ -623,7 +639,9 @@ inline bool ParamProcessing::assignParamValue(const string &cmdString, const str
 						<< configFileString << " was \"" << temp << "\" and was too large to be interpreted as a proper integer.\n"				
 						<< "EXECUTION ABORTED" << endl;
 					exit(1);				
-				}				
+				}	
+
+				paramToValueMapFromConfigFile.erase(configFileString);				
 			}
 			else
 			{			
@@ -642,8 +660,7 @@ inline bool ParamProcessing::assignParamValue(const string &cmdString, const str
 }
 
 // Determines value to be assigned to a parameter. Specialized to string.
-inline bool ParamProcessing::assignParamValue(const string &cmdString, const string &configFileString,
-                                              string &var) const
+inline bool ParamProcessing::assignParamValue(const string &cmdString, const string &configFileString, string &var)
 {	
     bool ok = true;
 
@@ -651,14 +668,22 @@ inline bool ParamProcessing::assignParamValue(const string &cmdString, const str
     map<string, string>::const_iterator itL = paramToValueMapFromCmdLine.find(cmdString);
 
     if (itL != paramToValueMapFromCmdLine.end())
+	{
         var = (*itL).second;
+		
+		paramToValueMapFromCmdLine.erase(cmdString);		
+	}	
     else
     {
         // if unavailable, attempt to retrieve from data collected from configuration file(s)
         map<string, string>::const_iterator itF = paramToValueMapFromConfigFile.find(configFileString);
 
         if (itF != paramToValueMapFromConfigFile.end())
+		{		
             var = (*itF).second;
+			
+			paramToValueMapFromConfigFile.erase(configFileString);			
+		}
         else
             ok = false;
     }	
@@ -666,7 +691,7 @@ inline bool ParamProcessing::assignParamValue(const string &cmdString, const str
 }
 
 // Determines value to be assigned to a parameter. Specialized to char*.
-inline bool ParamProcessing::assignParamValue(const string &cmdString, const string &configFileString, char *var) const
+inline bool ParamProcessing::assignParamValue(const string &cmdString, const string &configFileString, char *var)
 {
     bool ok = true;
 
@@ -674,14 +699,23 @@ inline bool ParamProcessing::assignParamValue(const string &cmdString, const str
     map<string, string>::const_iterator itL = paramToValueMapFromCmdLine.find(cmdString);
 
     if (itL != paramToValueMapFromCmdLine.end())
+	{	
         strcpy(var, (*itL).second.c_str());
+		
+		paramToValueMapFromCmdLine.erase(cmdString);
+	}
+		
     else
     {
         // if unavailable, attempt to retrieve from data collected from configuration file(s)
         map<string, string>::const_iterator itF = paramToValueMapFromConfigFile.find(configFileString);
 
         if (itF != paramToValueMapFromConfigFile.end())
+		{			
             strcpy(var, (*itF).second.c_str());
+			
+			paramToValueMapFromConfigFile.erase(configFileString);			
+		}
         else
             ok = false;
     }
@@ -690,7 +724,7 @@ inline bool ParamProcessing::assignParamValue(const string &cmdString, const str
 }
 
 // Determines value to be assigned to a parameter. Specialized to bool.
-inline bool ParamProcessing::assignParamValue(const string &cmdString, const string &configFileString, bool &var) const
+inline bool ParamProcessing::assignParamValue(const string &cmdString, const string &configFileString, bool &var)
 {		
     bool ok = true;
 
@@ -706,6 +740,8 @@ inline bool ParamProcessing::assignParamValue(const string &cmdString, const str
             istringstream istr((*itL).second);
 			checkBooleanInput(istr, cmdString, var);			
         }
+		
+		paramToValueMapFromCmdLine.erase(cmdString);		
     }
     else
     {		
@@ -721,6 +757,8 @@ inline bool ParamProcessing::assignParamValue(const string &cmdString, const str
                 istringstream istr((*itF).second);
 				checkBooleanInput(istr, cmdString, var);
             }
+			
+			paramToValueMapFromConfigFile.erase(configFileString);			
         }
         else
             ok = false;
