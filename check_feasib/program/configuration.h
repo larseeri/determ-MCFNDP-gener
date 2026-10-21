@@ -158,7 +158,6 @@ struct Configuration
 
     // Verifies configuration values.
     void verifyInputInstance();	
-	
 };
 
 #endif

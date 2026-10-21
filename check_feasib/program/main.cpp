@@ -103,7 +103,7 @@
 // D: DOW, R: RSTD, G: GSTD, default: G (see Section 3 below for details)
 //
 // I <string>; path of file where the deterministic MCFNDP instance is to be
-// read; default value is './network.std'; (see further
+// read; default value is './default_instance.std'; (see further
 // below about Docker instructions)
 //
 // Important:
@@ -118,12 +118,12 @@
 // Verifying feasibility: FAILURE
 //
 // The verbosity option +v can be used to obtain more information about the
-// the option parsing process.
+// option parsing process.
 //
 // To display the complete documentation about the application and the
 // available options, run
 //
-// ./determ_gen +H
+// ./determ_feasib +H
 //
 // See Section 4 below for examples of instructions when the program is run
 // with command line instructions.
@@ -163,9 +163,8 @@
 // folder contains (i) the primitive files named 'Dockerfile' and 'makefile' 
 // based on which the Docker image was originally generated, (ii) a subfolder 
 // /inout used for exchanging files between the program running inside a Docker 
-// container and the directory structure of the host, (iii) some auxiliary 
-// files, and (iv) the subfolder /examples containing a number of configuration
-// files and their resulting outputs (examined in Section 5 below).
+// container and the directory structure of the host and (iii) a subfolder
+// /examples containing the examples examined in Section 5 below.
 // d- In a terminal, go to the /check_feasib/docker folder just created.
 //
 // Then, instructions similar to those appearing in Section 1.2 can be run from
@@ -248,7 +247,7 @@
 // **************************************************
 //
 // By default, the name of the file describing the deterministic MCFNDP
-// instance is './network.std' (Linux instructions),
+// instance is './default_instance.std' (Linux instructions),
 // './inout/network.std' (Docker instructions) and the default input format
 // is STD. This name may be changed with option I and the input format can
 // be indicated accordingly with option F.
@@ -261,7 +260,7 @@
 // DOW and STD formats are commonly used to store deterministic MCFNDP instances
 // in text files. These formats are described in files DOW-format-desc.txt and
 // STD-format-desc.txt. The application can read from these two formats and also
-// recognized a specialization of STD.
+// recognizes a specialization of STD.
 // The three following formats may be selected with option F.
 // a- DOW (option value D) presupposes that (i) for each arc, capacities and variable
 // costs are identical for all commodities and (ii) each commodity has a
@@ -270,7 +269,7 @@
 // b- GSTD (option value G) designates the STD format. STD is fully generic 
 // and imposes neither (i), nor (ii).
 // c- RSTD (option R) designates a specialization of STD in which condition (ii)
-// above is imposed. It defined for convenience and for the purposes only of
+// above is imposed. It is defined for convenience and for the purposes only of
 // the present application.
 //
 // Important:
@@ -306,12 +305,14 @@
 //
 // Folder /examples/oneSrcOneSnk/
 //
+// In the MCFNDP instance, there is one source and one sink for each 
+// commodity and no differentiation of variable costs and capacities according
+// to commodities.
+//
 // 4.1.1 DOW format
 // ****************
 //
-// In the MCFNDP instance, there is one source and one sink for each 
-// commodity and no differentiation of variable costs and capacities according
-// to commodities. The instance is received in the DOW format.
+// The instance is received in the DOW format.
 //
 // 4.1.1.1 Operation of the feasibility tester
 // *******************************************
@@ -331,10 +332,10 @@
 //
 // Verifying feasibility: SUCCESS
 //
-// 4.1.1.2 Origin of the MCFNDP instance
-// *************************************
+// 4.1.1.2 Origin of the instance
+// ******************************
 //
-// The MCFNDP instance was originally produced by the deterministic
+// The instance was originally produced by the deterministic
 // generator as follows.
 //
 // Linux command line instruction:
@@ -377,8 +378,8 @@
 //
 // Verifying feasibility: SUCCESS
 //
-// 4.1.2.2 Origin of the MCFNDP instance
-// *************************************
+// 4.1.2.2 Origin of the instance
+// ******************************
 //
 // Similar to 4.1.1.2.
 //
@@ -387,10 +388,10 @@
 //
 // Folder /examples/eqSrcsEqSnks/
 //
-// In the base network, there are multiple sources and multiple sinks for each
+// In the MCFNDP instance, there are multiple sources and multiple sinks for each
 // commodity. However, sources and sinks are identical across commodities.
 // There is differentiation of variable costs and capacities according to
-// commodities. The base network must be received in the STD format (as the DOW
+// commodities. The instance must be received in the STD format (as the DOW
 // format is unsuitable in this situation).
 //
 // 4.2.1 Operation of the feasibility tester
@@ -404,15 +405,15 @@
 //
 // docker run --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_feasib_image /determ_feasib +v -F G -I /inout/determ_eqSrcsEqSnks_12oct2026-17h09.std
 //
-// Location of deterministic network file (input):
+// Location of instance file (input):
 // /examples/eqSrcsEqSnks/determ_eqSrcsEqSnks_12oct2026-17h09.std
 //
 // Displayed output:
 //
 // Verifying feasibility: SUCCESS
 //
-// 4.2.1.2 Origin of the MCFNDP instance
-// *************************************
+// 4.2.2 Origin of the instance
+// ****************************
 //
 // The MCFNDP instance was originally produced by the deterministic
 // generator as follows.
@@ -462,7 +463,6 @@ double *Arc::ptrCost = NULL;
 
 int main(int argc, char **argv)
 {
-
     // process configuration options
     Configuration params(argc, argv, "./determ_config.par");
     Instance *inst;
@@ -477,15 +477,6 @@ int main(int argc, char **argv)
 
     // create input and output streams
     ifstream is(params.inputInstFileName);
-
-    if (!is.is_open())
-    {
-        cerr << "\nERROR:\n"
-			<< "The file " << params.inputInstFileName
-            << "containing the MCFNDP instance could not be opened.\n"
-			<< "EXECUTION ABORTED\n" << endl;
-        exit(1);
-    }
 	
 	try
 	{
@@ -497,11 +488,11 @@ int main(int argc, char **argv)
 	catch (...)
 	{
 		cerr << "ERROR:\n"
-			<< "An exception occured while attempting to read file " << params.inputInstFileName << "\n"
+			<< "An exception occurred while attempting to read file " << params.inputInstFileName << "\n"
 			<< "The expected format of this file according to value of option key F in instruction line is "
 			<< to_string(params.instanceFormat) << ".\n"
-			<< "Ascertain that file and format are consistent.\n"
-			<< "EXECUTION ABORTED\n" << endl;
+			<< "Ascertain that file and specified format are consistent.\n"
+			<< "EXECUTION ABORTED" << endl;
         exit(1);		
 	}
 	

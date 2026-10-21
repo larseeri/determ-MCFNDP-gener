@@ -25,19 +25,21 @@
 
 // Constructor
 Configuration::Configuration(int argc, char **argv, string _configFileName)
-    : nbArg(argc), vectArg(argv), verbose(false), instanceFormat(GSTD),
-      inputInstFileName("./base_network.std")
-{
-    if (nbArg == 2 && (strcmp(vectArg[1], "-h") == 0 || strcmp(vectArg[1], "-H") == 0))
-        printHelpAndExit();
-	 
+    : nbArg(argc), vectArg(argv), verbose(false), instanceFormat(GSTD)      
+{	
+	parseConfigModesFromCmdLine();
+	
+	inputInstFileName = "./default_instance.std";	
+   
     allTypes.push_back(DEMAND);                
     allTypes.push_back(CAP_ARC);                
     allTypes.push_back(CAP_COMMOD);                
     allTypes.push_back(FIXED_COST);                
-    allTypes.push_back(VAR_COST);	 
+    allTypes.push_back(VAR_COST);
 	
     parseCmdLine();
+	
+	verifyInputInstance();	
 }
 
 // Parses command line.
@@ -46,8 +48,9 @@ void Configuration::parseCmdLine()
     int a = 1;
     const char *key;
     const char *value;
-	
-	cout << "****** Begin parsing configuration parameters from the command line.\n\n";
+		
+	if (verbose)
+		cout << "****** Begin parsing configuration parameters from the command line.\n\n";
 
     while (a < nbArg)
     {
@@ -79,7 +82,7 @@ void Configuration::parseCmdLine()
                 value = "";
 
             if (verbose)
-                cout << "****** command line -- option key and value [" << key << "] [" << value << "]" << endl;
+                cout << "[" << key << "] [" << value << "]" << endl;
 
             switch (*key)
             {
@@ -104,14 +107,13 @@ void Configuration::parseCmdLine()
 					cerr << "\nERROR:\n"
 						<< "Option key F in instruction line can only be followed\n"
 						<< "by one of the three following values: D, G, R.\n"
-						<< "However, value " << *value <<  " was received.\n"
+						<< "However, value \"" << *value <<  "\" was received.\n"
 						<< "EXECUTION ABORTED" << endl;
 					exit(1);                
 					break;    
 				}					
             case 'I':
-                inputInstFileName = value;
-				verifyInputInstance();
+                inputInstFileName = value;				
                 break;
             default:
 				cerr << "\nERROR:\n"
@@ -127,12 +129,13 @@ void Configuration::parseCmdLine()
         a++;
     }
 	
-    cout << "\n****** End parsing configuration parameters from the command line.\n";
+	if (verbose)
+		cout << "\n****** End parsing configuration parameters from the command line.\n";
 }
 
 // While traversing command line, seeks flags for verbose or help modes.
 void Configuration::parseConfigModesFromCmdLine()
-{
+{	
     for (int a = 1; a < nbArg; a++)
     {
         if (vectArg[a][0] == CONFIG_PREFIX)
@@ -146,9 +149,11 @@ void Configuration::parseConfigModesFromCmdLine()
                 printHelpAndExit();
             }            
             else if (isalpha(vectArg[a][1]))
-                cerr << "****** configuration prefix [" << vectArg[a] << "] unknown.\n";
+				cout << "\nWARNING:\n"
+					<< "configuration prefix [" << vectArg[a] << "] unknown.\n";
         }
     }
+	
     if (verbose)
     {
         cout << "\n********* VERBOSE MODE *********\n" << endl;        
