@@ -217,6 +217,7 @@ typedef vector<Commodity> VectCommod;
 // Defining and handling the characteristics of a computing instance.
 struct Instance
 {
+	// negative capacities read in DOW or STD files are interpreted as infinite
 	const double ASSIGNED_CAPAC_IF_READ_NEG = 1000000000; 
 
     // configuration parameters extracted from configuration file and

@@ -478,9 +478,18 @@ int main(int argc, char **argv)
     // create input and output streams
     ifstream is(params.inputInstFileName);
 	
+    if (!is.is_open())
+    {
+        cerr << "\nERROR:\n"
+			<< "The file " << params.inputInstFileName
+            << " containing the MCFNDP instance could not be opened.\n"
+			<< "EXECUTION ABORTED" << endl;
+        exit(1);
+    }
+	
 	try
 	{
-		// read deterministic MCFNDP instance from source;
+		// read MCFNDP instance from source;
 		// input operator is defined in instance.h;
 		// InstanceDow::read() or InstanceStd::read() is called
 		is >> *inst;

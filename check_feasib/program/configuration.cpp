@@ -50,8 +50,8 @@ void Configuration::parseCmdLine()
     const char *value;
 		
 	if (verbose)
-		cout << "****** Begin parsing configuration parameters from the command line.\n\n";
-
+		cout << "****** Begin parsing configuration parameters from the command line.\n" << endl;
+	
     while (a < nbArg)
     {
         if ((vectArg[a][0] == PARAM_PREFIX))
@@ -107,7 +107,7 @@ void Configuration::parseCmdLine()
 					cerr << "\nERROR:\n"
 						<< "Option key F in instruction line can only be followed\n"
 						<< "by one of the three following values: D, G, R.\n"
-						<< "However, value \"" << *value <<  "\" was received.\n"
+						<< "However, value [" << *value <<  "] was received.\n"
 						<< "EXECUTION ABORTED" << endl;
 					exit(1);                
 					break;    
@@ -130,7 +130,7 @@ void Configuration::parseCmdLine()
     }
 	
 	if (verbose)
-		cout << "\n****** End parsing configuration parameters from the command line.\n";
+		cout << "\n****** End parsing configuration parameters from the command line." << endl;
 }
 
 // While traversing command line, seeks flags for verbose or help modes.
@@ -150,7 +150,7 @@ void Configuration::parseConfigModesFromCmdLine()
             }            
             else if (isalpha(vectArg[a][1]))
 				cout << "\nWARNING:\n"
-					<< "configuration prefix [" << vectArg[a] << "] unknown.\n";
+					<< "configuration prefix [" << vectArg[a] << "] unknown." << endl;
         }
     }
 	
