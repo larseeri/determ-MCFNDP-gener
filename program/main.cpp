@@ -178,8 +178,8 @@
 // optionKeyN   value3
 //
 // It may specify at most one option per line. Option keys may be prefixed or
-// not with '-'. Comments may appear either at the beginning or the end of a line.
-// In both cases, they must start with '#'.
+// not with '-'. Comments may appear either at the beginning or the end of a
+// line, provided they start with '#'.
 //
 // Once the configuration file has been processed, options appearing in the
 // command line (other than +F, +v and +H) are processed. Option values specified
@@ -481,8 +481,8 @@
 // - To supply an option, a line of a configuration file must begin with a dash
 // '-' or a letter. A line beginning with any other character will be
 // disregarded.
-// - Comments may appear either at the beginning or the end of a line. In both cases,
-// they should start with '#'.
+// - Comments may appear either at the beginning or the end of a line, provided
+// they start with '#'.
 // - Unknown option keys following '-' in the instruction line are disregarded.
 // - Unknown option keys (following '-' or not) at beginning of lines in a
 // configuration file are disregarded.
@@ -548,9 +548,9 @@
 //
 // -noStdOut <> (no value supplied); do not save output with STD format
 //
-// -seed <int: 0, 1000000>; seed of the pseudo-random generator
+// -seed <int: 0, 1000000000>; seed of the pseudo-random generator
 //
-// -stream <int: 0, 1000000>; stream of the pseudo-random generator
+// -stream <int: 0, 1000000000>; stream of the pseudo-random generator
 //
 // -numbCom <int: 1, 1000>; number of commodities
 //

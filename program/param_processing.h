@@ -383,7 +383,7 @@ inline bool ParamProcessing::parseConfigFile(const string &infileName)
     bool found = 0;
 
     if (verbose)
-        cout << "\n****** Begin parsing options from configuration file " << infileName << "\n" << endl;
+        cout << "\n****** Begin parsing configuration file " << infileName << "\n" << endl;
 
     getline(inStr, line);
     while (inStr)
@@ -392,14 +392,12 @@ inline bool ParamProcessing::parseConfigFile(const string &infileName)
 
         string key;
         configLine >> key;
-
         string rawValue = parseConfigLine(configLine);
 
         int pos = (key[0] == PARAM_PREFIX) ? 1 : 0;
 
         // ensures that it is not a comment
         if (isalpha(key[pos]))
-
         {
 			found = 1;
 			
@@ -417,12 +415,11 @@ inline bool ParamProcessing::parseConfigFile(const string &infileName)
             // stores in map
             paramToValueMapFromConfigFile[key.substr(pos)] = cleanValue;
         }
-
 		getline(inStr, line);
     }
 
     if (verbose)
-        cout << "\n****** End parsing options from configuration file " << infileName << endl;
+        cout << "\n****** End parsing configuration file " << infileName << endl;
 
     return found;
 }

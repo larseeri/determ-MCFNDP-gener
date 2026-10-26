@@ -76,8 +76,8 @@ Data::Data(int argc, char **argv, string fileName)
     }
 
     readParam("eqSrcsEqSnks", "eqSrcsEqSnks", equSourcesEquSinks);
-    readParam("stream", "stream", stream, 0, 1000000);
-    readParam("seed", "seed", seed, 0, 1000000);
+    readParam("stream", "stream", stream, 0, 1000000000);
+    readParam("seed", "seed", seed, 0, 1000000000);
 	readParam("numbCom", "numbCom", numbCommods, 1, 1000);
 	readParam("shortOutFileName", "shortOutFileName", shortOutFileName);
 	verifyOutputPath(shortOutFileName);
@@ -258,26 +258,27 @@ Data::Data(int argc, char **argv, string fileName)
 			<< "or in the document USERGUIDE_DETERM.md available in the online repository." << endl;		
 		exit(1);
 	}
-
-    crossValidateParams();	
 	
 	scanWarnUnaccKeysFromCmdLine();
 	
 	scanWarnUnaccKeysFromConfigFile();
 	
+	crossValidateParams();	
 }
 
-// Warns of remaining, unaccounted content in instruction line map. 
+// Warns of remaining, unconsumed content in instruction line map. 
 void Data::scanWarnUnaccKeysFromCmdLine()
 {
 	if (paramProcessing.isVerbose())
-		cout << "\n****** Begin scanning for unaccounted [key] [value] pairs in instruction line." << endl;
+		cout << "\n****** Begin scanning for unconsumed [key] [value] pairs originating from instruction line." << endl;
 	
 	if (!paramProcessing.getParamToValueMapFromCmdLine().empty())
 	{		
 		 cout << "\nWARNING:\n"
-				<< "The following [key] [value] pairs have been found in instruction line\n"
-				<< "and cannot be accounted for:\n" << endl;		
+				<< "The following [key] [value] pairs from the instruction line were left unconsumed.\n"
+				<< "(i) They may be currently inactive and harmlessly present in the instruction line.\n"
+				<< "(ii) They might also MISSPELL active keys that were intended to be included,\n"
+				<< "in which case the INTENDED KEYS WILL BE GIVEN ERRONEOUS DEFAULT VALUES.\n" << endl;		
 	
 		for (const auto& [option, value] : paramProcessing.getParamToValueMapFromCmdLine())
 			cout << "[" << option << "] [" << value << "]" << endl;
@@ -285,24 +286,27 @@ void Data::scanWarnUnaccKeysFromCmdLine()
 	else
 	{
 		if (paramProcessing.isVerbose())
-			cout << "\nNo unaccounted [key] [value] pairs have been found in instruction line.\n" << endl;		
+			cout << "\nNo unconsumed [key] [value] pair originating from instruction line.\n" << endl;		
 	}
 	
 	if (paramProcessing.isVerbose())
-		cout << "\n****** End scanning for unaccounted [key] [value] pairs in instruction line." << endl;	
+		cout << "\n****** End scanning for unconsumed [key] [value] pairs originating from instruction line." << endl;	
 }
 
-// Warns of remaining, unaccounted content in configuration file map. 
+// Warns of remaining, unconsumed content in configuration file map. 
 void Data::scanWarnUnaccKeysFromConfigFile()
 {
 	if (paramProcessing.isVerbose())
-		cout << "\n****** Begin scanning for unaccounted [key] [value] pairs in configuration file." << endl;
+		cout << "\n****** Begin scanning for unconsumed [key] [value] pairs originating from configuration file." << endl;
 	
 	if (!paramProcessing.getParamToValueMapFromConfigFile().empty())
 	{		
-		 cout << "\nWARNING:\n"
-				<< "The following [key] [value] pairs have been found in configuration file\n"
-				<< "and cannot be accounted for:\n" << endl;		
+		 cout << "\nWARNING:\n"				
+				<< "The following [key] [value] pairs from the configuration file were left unconsumed.\n"
+				<< "(i) They may be currently inactive and harmlessly present in the configuration file.\n"
+				<< "(ii) They might have been superseded by similar pairs from the instruction line.\n"
+				<< "(iii) They might also MISSPELL active keys that were intended to be included,\n"
+				<< "in which case the INTENDED KEYS WILL BE GIVEN ERRONEOUS DEFAULT VALUES.\n" << endl;				
 	
 		for (const auto& [option, value] : paramProcessing.getParamToValueMapFromConfigFile())
 			cout << "[" << option << "] [" << value << "]" << endl;
@@ -310,11 +314,11 @@ void Data::scanWarnUnaccKeysFromConfigFile()
 	else
 	{
 		if (paramProcessing.isVerbose()) 
-			cout << "\nNo unaccounted [key] [value] pairs have been found in configuration file.\n" << endl;		
+			cout << "\nNo unconsumed [key] [value] pair originating from configuration file.\n" << endl;		
 	}
 	
 	if (paramProcessing.isVerbose())
-		cout << "\n****** End scanning for unaccounted [key] [value] pairs in configuration file." << endl;	
+		cout << "\n****** End scanning for unconsumed [key] [value] pairs originating from configuration file." << endl;	
 }
 
 void Data::displayError(string error)
@@ -339,7 +343,7 @@ template <class T> void Data::verifyParam(string name, const T &var, const T min
 {
     if (var < minVal || var > maxVal)
     {
-		cerr << "\nERROR: "
+		cerr << "\nERROR:\n"
 			<< name << " must be within [" << minVal << " , " << maxVal << "].\n"
 			<< "Configuration file name: " << paramProcessing.getConfigFileName() << "\n"	
 			<< "Content of command line:" << endl;	

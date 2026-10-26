@@ -31,7 +31,7 @@ void checkIfValidOutputFile(ofstream& os, string fileName)
 	if (!os.is_open())
         {
             cerr << "\nERROR:\n"
-				<< "The specified output file " << fileName << " could not be opened."
+				<< "The specified output file " << fileName << " could not be opened.\n"
 				<< "EXECUTION ABORTED" << endl;
             exit(1);
         }		
@@ -1573,7 +1573,7 @@ void Graph::output()
         {
 			cout << "\nWARNING:\n"
 				<< "LaTeX representations produced in connection with\n"
-				<< "(i) hubs-and-satellites primary topologies (configuration option hubSat),\n"
+				<< "(i) hubs-and-satellites primary topologies (configuration option hubsAndSats),\n"
 				<< "(ii) random secondary topologies (configuration option secTopology 0),\n"
 				<< "(iii) topologies that are read from a file (configuration option secTopology 5)\n"
 				<< "are treated as generic, unstructured graphs.\n"
@@ -1583,7 +1583,7 @@ void Graph::output()
             if ((numbNodes + numbSatNodes) <= 12 && numbCommods <= 4)
                 outputTexGeneric(data->shortOutFileName + ".tex");
             else
-                cerr << "\nERROR:\n"
+                cout << "\nWARNING:\n"
 					<< "LaTeX representations are available under a generic topology\n"
                     << "only when total number of nodes <= 12 and number of commodities <= 4.\n"
 					<< "The LaTex representation will not be generated." << endl;
@@ -1600,10 +1600,10 @@ void Graph::output()
 					<< "its processing by a LaTeX compilator might require several minutes later on." << endl;			
 			}			
             else
-                cerr << "\nERROR:\n"
+                cout << "\nWARNING:\n"
 					<< "LaTeX representations are available under a grid secondary topology\n"
                     << "only when lengthX <= 10, lengthY <= 10 and number of commodities <= 15.\n"
-					<< "The LaTex representation will not be generated." << endl;
+					<< "The LaTeX representation will not be generated." << endl;
         }
 		// point-to-point primary topology and circular secondary topology
         else if (data->circConnect)
@@ -1617,7 +1617,7 @@ void Graph::output()
 					<< "its processing by a LaTeX compilator might require several minutes later on." << endl;
 			}	
             else
-                cerr << "\nERROR:\n"
+                cout << "\nWARNING:\n"
 					<< "LaTeX representations are available under a circular secondary topology\n"
                     << "only when number of nodes <= 36 and number of commodities <= 15.\n"
 					<< "The LaTex representation will not be generated." << endl;
@@ -1678,7 +1678,6 @@ void Graph::readBasicGraph(string longBasicGraphFileName, const VectCommodOnArc 
         exit(1);
 	}
 
-    inFile.getline(line, 1024);
     inFile.getline(line, 1024);
     inFile.getline(line, 1024);
     inFile.getline(line, 1024);
@@ -1778,7 +1777,7 @@ void Graph::readBasicGraph(string longBasicGraphFileName, const VectCommodOnArc 
 			<< "While reading " + longBasicGraphFileName + ", " << temp << " nodes have been detected\n"
             << "whereas the value specified for option numbNodes is " << numbNodes << ".\n"
 			<< "The value of numbNodes should be corrected to be at least as large\n"
-			<< "as the number of detected nodes\n."
+			<< "as the number of detected nodes.\n"
 			<< "EXECUTION ABORTED" << endl;
             exit(1);
     }
@@ -1830,18 +1829,14 @@ void Graph::outputDow(string fileName)
     outFile << " MULTIGEN.DAT:" << endl;
     outFile << setw(8) << right << (numbNodes + numbSatNodes) << "    " << setw(8) << right << (numbArcs + numbSatArcs) << "    " << setw(8) << right
             << numbCommods << endl;
-
-    for (int n = 0; n < numbNodes + numbSatNodes; n++)
-        for (int a = 0; a < numbArcs + numbSatArcs; a++)
-        {
-            if (arcs[a].orig == n)
-            {
-                outFile << setw(8) << right << arcs[a].orig + 1 << "    " << setw(8) << right << arcs[a].dest + 1
-                        << "    " << setw(8) << right << arcs[a].commodsOnArc[0].cost << "    " << setw(8) << right
-                        << arcs[a].capac << "    " << setw(8) << right << arcs[a].cost << "    " << setw(8) << right
-                        << 1 << "    " << setw(8) << right << a + 1 << endl;
-            }
-        }
+    
+	for (int a = 0; a < numbArcs + numbSatArcs; a++)
+	{            
+		outFile << setw(8) << right << arcs[a].orig + 1 << "    " << setw(8) << right << arcs[a].dest + 1
+				<< "    " << setw(8) << right << arcs[a].commodsOnArc[0].cost << "    " << setw(8) << right
+				<< arcs[a].capac << "    " << setw(8) << right << arcs[a].cost << "    " << setw(8) << right
+				<< 1 << "    " << setw(8) << right << a + 1 << endl;
+	}
 
     for (int k = 0; k < numbCommods; k++)
     {
@@ -2306,16 +2301,16 @@ void Graph::outputTexGeneric(string fileName)
         {
             nodeSize = "5mm";
             spacing = "10mm";
-            cerr << "\nWARNING: Compilation of LaTeX output might fail"
+            cout << "\nWARNING: Compilation of LaTeX output might fail"
                     " when numbers of nodes and commodities are high."
                  << endl;
         }
         else
         {
-            cerr << "\nERROR: LaTeX representations are unavailable with "
-                    "generic topology"
-                    " and !oneSrcOneSnk, if number of nodes > 64 and number of commodities > 12."
-                 << endl;
+            cout << "\nWARNING:\n"
+				<< "LaTeX representations are unavailable with generic topology and !oneSrcOneSnk,\n"
+				<< "if number of nodes > 64 and number of commodities > 12.\n"
+				<< "The LaTeX representation will not be generated." << endl;
             return;
         }
     }
@@ -2716,16 +2711,15 @@ void Graph::outputTexGrid(string fileName)
         {
             nodeSize = "5mm";
             spacing = "10mm";
-            cerr << "\nWARNING: Compilation of LaTeX output might fail"
-                    " when numbNodes and numbCom are high."
-                 << endl;
+            cout << "\nWARNING:\n"
+				<< "Compilation of LaTeX output might fail when numbNodes and numbCom are high." << endl;
         }
         else
         {
-            cerr << "\nERROR: LaTeX representations are unavailable with grid "
-                    "topology"
-                    " and !oneSrcOneSnk, if numbNodes > 64 and numbCom > 12."
-                 << endl;
+            cout << "\nWARNING:\n"
+				<< "LaTeX representations are unavailable with grid topology and !oneSrcOneSnk,\n"
+				<< "if numbNodes > 64 and numbCom > 12.\n"
+				<< "The LaTeX representation will not be generated." << endl;
             return;
         }
     }
@@ -3097,16 +3091,15 @@ void Graph::outputTexCirc(string fileName)
             nodeFont = "\\tiny";
             nodeSize = "5mm";
             spacing = "10mm";
-            cerr << "\nWARNING: Compilation of LaTeX output might fail"
-                    " when numbNodes and numbCom are high."
-                 << endl;
+            cout << "\nWARNING:\n"
+				<< "Compilation of LaTeX output might fail when numbNodes and numbCom are high." << endl;
         }
         else
         {
-            cerr << "\nERROR: LaTeX representations are unavailable with "
-                    "circular secondary topology"
-                    " and oneSrcOneSnk, if numbNodes > 36 or numbCom > 15."
-                 << endl;
+            cout << "\nWARNING:\n"
+				<< "LaTeX representations are unavailable with circular secondary topology\n"
+                << "and oneSrcOneSnk, if numbNodes > 36 or numbCom > 15.\n"
+				<< "The LaTeX representation will not be generated." << endl;
             return;
         }
     }
@@ -3127,16 +3120,14 @@ void Graph::outputTexCirc(string fileName)
         {
             nodeSize = "5mm";
             spacing = "10mm";
-            cerr << "\nWARNING: Compilation of LaTeX output might fail"
-                    " when numbNodes and numbCom are high."
-                 << endl;
+            cout << "\nWARNING:\n"
+				<< "Compilation of LaTeX output might fail when numbNodes and numbCom are high." << endl;
         }
         else
         {
-            cerr << "\nERROR: LaTeX representations are unavailable"
-                    " with circular secondary topology and !oneSrcOneSnk,"
-                    " if numbNodes > 25 and numbCom > 12."
-                 << endl;
+            cout << "\nWARNING:\n"
+				<< "LaTeX representations are unavailable with circular secondary topology\n"
+				<< "and !oneSrcOneSnk, if numbNodes > 25 and numbCom > 12." << endl;
             return;
         }
     }
