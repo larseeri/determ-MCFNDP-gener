@@ -23,6 +23,17 @@
 //
 #include "instance.h"
 
+
+inline string_view trim_view(string_view str)
+{
+    size_t start = str.find_first_not_of(" \t\r\n");
+    if (start == string_view::npos)
+		return "";
+    
+    size_t end = str.find_last_not_of(" \t\r\n");
+    return str.substr(start, end - start + 1);
+}
+
 // Assigns sizes to arrays of elements.
 void Instance::assignSizes()
 {
@@ -101,7 +112,7 @@ void InstanceDow::read(istream &is)
 
     getline(is, line);
 	
-	if (line != "MULTIGEN.DAT:")
+	if (trim_view(line) != "MULTIGEN.DAT:")
 	{	
 		cerr << "\nERROR:\n"
 			<< "The file " << params->inputInstFileName << " specified with option key I\n"
@@ -125,6 +136,8 @@ void InstanceDow::read(istream &is)
 
     allocate();
 	
+	bool nonSequential = false;
+	
     for (int a = 0; a < numbArcs; a++)
     {
         Arc arc(numbCommods);
@@ -136,29 +149,24 @@ void InstanceDow::read(istream &is)
 		{
 			cerr << "\nERROR:\n"
 				<< "At least one of the two node indices (" << arc.orig << ", " << arc.dest << ") stated\n"
-				<< "in connection with the " << a+1 << "th arc listed (starting from 1) in instance file\n"
+				<< "in connection with the " << a+1 << "st/th arc listed (starting from 1) in instance file\n"
 				<< params->inputInstFileName << " is non-positive or exceeds the total number of nodes stated\n"
 				<< "at beginning of file.\n"
 				<< "EXECUTION ABORTED" << endl;
 				exit(1);		
 		}
-		if (varCost < 0 || capac < 0 || fixedCost < 0)
+		if (varCost < 0 || fixedCost < 0)
 		{
 			cerr << "\nERROR:\n"
-				<< "At least one of the variable cost " << varCost << ", capacity " << capac << " and fixed cost\n"
-				<< fixedCost << " stated in connection with the " << a+1 << "th arc listed (starting from 1)\n"
+				<< "At least one of the variable cost " << varCost << " and fixed cost " << fixedCost << "\n"
+				<< "stated in connection with the " << a+1 << "st/th arc listed (starting from 1)\n"
 				<< "in instance file " << params->inputInstFileName << " is negative.\n"
 				<< "EXECUTION ABORTED" << endl;
 				exit(1);		
 		}
 		if (idxArc != (a + 1))
-		{
-			cerr << "\nERROR:\n"
-				<< "The arc index (starting from 1) " << idxArc << " stated in connection with the\n"
-				<< a+1 << "th arc listed (starting from 1) in instance file " << params->inputInstFileName << "\n"
-				<< "does not agree with expected value " << a+1 << ".\n"
-				<< "EXECUTION ABORTED" << endl;
-				exit(1);		
+		{			
+			nonSequential = true;			
 		}
 				
 		if (capac < 0)
@@ -201,7 +209,7 @@ void InstanceDow::read(istream &is)
 		{	
 			cerr << "\nERROR:\n"
 				<< "At least one of the origin and destination node indices " << commods[k].orig << " and\n"
-				<< commods[k].orig << " stated in connection with a commodity volume in instance file\n"
+				<< commods[k].dest << " stated in connection with a commodity volume in instance file\n"
 				<< params->inputInstFileName << " is either non-positive or exceeds the total\n"
 				<< "number of nodes stated at beginning of file.\n"
 				<< "EXECUTION ABORTED" << endl;
@@ -212,6 +220,15 @@ void InstanceDow::read(istream &is)
         commods[k].dest--;
         elems[DEMAND][countDemand++] = volume;
     }
+	
+	if (nonSequential)
+	{
+		cout << "\nWARNING:\n"
+			<< "The arc indexes appearing in the last column of instance file " << params->inputInstFileName << "\n"
+			<< "are not consecutive. This does not strictly conform to the specification of the DOW format.\n"
+			<< "Ascertain that all indexes appearing in last column fall within 1 and the number of arcs\n"
+			<< "stated at the beginning of file AND that no index is missing." << endl;
+	}	
 	
 	if (params->verbose)
 		cout << "\n****** End reading DOW instance from " << params->inputInstFileName << ".\n" << endl;
@@ -291,17 +308,18 @@ void InstanceRStd::read(istream &is)
 		
         for (int k = 0; k < numbComm; k++)
         {
-            is >> idxComm;
+            is >> idxComm;			
 			
-			if (idxComm > numbCommods)
+			if (idxComm > numbCommods || idxComm < 1)
 			{
 				cerr << "\nERROR:\n"
 					<< "The commodity index " << idxComm << " stated while listing the costs and capacities\n"
-					<< "in connection with arc ("<< (arc.orig + 1) << ", " << (arc.dest + 1) << ") in instance file\n"
-					<< params->inputInstFileName << " exceeds the total number of commodities at beginning of file.\n"
+					<< "in connection with arc (" << (arc.orig + 1) << ", " << (arc.dest + 1) << ") in instance file\n"
+					<< params->inputInstFileName << " exceeds the total number of commodities at beginning of file\n"
+					<< "or is non-positive.\n"					
 					<< "EXECUTION ABORTED" << endl;
 					exit(1);
-			}
+			}			
 			
             idxComm--;
             is >> varCost >> capac;
@@ -365,7 +383,6 @@ void InstanceRStd::read(istream &is)
 	if (params->verbose)
 		cout << "\n****** End reading RSTD instance " << params->inputInstFileName << ".\n" << endl;
 }
-
 
 // Reads a deterministic MCFNDP instance stored in generic STD format.
 void InstanceGStd::read(istream &is)
@@ -441,12 +458,13 @@ void InstanceGStd::read(istream &is)
         {					
 			is >> idxComm;
 			
-			if (idxComm > numbCommods)
+			if (idxComm > numbCommods || idxComm < 1)
 			{
 				cerr << "\nERROR:\n"
 					<< "The commodity index " << idxComm << " stated while listing the costs and capacities\n"
-					<< "in connection with arc ("<< (arc.orig + 1) << ", " << (arc.dest + 1) << ") in instance file\n"
-					<< params->inputInstFileName << " exceeds the total number of commodities at beginning of file.\n"
+					<< "in connection with arc (" << (arc.orig + 1) << ", " << (arc.dest + 1) << ") in instance file\n"
+					<< params->inputInstFileName << " exceeds the total number of commodities at beginning of file\n"
+					<< "or is non-positive.\n"					
 					<< "EXECUTION ABORTED" << endl;
 					exit(1);
 			}
