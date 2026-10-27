@@ -486,6 +486,17 @@
 // - Unknown option keys following '-' in the instruction line are disregarded.
 // - Unknown option keys (following '-' or not) at beginning of lines in a
 // configuration file are disregarded.
+// - After the instruction line has been parsed, [key] [value] pairs that have
+// been left unconsumed are listed: (i) They may be currently inactive and
+// harmlessly present in the instruction line. (ii) They might also MISSPELL
+// active keys that were intended to be included, in which case the INTENDED
+// KEYS WILL BE GIVEN ERRONEOUS DEFAULT VALUES.	
+// - After the configuration file has been parsed, [key] [value] pairs that
+// have been left unconsumed are listed: (i) They may be currently inactive and
+// harmlessly present in the configuration file. (ii) They might have been 
+// superseded by similar pairs from the instruction line. (iii) They might also
+// MISSPELL active keys that were intended to be included, in which case the
+// INTENDED KEYS WILL BE GIVEN ERRONEOUS DEFAULT VALUES.
 //
 // -hubsAndSats <> (no value supplied); implement hubs-and-satellites primary
 // topology; if absent or explicitly set to false, the point-to-point primary

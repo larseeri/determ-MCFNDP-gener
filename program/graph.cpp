@@ -1586,7 +1586,7 @@ void Graph::output()
                 cout << "\nWARNING:\n"
 					<< "LaTeX representations are available under a generic topology\n"
                     << "only when total number of nodes <= 12 and number of commodities <= 4.\n"
-					<< "The LaTex representation will not be generated." << endl;
+					<< "The LaTeX representation will not be generated." << endl;
         }
 		// point-to-point primary topology and grid-like secondary topology
         else if (data->gridConnect)
@@ -1620,7 +1620,7 @@ void Graph::output()
                 cout << "\nWARNING:\n"
 					<< "LaTeX representations are available under a circular secondary topology\n"
                     << "only when number of nodes <= 36 and number of commodities <= 15.\n"
-					<< "The LaTex representation will not be generated." << endl;
+					<< "The LaTeX representation will not be generated." << endl;
         }			
     }
 }
@@ -1826,7 +1826,7 @@ void Graph::outputDow(string fileName)
 	
     int orig = 0, dest = 0, volume = 0;
 
-    outFile << " MULTIGEN.DAT:" << endl;
+    outFile << "MULTIGEN.DAT:" << endl;
     outFile << setw(8) << right << (numbNodes + numbSatNodes) << "    " << setw(8) << right << (numbArcs + numbSatArcs) << "    " << setw(8) << right
             << numbCommods << endl;
     

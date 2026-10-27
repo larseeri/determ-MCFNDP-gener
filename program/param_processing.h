@@ -298,7 +298,7 @@ inline void ParamProcessing::parseConfigFileNameFromCmdLine()
             else if (isalpha(vectArg[a][1]))
 			{	
 				cout << "\nWARNING:\n"
-					<< "configuration prefix [" << vectArg[a] << "] unknown.\n";					
+					<< "Configuration key [" << vectArg[a] << "] is unknown.\n";					
 			}
         }
     }
