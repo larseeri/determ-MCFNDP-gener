@@ -31,7 +31,7 @@ The repository contains the following:
 
 /library/DESCLIBRARY_DETERM.txt: Detailed description of the library.
 
-/library/scripts/: Contains the shell scripts generating the configuration files of the library.
+/library/build_config/: Folder containing the C++ code building configuration files for each instance in the library.
 
 ##### Testing feasibility
 
