@@ -45,7 +45,7 @@ COPY --from=builder /HIGHS/HiGHS-1.11.0/install/lib /HIGHS/HiGHS-1.11.0/install/
 ##RUN ls -al /HIGHS/HiGHS-1.11.0/install/lib/
 
 # Default command to run the binary when the container starts
-CMD ["/determ_feasib", "-h"]
+CMD ["/determ_feasib", "+H"]
 
 #############################################################################
 #############################################################################
