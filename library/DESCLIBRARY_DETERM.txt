@@ -1,0 +1,730 @@
+October 28th 2026
+library/DESCLIBRARY_DETERM.txt
+
+
+Description of the library of generated deterministic MCFNDP instances
+
+
+A generic library of deterministic MCFNDP instances is created with the GenDeterm generator based on the following arborescence of configurations. First, subsets of instances are generated under one of two primary topologies: either point-to-point (Section 1) or hub-and-satellite (Section 2). Second, within each one these subsets, two further subsets of instances are respectively generated under one of two regimes of distribution of commodity volumes: either one source node and one sink node for each commodity (Sections 1.1 and 2.1), or multiple but identical source nodes and multiple but identical sink nodes for all commodities (Sections 1.2 and 2.2). Third, within each one of these subsets, four subsets of instances are respectively generated under one of four secondary topologies: circular (Sections 1.1.1, 1.2.1, 2.1.1, 2.2.1), cylindrical (Sections 1.1.2, 1.2.2, 2.1.2, 2.2.2), flat (Sections 1.1.2, 1.2.2, 2.1.2, 2.2.2), toral (Sections 1.1.2, 1.2.2, 2.1.2, 2.2.2). We proceed to describe the exact sets of options and option values appearing in the configurations situated at the leaves of this arborescence.
+
+Remarks:
+
+a- The objective underlying the construction of the library with the GenDeterm generator is to produce a set of deterministic MCFNDP instances featuring broadly diversified topologies, characteristics and complexity levels from which the user could select and/or sample a most relevant subset to run experiments at hand. Yet, the library could be expanded through further diversifications along settings of the generator that are presently fixed or by exploring alternative ranges or sets of values about some other settings.
+
+b- The library defines a total of 6000 MCFNDP configurations and is stored in the /library folder.
+
+c- Feasibility of each MCFNDP instance generated from the configurations in the library has been verified with the program contained in the /check_feasib folder. The 9 infeasible instances are removed from the regular subfolders and stored in infeas/ subfolders as indicated below.
+
+d- In view of the large space that would be required to store all MCFNDP instances, only the configuration files are supplied within two .zip archives: hubsAndSats_config-files.zip and pointToPoint._config-files.zip. The corresponding MCFNDP instances can be generated from the saved configuration files at a high speed using the program contained in the /program folder.
+
+e- The C++ code building configuration files for each instance in the library is located in folder library/build_config.
+
+
+1 Primary topology: Point-to-point (3600 configurations)
+
+Configurations within this branch feature a point-to-point primary topology. That is, option "hubSat" is omitted or its value is set to false. The following option values are common to all configurations in this branch:
+
+Option and value specifying the number of successive attempts to generate a random arc while avoiding parallelism:
+noParalArc 20
+
+Options and values specifying the range of the sampling distribution for the commodity volumes:
+minComVol 20
+maxComVol 100
+
+Options and values specifying the ranges of the sampling distribution for the fixed costs and variable costs over the arcs:
+minFixCos 20
+maxFixCos 100
+minVarCos 20
+maxVarCos 100
+
+Notice that the resulting sampling distributions are deliberately made to be wide, ratios between maxima and minima being equal to 5. Control of the balance between volumes and capacities and between fixed costs and variable costs is deferred to values of options "adjCapacsDown" and "adjFixCostsUp", as described below.
+
+Remark:
+
+All configuration files belonging to the current branch are saved in folder library/pointToPoint
+
+1.1 Distribution of volumes: One source node and one sink node for each commodity 
+
+Within this branch, there are exactly one source node and one sink node for each commodity. That is, option "oneSrcOneSnk" is specified with no value or with a value set to true.  
+
+Remark:
+
+All configuration files belonging to the current branch are saved in folder library/pointToPoint/oneSrcOneSnk
+
+1.1.1 Secondary topology: Circular (450 configurations)
+
+Configurations within this branch feature a circular secondary topology. That is, option "secTopology" is set to 4.
+
+There are 18 alternative tuples of values respectively assigned to options "numbNodes", "numbCom", "minArcCap", "maxArcCap", "minComCap", "maxComCap", "nbAddArcPerSampHead" as follows:
+
+{6, 3, 15, 30, 10, 15, 2},
+{6, 6, 15, 45, 10, 15, 2},
+{6, 12, 15, 45, 10, 15, 2}, 
+{20, 10, 15, 45, 10, 15, 2},
+{20, 20, 15, 45, 10, 15, 2},
+{20, 40, 15, 45, 10, 15, 2}, 
+{42, 21, 15, 45, 10, 15, 2},
+{42, 42, 15, 45, 10, 15, 2},
+{42, 84, 15, 45, 10, 15, 2},
+{72, 36, 15, 45, 10, 15, 2},
+{72, 72, 15, 45, 10, 15, 2},
+{72, 144, 15, 45, 10, 15, 2},
+{111, 55, 15, 45, 10, 15, 2},
+{111, 111, 15, 45, 10, 15, 2},
+{111, 222, 15, 45, 10, 15, 2},
+{156, 78, 15, 45, 10, 15, 2},
+{156, 156, 15, 45, 10, 15, 2},
+{156, 312, 15, 45, 10, 15, 2}
+
+For each one of these 18 alternative tuples, there are 25 alternative pairs of values respectively assigned to options "adjCapacsDown", "adjFixCostsUp" as follows:
+
+{0.33, 0.33},
+{0.33, 0.5},
+{0.33, 1.0},
+{0.33, 1.5},
+{0.33, 2.0},
+{0.5, 0.33},
+{0.5, 0.5},
+{0.5, 1.0},
+{0.5, 1.5},
+{0.5, 2.0},
+{1.0, 0.33},
+{1.0, 0.5},
+{1.0, 1.0},
+{1.0, 1.5},
+{1.0, 2.0},
+{1.5, 0.33},
+{1.5, 0.5},
+{1.5, 1.0},
+{1.5, 1.5},
+{1.5, 2.0},
+{2.0, 0.33},
+{2.0, 0.5},
+{2.0, 1.0},
+{2.0, 1.5},
+{2.0, 2.0}
+
+Remarks:
+
+a- Production of all configuration files belonging to this branch is performed by running the executable compiled from the c++ code file gen-determ-lib_pp_oneone_circ_21sept2026-22h10.cpp as follows:
+
+g++ gen-determ-lib_pp_oneone_circ_21sept2026-22h10.cpp -o gen-determ-lib_pp_oneone_circ_21sept2026-22h10
+./gen-determ-lib_pp_oneone_circ_21sept2026-22h10
+
+b- All configuration files in this branch are saved in folder library/pointToPoint/oneSrcOneSnk/circ.
+
+c- The name of each configuration file completely describes its content and, therefore, the resulting deterministic MCFNDP instance.
+
+Example:
+
+pp_vols-20-100_csts-20-100-20-100_oneSrcOneSnk_secTop-circ_secTopSpe-6-3-15-30-10-15-2_noPar-20_adjSpe-0~33-0~33_seed-50163844_strm-114.par
+
+d- Each configuration includes the options "seed" and "stream". Option "seed" refers to the seed of the pseudo-random generator. Its value is invariant throughout the library. Option "stream" refers to the stream of the pseudo-random generator. Values of option ""stream" are assigned in a one-to-one correspondence to the configuration files. Hence the pair of values for options "seed" and "stream" uniquely identifies the configuration file and, therefore, the resulting deterministic MCFNDP instance. This will be useful when identifying generated stochastic MCFNDP instances derived from a similar base deterministic MCFNDP instance.
+
+e- Once all configurations files have been produced with the executable compiled from gen-determ-lib_pp_oneone_circ_21sept2026-22h10.cpp, the Bash script process-determ-config-files_19sept2026-15h56.sh can generate the corresponding deterministic MCFNDP instances by calling the deterministic generator with each configuration file. The generated deterministic MCFNDP instances are saved in the same folder as their founding configuration file.
+
+1.1.2 Secondary topology: Grid-like (1350 configurations)
+
+Configurations within this branch feature a grid-like secondary topology. That is, option "secTopology" is alternatively set to one of the values in {1, 2, 3}. These values respectively call for the toral (secTopology 1), cylindrical (secTopology 2) and flat (secTopology 3) secondary topologies.
+
+For each one of the 3 grid-like secondary topologies, there are 18 alternative tuples of values respectively assigned to options "lengthX", "lengthY", "numbCom", "minArcCap", "maxArcCap", "minComCap", "maxComCap", "nbAddArcPerSampHead" as follows:
+
+{2, 3, 3, 15, 30, 10, 15, 2},
+{2, 3, 6, 15, 45, 10, 15, 2},
+{2, 3, 12, 15, 45, 10, 15, 2}, 
+{4, 5, 10, 15, 45, 10, 15, 2},
+{4, 5, 20, 15, 45, 10, 15, 2},
+{4, 5, 40, 15, 45, 10, 15, 2}, 
+{6, 7, 21, 15, 45, 10, 15, 2},
+{6, 7, 42, 15, 45, 10, 15, 2},
+{6, 7, 84, 15, 45, 10, 15, 2},
+{8, 9, 36, 15, 45, 10, 15, 2},
+{8, 9, 72, 15, 45, 10, 15, 2},
+{8, 9, 144, 15, 45, 10, 15, 2},
+{10, 11, 55, 15, 45, 10, 15, 2},
+{10, 11, 110, 15, 45, 10, 15, 2},
+{10, 11, 220, 15, 45, 10, 15, 2},
+{12, 13, 78, 15, 45, 10, 15, 2},
+{12, 13, 156, 15, 45, 10, 15, 2},
+{12, 13, 312, 15, 45, 10, 15, 2}
+
+For each one of these 18 alternative tuples, there are 25 alternative pairs of values respectively assigned to options "adjCapacsDown", "adjFixCostsUp" as follows:
+
+{0.33, 0.33},
+{0.33, 0.5},
+{0.33, 1.0},
+{0.33, 2.0},
+{0.33, 3.0},
+{0.5, 0.33},
+{0.5, 0.5},
+{0.5, 1.0},
+{0.5, 2.0},
+{0.5, 3.0},
+{1.0, 0.33},
+{1.0, 0.5},
+{1.0, 1.0},
+{1.0, 2.0},
+{1.0, 3.0},
+{2.0, 0.33},
+{2.0, 0.5},
+{2.0, 1.0},
+{2.0, 2.0},
+{2.0, 3.0},
+{3.0, 0.33},
+{3.0, 0.5},
+{3.0, 1.0},
+{3.0, 2.0},
+{3.0, 3.0}
+
+Remarks:
+
+a- Production of all configuration files belonging to this branch is performed by running the executables compiled from the c++ code files
+gen-determ-lib_pp_oneone_toral_21sept2026-22h10.cpp
+gen-determ-lib_pp_oneone_cyl_21sept2026-22h10.cpp
+gen-determ-lib_pp_oneone_flat_21sept2026-22h10.cpp
+
+as follows:
+
+g++ gen-determ-lib_pp_oneone_toral_21sept2026-22h10.cpp -o gen-determ-lib_pp_oneone_toral_21sept2026-22h10
+./gen-determ-lib_pp_oneone_toral_21sept2026-22h10
+g++ gen-determ-lib_pp_oneone_cyl_21sept2026-22h10.cpp.cpp -o gen-determ-lib_pp_oneone_cyl_21sept2026-22h10.cpp
+./gen-determ-lib_pp_oneone_cyl_21sept2026-22h10.cpp
+g++ gen-determ-lib_pp_oneone_flat_21sept2026-22h10.cpp -o gen-determ-lib_pp_oneone_flat_21sept2026-22h10
+./gen-determ-lib_pp_oneone_flat_21sept2026-22h10
+
+b- Configuration files in this branch are saved in folders library/pointToPoint/oneSrcOneSnk/toral, library/pointToPoint/oneSrcOneSnk/cyl, library/pointToPoint/oneSrcOneSnk/flat
+
+c- The name of each configuration file completely describes its content and, therefore, the resulting deterministic MCFNDP instance.
+
+Examples:
+
+pp_vols-20-100_csts-20-100-20-100_oneSrcOneSnk_secTop-toral_secTopSpe-2-3-3-15-30-10-15-2_noPar-20_adjSpe-0~33-0~33_seed-50163844_strm-111.par
+pp_vols-20-100_csts-20-100-20-100_oneSrcOneSnk_secTop-cyl_secTopSpe-2-3-3-15-30-10-15-2_noPar-20_adjSpe-0~33-0~33_seed-50163844_strm-112.par
+pp_vols-20-100_csts-20-100-20-100_oneSrcOneSnk_secTop-flat_secTopSpe-2-3-3-15-30-10-15-2_noPar-20_adjSpe-0~33-0~33_seed-50163844_strm-113.par
+
+d- Each configuration includes the options "seed" and "stream". Option "seed" refers to the seed of the pseudo-random generator. Its value is invariant throughout the library. Option "stream" refers to the stream of the pseudo-random generator. Values of option ""stream" are assigned in a one-to-one correspondence to the configuration files. Hence the pair of values for options "seed" and "stream" uniquely identifies the configuration file and, therefore, the resulting deterministic MCFNDP instance. This will be useful when identifying generated stochastic MCFNDP instances derived from a similar base deterministic MCFNDP instance.
+
+e- Once all configurations files have been produced with the executables (see a- above), the Bash script process-determ-config-files_19sept2026-15h56.sh can generate the corresponding deterministic MCFNDP instances by calling the deterministic generator with each configuration file. The generated deterministic MCFNDP instances are saved in the same folder as their founding configuration file.
+
+1.2 Distribution of volumes: Identical sources and identical sinks for all commodities
+
+Within this branch, all commodities share multiple but common source nodes and multiple but common sink nodes. That is, option "eqSrcsEqSnks" is specified with no value or with a value set to true.  
+
+Remark:
+
+All configuration files belonging to the current branch are saved in folder library/pointToPoint/eqSrcsEqSnks
+
+1.2.1 Secondary topology: Circular (450 configurations)
+
+Configurations within this branch feature a circular secondary topology. That is, option "secTopology" is set to 4.
+
+There are 18 alternative tuples of values respectively assigned to options "numbNodes", "minNbSrc", "maxNbSrc", "minNbSnk", "maxNbSnk", "numbCom", "minArcCap", "maxArcCap", "minComCap", "maxComCap", "nbAddArcPerSampHead" as follows:
+
+{6, 1, 1, 1, 1, 3, 15, 30, 10, 15, 2},
+{6, 1, 2, 1, 2, 6, 15, 45, 10, 15, 2},
+{6, 2, 3, 2, 3, 12, 15, 45, 10, 15, 2}, 
+{20, 3, 5, 3, 5, 10, 15, 45, 10, 15, 2},
+{20, 5, 7, 5, 7, 20, 15, 45, 10, 15, 2},
+{20, 7, 10, 7, 10, 40, 15, 45, 10, 15, 2}, 
+{42, 6, 9, 6, 9, 21, 15, 45, 10, 15, 2},
+{42, 9, 14, 9, 14, 42, 15, 45, 10, 15, 2},
+{42, 14, 21, 14, 21, 84, 15, 45, 10, 15, 2},
+{72, 11, 16, 11, 16, 36, 15, 45, 10, 15, 2},
+{72, 16, 24, 16, 24, 72, 15, 45, 10, 15, 2},
+{72, 24, 36, 24, 36, 144, 15, 45, 10, 15, 2},
+{110, 16, 24, 16, 24, 55, 15, 45, 10, 15, 2},
+{110, 24, 36, 24, 36, 110, 15, 45, 10, 15, 2},
+{110, 36, 55, 36, 55, 220, 15, 45, 10, 15, 2},
+{156, 23, 35, 23, 35, 78, 15, 45, 10, 15, 2},
+{156, 35, 52, 35, 52, 156, 15, 45, 10, 15, 2},
+{156, 52, 78, 52, 78, 312, 15, 45, 10, 15, 2}
+
+For each one of these 18 alternative tuples, there are 25 alternative pairs of values respectively assigned to options "adjCapacsDown", "adjFixCostsUp" as follows:
+
+{0.33, 0.33},
+{0.33, 0.5},
+{0.33, 1.0},
+{0.33, 1.5},
+{0.33, 2.0},
+{0.5, 0.33},
+{0.5, 0.5},
+{0.5, 1.0},
+{0.5, 1.5},
+{0.5, 2.0},
+{1.0, 0.33},
+{1.0, 0.5},
+{1.0, 1.0},
+{1.0, 1.5},
+{1.0, 2.0},
+{1.5, 0.33},
+{1.5, 0.5},
+{1.5, 1.0},
+{1.5, 1.5},
+{1.5, 2.0},
+{2.0, 0.33},
+{2.0, 0.5},
+{2.0, 1.0},
+{2.0, 1.5},
+{2.0, 2.0}
+
+Remarks:
+
+a- Production of all configuration files belonging to this branch is performed by running the executable compiled from the c++ code file gen-determ-lib_pp_eqeq_circ_21sept2026-22h10.cpp as follows:
+
+g++ gen-determ-lib_pp_eqeq_circ_21sept2026-22h10.cpp -o gen-determ-lib_pp_eqeq_circ_21sept2026-22h10
+./gen-determ-lib_pp_eqeq_circ_21sept2026-22h10
+
+b- All configuration files in this branch are saved in folder library/pointToPoint/eqSrcsEqSnks/circ.
+
+c- The name of each configuration file completely describes its content and, therefore, the resulting deterministic MCFNDP instance.
+
+Example:
+
+pp_vols-20-100_csts-20-100-20-100_eqSrcsEqSnks_secTop-circ_secTopSpe-6-1-1-1-1-3-15-30-10-15-2_noPar-20_adjSpe-0~33-0~33_seed-50163844_strm-124.par
+
+d- Each configuration includes the options "seed" and "stream". Option "seed" refers to the seed of the pseudo-random generator. Its value is invariant throughout the library. Option "stream" refers to the stream of the pseudo-random generator. Values of option ""stream" are assigned in a one-to-one correspondence to the configuration files. Hence the pair of values for options "seed" and "stream" uniquely identifies the configuration file and, therefore, the resulting deterministic MCFNDP instance. This will be useful when identifying generated stochastic MCFNDP instances derived from a similar base deterministic MCFNDP instance.
+
+e- Once all configurations files have been produced with the executable compiled from gen-determ-lib_pp_eqeq_circ_21sept2026-22h10.cpp, the Bash script process-determ-config-files_19sept2026-15h56.sh can generate the corresponding deterministic MCFNDP instances by calling the deterministic generator with each configuration file. The generated deterministic MCFNDP instances are saved in the same folder as their founding configuration file.
+
+1.2.2 Secondary topology: Grid-like (1350 configurations)
+
+Configurations within this branch feature a grid-like secondary topology. That is, option "secTopology" is alternatively set to one of the values in {1, 2, 3}. These values respectively call for the toral (secTopology 1), cylindrical (secTopology 2) and flat (secTopology 3) secondary topologies.
+
+For each one of the 3 grid-like secondary topologies, there are 18 alternative tuples of values respectively assigned to options "lengthX", "lengthY", "minNbSrc", "maxNbSrc", "minNbSnk", "maxNbSnk", "numbCom", "minArcCap", "maxArcCap", "minComCap", "maxComCap", "nbAddArcPerSampHead" as follows:
+
+{2, 3, 1, 1, 1, 1, 3, 15, 30, 10, 15, 2},
+{2, 3, 1, 2, 1, 2, 6, 15, 45, 10, 15, 2},
+{2, 3, 2, 3, 2, 3, 12, 15, 45, 10, 15, 2}, 
+{4, 5, 3, 5, 3, 5, 10, 15, 45, 10, 15, 2},
+{4, 5, 5, 7, 5, 7, 20, 15, 45, 10, 15, 2},
+{4, 5, 7, 10, 7, 10, 40, 15, 45, 10, 15, 2}, 
+{6, 7, 6, 9, 6, 9, 21, 15, 45, 10, 15, 2},
+{6, 7, 9, 14, 9, 14, 42, 15, 45, 10, 15, 2},
+{6, 7, 14, 21, 14, 21, 84, 15, 45, 10, 15, 2},
+{8, 9, 11, 16, 11, 16, 36, 15, 45, 10, 15, 2},
+{8, 9, 16, 24, 16, 24, 72, 15, 45, 10, 15, 2},
+{8, 9, 24, 36, 24, 36, 144, 15, 45, 10, 15, 2},
+{10, 11, 16, 24, 16, 24, 55, 15, 45, 10, 15, 2},
+{10, 11, 24, 36, 24, 36, 110, 15, 45, 10, 15, 2},
+{10, 11, 36, 55, 36, 55, 220, 15, 45, 10, 15, 2},
+{12, 13, 23, 35, 23, 35, 78, 15, 45, 10, 15, 2},
+{12, 13, 35, 52, 35, 52, 156, 15, 45, 10, 15, 2},
+{12, 13, 52, 78, 52, 78, 312, 15, 45, 10, 15, 2}
+
+For each one of these 18 alternative tuples, there are 25 alternative pairs of values respectively assigned to options "adjCapacsDown", "adjFixCostsUp" as follows:
+
+{0.33, 0.33},
+{0.33, 0.5},
+{0.33, 1.0},
+{0.33, 2.0},
+{0.33, 3.0},
+{0.5, 0.33},
+{0.5, 0.5},
+{0.5, 1.0},
+{0.5, 2.0},
+{0.5, 3.0},
+{1.0, 0.33},
+{1.0, 0.5},
+{1.0, 1.0},
+{1.0, 2.0},
+{1.0, 3.0},
+{2.0, 0.33},
+{2.0, 0.5},
+{2.0, 1.0},
+{2.0, 2.0},
+{2.0, 3.0},
+{3.0, 0.33},
+{3.0, 0.5},
+{3.0, 1.0},
+{3.0, 2.0},
+{3.0, 3.0}
+
+Remarks:
+
+a- Production of all configuration files belonging to this branch is performed by running the executables compiled from the c++ code files
+gen-determ-lib_pp_eqeq_toral_21sept2026-22h10.cpp
+gen-determ-lib_pp_eqeq_cyl_21sept2026-22h10.cpp
+gen-determ-lib_pp_eqeq_flat_21sept2026-22h10.cpp
+
+as follows:
+
+g++ gen-determ-lib_pp_eqeq_toral_21sept2026-22h10.cpp -o gen-determ-lib_pp_eqeq_toral_21sept2026-22h10
+./gen-determ-lib_pp_eqeq_toral_21sept2026-22h10
+g++ gen-determ-lib_pp_eqeq_cyl_21sept2026-22h10.cpp.cpp -o gen-determ-lib_pp_eqeq_cyl_21sept2026-22h10.cpp
+./gen-determ-lib_pp_eqeq_cyl_21sept2026-22h10.cpp
+g++ gen-determ-lib_pp_eqeq_flat_21sept2026-22h10.cpp -o gen-determ-lib_pp_eqeq_flat_21sept2026-22h10
+./gen-determ-lib_pp_eqeq_flat_21sept2026-22h10
+
+b- Configuration files in this branch are saved in folders library/pointToPoint/eqSrcsEqSnks/toral, library/pointToPoint/eqSrcsEqSnks/cyl, library/pointToPoint/eqSrcsEqSnks/flat
+
+c- The name of each configuration file completely describes its content and, therefore, the resulting deterministic MCFNDP instance.
+
+Examples:
+
+pp_vols-20-100_csts-20-100-20-100_eqSrcsEqSnks_secTop-toral_secTopSpe-2-3-1-1-1-1-3-15-30-10-15-2_noPar-20_adjSpe-0~33-0~33_seed-50163844_strm-121.par
+pp_vols-20-100_csts-20-100-20-100_eqSrcsEqSnks_secTop-cyl_secTopSpe-2-3-1-1-1-1-3-15-30-10-15-2_noPar-20_adjSpe-0~33-0~33_seed-50163844_strm-122.par
+pp_vols-20-100_csts-20-100-20-100_eqSrcsEqSnks_secTop-flat_secTopSpe-2-3-1-1-1-1-3-15-30-10-15-2_noPar-20_adjSpe-0~33-0~33_seed-50163844_strm-123.par
+
+d- Each configuration includes the options "seed" and "stream". Option "seed" refers to the seed of the pseudo-random generator. Its value is invariant throughout the library. Option "stream" refers to the stream of the pseudo-random generator. Values of option ""stream" are assigned in a one-to-one correspondence to the configuration files. Hence the pair of values for options "seed" and "stream" uniquely identifies the configuration file and, therefore, the resulting deterministic MCFNDP instance. This will be useful when identifying generated stochastic MCFNDP instances derived from a similar base deterministic MCFNDP instance.
+
+e- Once all configurations files have been produced with the executables (see a- above), the Bash script process-determ-config-files_19sept2026-15h56.sh can generate the corresponding deterministic MCFNDP instances by calling the deterministic generator with each configuration file. The generated deterministic MCFNDP instances are saved in the same folder as their founding configuration file.
+
+
+2 Primary topology: Hubs-and-satellites (2400 configurations)
+
+Configurations within this branch feature a point-to-point primary topology. That is, option "hubSat" is included without value or with value is set to true. The following option values are common to all configurations in this branch:
+
+Option and value specifying the number of successive attempts to generate a random arc while avoiding parallelism:
+noParalArc 20
+
+Options an values specifying the range of the sampling distribution for the commodity volumes:
+minComVol 20
+maxComVol 100
+
+Options specifying the ranges of the sampling distribution for the fixed costs and  variable costs over the arcs connecting two hub nodes:
+minFixCos 20
+maxFixCos 100
+minVarCos 20
+maxVarCos 100
+
+and over the arcs connecting two satellite nodes or a satellite node with a hub node:
+minSatFixCos 20
+maxSatFixCos 100
+minSatVarCos 20
+maxSatVarCos 100
+
+Remark:
+
+All configuration files belonging to the current branch are saved in folder library/hubsAndSats
+
+2.1 Distribution of volumes: One source node and one sink node for each commodity 
+
+Within this branch, there are exactly one source node and one sink node for each commodity. That is, option "oneSrcOneSnk" is specified with no value or with a value set to true.  
+
+Remark:
+
+All configuration files belonging to the current branch are saved in folder library/hubsAndSats/oneSrcOneSnk
+
+2.1.1 Secondary topology: Circular (300 configurations)
+
+Configurations within this branch feature a circular secondary topology. That is, option "secTopology" is set to 4.
+
+There are 12 alternative tuples of values respectively assigned to options "numbNodes", "minSatsPerHub", "maxSatsPerHub", "minSatsRoundSize", "maxSatsRoundSize", "numbCom", "minArcCap", "maxArcCap", "minComCap", "maxComCap", "nbAddArcPerSampHead", "minSatArcCap", "maxSatArcCap", "minSatComCap", "maxSatComCap", "nbAddSatArcPerSampHead" as follows:
+
+{6, 2, 8, 2, 8, 3, 15, 30, 10, 15, 2, 15, 30, 10, 15, 2},
+{6, 2, 8, 2, 8, 6, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2},
+{6, 2, 8, 2, 8, 12, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2}, 
+{20, 2, 8, 2, 8, 10, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2},
+{20, 2, 8, 2, 8, 20, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2},
+{20, 2, 8, 2, 8, 40, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2}, 
+{42, 2, 8, 2, 8, 21, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2},
+{42, 2, 8, 2, 8, 42, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2},
+{42, 2, 8, 2, 8, 84, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2},
+{72, 2, 8, 2, 8, 36, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2},
+{72, 2, 8, 2, 8, 72, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2},
+{72, 2, 8, 2, 8, 144, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2}
+
+For each one of these 12 alternative tuples, there are 25 alternative tuples of values respectively assigned to options "adjCapacsDown", "adjFixCostsUp", "adjSatCapacsDown", "adjSatFixCostsUp" as follows:
+
+{0.33, 0.33, 0.33, 0.33},
+{0.33, 0.5, 0.33, 0.5},
+{0.33, 1.0, 0.33, 1.0},
+{0.33, 1.25, 0.33, 1.25},
+{0.33, 1.5, 0.33, 1.5},
+{0.5, 0.33, 0.5, 0.33},
+{0.5, 0.5, 0.5, 0.5},
+{0.5, 1.0, 0.5, 1.0},
+{0.5, 1.25, 0.5, 1.25},
+{0.5, 1.5, 0.5, 1.5},
+{1.0, 0.33, 1.0, 0.33},
+{1.0, 0.5, 1.0, 0.5},
+{1.0, 1.0, 1.0, 1.0},
+{1.0, 1.25, 1.0, 1.25},
+{1.0, 1.5, 1.0, 1.5},
+{1.25, 0.33, 1.25, 0.33},
+{1.25, 0.5, 1.25, 0.5},
+{1.25, 1.0, 1.25, 1.0},
+{1.25, 1.25, 1.25, 1.25},
+{1.25, 1.5, 1.25, 1.5},
+{1.5, 0.33, 1.5, 0.33},
+{1.5, 0.5, 1.5, 0.5},
+{1.5, 1.0, 1.5, 1.0},
+{1.5, 1.25, 1.5, 1.25},
+{1.5, 1.5, 1.5, 1.5}
+
+Remarks:
+
+a- Production of all configuration files belonging to this branch is performed by running the executable compiled from the c++ code file gen-determ-lib_hs_oneone_circ_6oct2026-22h27.cpp as follows:
+
+g++ gen-determ-lib_hs_oneone_circ_6oct2026-22h27.cpp -o gen-determ-lib_hs_oneone_circ_6oct2026-22h27
+./gen-determ-lib_hs_oneone_circ_6oct2026-22h27
+
+b- All configuration files in this branch are saved in folder library/hubsAndSats/oneSrcOneSnk/circ.
+
+c- The name of each configuration file completely describes its content and, therefore, the resulting deterministic MCFNDP instance.
+
+Example:
+
+hs_vols-20-100_csts-20-100-20-100-20-100-20-100_oneSrcOneSnk_secTop-circ_secTopSpe-6-2-8-2-8-3-15-30-10-15-2-15-30-10-15-2_noPar-20_adjSpe-0~33-0~33-0~33-0~33_seed-50163844_strm-134.par
+
+d- Each configuration includes the options "seed" and "stream". Option "seed" refers to the seed of the pseudo-random generator. Its value is invariant throughout the library. Option "stream" refers to the stream of the pseudo-random generator. Values of option ""stream" are assigned in a one-to-one correspondence to the configuration files. Hence the pair of values for options "seed" and "stream" uniquely identifies the configuration file and, therefore, the resulting deterministic MCFNDP instance. This will be useful when identifying generated stochastic MCFNDP instances derived from a similar base deterministic MCFNDP instance.
+
+e- Once all configurations files have been produced with the executable compiled from gen-determ-lib_hs_oneone_circ_6oct2026-22h27.cpp, the Bash script process-determ-config-files_19sept2026-15h56.sh can generate the corresponding deterministic MCFNDP instances by calling the deterministic generator with each configuration file. The generated deterministic MCFNDP instances are saved in the same folder as their founding configuration file.
+
+2.1.2 Secondary topology: Grid-like (900 configurations)
+
+Configurations within this branch feature a grid-like secondary topology. That is, option "secTopology" is alternatively set to one of the values in {1, 2, 3}. These values respectively call for the toral (secTopology 1), cylindrical (secTopology 2) and flat (secTopology 3) secondary topologies.
+
+For each one of the 3 grid-like secondary topologies, there are 12 alternative tuples of values respectively assigned to options "lengthX", "lengthY", "minSatsPerHub", "maxSatsPerHub", "minSatsRoundSize", "maxSatsRoundSize", "numbCom", "minArcCap", "maxArcCap", "minComCap", "maxComCap", "nbAddArcPerSampHead", "minSatArcCap", "maxSatArcCap", "minSatComCap", "maxSatComCap", "nbAddSatArcPerSampHead" as follows:
+
+{2, 3, 2, 8, 2, 8, 3, 15, 30, 10, 15, 2, 15, 30, 10, 15, 2},
+{2, 3, 2, 8, 2, 8, 6, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2},
+{2, 3, 2, 8, 2, 8, 12, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2}, 
+{4, 5, 2, 8, 2, 8, 10, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2},
+{4, 5, 2, 8, 2, 8, 20, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2},
+{4, 5, 2, 8, 2, 8, 40, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2}, 
+{6, 7, 2, 8, 2, 8, 21, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2},
+{6, 7, 2, 8, 2, 8, 42, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2},
+{6, 7, 2, 8, 2, 8, 84, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2},
+{8, 9, 2, 8, 2, 8, 36, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2},
+{8, 9, 2, 8, 2, 8, 72, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2},
+{8, 9, 2, 8, 2, 8, 144, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2}
+
+For each one of these 12 alternative tuples, there are 25 alternative tuples of values respectively assigned to options "adjCapacsDown", "adjFixCostsUp", "adjSatCapacsDown", "adjSatFixCostsUp" as follows:
+
+{0.33, 0.33, 0.33, 0.33},
+{0.33, 0.5, 0.33, 0.5},
+{0.33, 1.0, 0.33, 1.0},
+{0.33, 1.25, 0.33, 1.25},
+{0.33, 1.5, 0.33, 1.5},
+{0.5, 0.33, 0.5, 0.33},
+{0.5, 0.5, 0.5, 0.5},
+{0.5, 1.0, 0.5, 1.0},
+{0.5, 1.25, 0.5, 1.25},
+{0.5, 1.5, 0.5, 1.5},
+{1.0, 0.33, 1.0, 0.33},
+{1.0, 0.5, 1.0, 0.5},
+{1.0, 1.0, 1.0, 1.0},
+{1.0, 1.25, 1.0, 1.25},
+{1.0, 1.5, 1.0, 1.5},
+{1.25, 0.33, 1.25, 0.33},
+{1.25, 0.5, 1.25, 0.5},
+{1.25, 1.0, 1.25, 1.0},
+{1.25, 1.25, 1.25, 1.25},
+{1.25, 1.5, 1.25, 1.5},
+{1.5, 0.33, 1.5, 0.33},
+{1.5, 0.5, 1.5, 0.5},
+{1.5, 1.0, 1.5, 1.0},
+{1.5, 1.25, 1.5, 1.25},
+{1.5, 1.5, 1.5, 1.5}
+
+Remarks:
+
+a- Production of all configuration files belonging to this branch is performed by running the executables compiled from the c++ code files
+gen-determ-lib_hs_oneone_toral_6oct2026-22h27.cpp
+gen-determ-lib_hs_oneone_cyl_6oct2026-22h27.cpp
+gen-determ-lib_hs_oneone_flat_6oct2026-22h27.cpp
+
+as follows:
+
+g++ gen-determ-lib_hs_oneone_toral_6oct2026-22h27.cpp -o gen-determ-lib_hs_oneone_toral_6oct2026-22h27
+./gen-determ-lib_hs_oneone_toral_6oct2026-22h27
+g++ gen-determ-lib_hs_oneone_cyl_6oct2026-22h27.cpp.cpp -o gen-determ-lib_hs_oneone_cyl_6oct2026-22h27.cpp
+./gen-determ-lib_hs_oneone_cyl_6oct2026-22h27.cpp
+g++ gen-determ-lib_hs_oneone_flat_6oct2026-22h27.cpp -o gen-determ-lib_hs_oneone_flat_6oct2026-22h27
+./gen-determ-lib_hs_oneone_flat_6oct2026-22h27
+
+b- Configuration files in this branch are saved in folders library/hubsAndSats/oneSrcOneSnk/toral, library/hubsAndSats/oneSrcOneSnk/cyl, library/hubsAndSats/oneSrcOneSnk/flat
+
+c- The name of each configuration file completely describes its content and, therefore, the resulting deterministic MCFNDP instance.
+
+Examples:
+
+hs_vols-20-100_csts-20-100-20-100-20-100-20-100_oneSrcOneSnk_secTop-toral_secTopSpe-2-3-2-8-2-8-3-15-30-10-15-2-15-30-10-15-2_noPar-20_adjSpe-0~33-0~33-0~33-0~33_seed-50163844_strm-131.par
+hs_vols-20-100_csts-20-100-20-100-20-100-20-100_oneSrcOneSnk_secTop-cyl_secTopSpe-2-3-2-8-2-8-3-15-30-10-15-2-15-30-10-15-2_noPar-20_adjSpe-0~33-0~33-0~33-0~33_seed-50163844_strm-132.par
+hs_vols-20-100_csts-20-100-20-100-20-100-20-100_oneSrcOneSnk_secTop-flat_secTopSpe-2-3-2-8-2-8-3-15-30-10-15-2-15-30-10-15-2_noPar-20_adjSpe-0~33-0~33-0~33-0~33_seed-50163844_strm-133.par
+
+d- Each configuration includes the options "seed" and "stream". Option "seed" refers to the seed of the pseudo-random generator. Its value is invariant throughout the library. Option "stream" refers to the stream of the pseudo-random generator. Values of option ""stream" are assigned in a one-to-one correspondence to the configuration files. Hence the pair of values for options "seed" and "stream" uniquely identifies the configuration file and, therefore, the resulting deterministic MCFNDP instance. This will be useful when identifying generated stochastic MCFNDP instances derived from a similar base deterministic MCFNDP instance.
+
+e- Once all configurations files have been produced with the executables (see a- above), the Bash script process-determ-config-files_19sept2026-15h56.sh can generate the corresponding deterministic MCFNDP instances by calling the deterministic generator with each configuration file. The generated deterministic MCFNDP instances are saved in the same folder as their founding configuration file.
+
+2.2 Distribution of volumes: Identical sources and identical sinks for all commodities
+
+Within this branch, all commodities share multiple but common source nodes and multiple but common sink nodes. That is, option "eqSrcsEqSnks" is specified with no value or with a value set to true.  
+
+Remark:
+
+All configuration files belonging to the current branch are saved in folder library/hubsAndSats/eqSrcsEqSnks
+
+2.2.1 Secondary topology: Circular (300 configurations)
+
+Configurations within this branch feature a circular secondary topology. That is, option "secTopology" is set to 4.
+
+There are 12 alternative tuples of values respectively assigned to options "numbNodes", "minNbSrc", "maxNbSrc", "minNbSnk", "maxNbSnk", "minSatsPerHub", "maxSatsPerHub", "minSatsRoundSize", "maxSatsRoundSize", "numbCom", "minArcCap", "maxArcCap", "minComCap", "maxComCap", "nbAddArcPerSampHead", "minSatArcCap", "maxSatArcCap", "minSatComCap", "maxSatComCap", "nbAddSatArcPerSampHead" as follows;
+
+{6, 1, 1, 1, 1, 2, 8, 2, 8, 3, 15, 30, 10, 15, 2, 15, 30, 10, 15, 2},
+{6, 1, 2, 1, 2, 2, 8, 2, 8, 6, 15,	45, 10, 15, 2, 15, 45, 10, 15, 2},
+{6, 2, 3, 2, 3, 2, 8, 2, 8, 12, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2}, 
+{20, 3, 5, 3, 5, 2, 8, 2, 8, 10, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2},
+{20, 5, 7, 5, 7, 2, 8, 2, 8, 20, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2},
+{20, 7, 10, 7, 10, 2,	8, 2, 8, 40, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2}, 
+{42, 6, 9, 6, 9, 2, 8, 2, 8, 21, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2},
+{42, 9, 14, 9, 14, 2, 8, 2, 8, 42, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2},
+{42, 14, 21, 14, 21, 2, 8, 2, 8, 84, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2},
+{72, 11, 16, 11, 16, 2, 8, 2, 8, 36, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2},
+{72, 16, 24, 16, 24, 2, 8, 2, 8, 72, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2},
+{72, 24, 36, 24, 36, 2, 8, 2, 8, 144, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2}
+
+For each one of these 12 alternative, there are 25 alternative tuples of values respectively assigned to options "adjCapacsDown", "adjFixCostsUp", "adjSatCapacsDown", "adjSatFixCostsUp" as follows:
+
+{0.33, 0.33, 0.33, 0.33},
+{0.33, 0.5, 0.33, 0.5},
+{0.33, 1.0, 0.33, 1.0},
+{0.33, 2.0, 0.33, 2.0},
+{0.33, 3.0, 0.33, 3.0},
+{0.5, 0.33, 0.5, 0.33},
+{0.5, 0.5, 0.5, 0.5},
+{0.5, 1.0, 0.5, 1.0},
+{0.5, 2.0, 0.5, 2.0},
+{0.5, 3.0, 0.5, 3.0}, 
+{1.0, 0.33, 1.0, 0.33},
+{1.0, 0.5, 1.0, 0.5},
+{1.0, 1.0, 1.0, 1.0},
+{1.0, 2.0, 1.0, 2.0},
+{1.0, 3.0, 1.0, 3.0},
+{2.0, 0.33, 2.0, 0.33},
+{2.0, 0.5, 2.0, 0.5},
+{2.0, 1.0, 2.0, 1.0},
+{2.0, 2.0, 2.0, 2.0},
+{2.0, 3.0, 2.0, 3.0},
+{3.0, 0.33, 3.0, 0.33},
+{3.0, 0.5, 3.0, 0.5},
+{3.0, 1.0, 3.0, 1.0},
+{3.0, 2.0, 3.0, 2.0},
+{3.0, 3.0, 3.0, 3.0}
+
+Remarks:
+
+a- Production of all configuration files belonging to this branch is performed by running the executable compiled from the c++ code file gen-determ-lib_hs_eqeq_circ_6oct2026-22h27.cpp as follows:
+
+g++ gen-determ-lib_hs_eqeq_circ_6oct2026-22h27.cpp -o gen-determ-lib_hs_eqeq_circ_6oct2026-22h27
+./gen-determ-lib_hs_eqeq_circ_6oct2026-22h27
+
+b- All configuration files in this branch are saved in folder library/hubsAndSats/eqSrcsEqSnks/circ.
+
+c- There is one infeasible configuration in this subset. It is stored in folder library/hubsAndSats/eqSrcsEqSnks/circ/infeas.
+
+hs_vols-20-100_csts-20-100-20-100-20-100-20-100_eqSrcsEqSnks_secTop-circ_secTopSpe-6-1-2-1-2-2-8-2-8-6-15-45-10-15-2-15-45-10-15-2_noPar-20_adjSpe-3~00-0~50-3~00-0~50_seed-50163844_strm-4744.std
+
+d- The name of each configuration file completely describes its content and, therefore, the resulting deterministic MCFNDP instance.
+
+Example:
+
+hs_vols-20-100_csts-20-100-20-100-20-100-20-100_eqSrcsEqSnks_secTop-circ_secTopSpe-6-1-1-1-1-2-8-2-8-3-15-30-10-15-2-15-30-10-15-2_noPar-20_adjSpe-0~33-0~33-0~33-0~33_seed-50163844_strm-144.par
+
+d- Each configuration includes the options "seed" and "stream". Option "seed" refers to the seed of the pseudo-random generator. Its value is invariant throughout the library. Option "stream" refers to the stream of the pseudo-random generator. Values of option ""stream" are assigned in a one-to-one correspondence to the configuration files. Hence the pair of values for options "seed" and "stream" uniquely identifies the configuration file and, therefore, the resulting deterministic MCFNDP instance. This will be useful when identifying generated stochastic MCFNDP instances derived from a similar base deterministic MCFNDP instance.
+
+e- Once all configurations files have been produced with the executable compiled from gen-determ-lib_hs_eqeq_circ_6oct2026-22h27.cpp, the Bash script process-determ-config-files_19sept2026-15h56.sh can generate the corresponding deterministic MCFNDP instances by calling the deterministic generator with each configuration file. The generated deterministic MCFNDP instances are saved in the same folder as their founding configuration file.
+
+2.2.2 Secondary topology: Grid-like (900 configurations)
+
+Configurations within this branch feature a grid-like secondary topology. That is, option "secTopology" is alternatively set to one of the values in {1, 2, 3}. These values respectively call for the toral (secTopology 1), cylindrical (secTopology 2) and flat (secTopology 3) secondary topologies.
+
+For each one of the 3 grid-like secondary topologies, there are 18 alternative tuples of values respectively assigned to options "lengthX", "lengthY", "minNbSrc", "maxNbSrc", "minNbSnk", "maxNbSnk", "minSatsPerHub", "maxSatsPerHub", "minSatsRoundSize", "maxSatsRoundSize", "numbCom", "minArcCap", "maxArcCap", "minComCap", "maxComCap", "nbAddArcPerSampHead", "minSatArcCap", "maxSatArcCap", "minSatComCap", "maxSatComCap", "nbAddSatArcPerSampHead" as follows;
+
+{2, 3, 1, 1, 1, 1, 2, 8, 2, 8, 3, 15, 30, 10, 15, 2, 15, 30, 10, 15, 2},
+{2, 3, 1, 2, 1, 2, 2, 8, 2, 8, 6, 15,	45, 10, 15, 2, 15, 45, 10, 15, 2},
+{2, 3, 2, 3, 2, 3, 2, 8, 2, 8, 12, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2}, 
+{4, 5, 3, 5, 3, 5, 2, 8, 2, 8, 10, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2},
+{4, 5, 5, 7, 5, 7, 2, 8, 2, 8, 20, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2},
+{4, 5, 7, 10, 7, 10, 2,	8, 2, 8, 40, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2}, 
+{6, 7, 6, 9, 6, 9, 2, 8, 2, 8, 21, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2},
+{6, 7, 9, 14, 9, 14, 2, 8, 2, 8, 42, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2},
+{6, 7, 14, 21, 14, 21, 2, 8, 2, 8, 84, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2},
+{8, 9, 11, 16, 11, 16, 2, 8, 2, 8, 36, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2},
+{8, 9, 16, 24, 16, 24, 2, 8, 2, 8, 72, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2},
+{8, 9, 24, 36, 24, 36, 2, 8, 2, 8, 144, 15, 45, 10, 15, 2, 15, 45, 10, 15, 2}
+
+For each one of these 12 alternative tuples, there are 25 alternative tuples of values respectively assigned to options "adjCapacsDown", "adjFixCostsUp", "adjSatCapacsDown", "adjSatFixCostsUp" as follows:
+
+{0.33, 0.33, 0.33, 0.33},
+{0.33, 0.5, 0.33, 0.5},
+{0.33, 1.0, 0.33, 1.0},
+{0.33, 2.0, 0.33, 2.0},
+{0.33, 3.0, 0.33, 3.0},
+{0.5, 0.33, 0.5, 0.33},
+{0.5, 0.5, 0.5, 0.5},
+{0.5, 1.0, 0.5, 1.0},
+{0.5, 2.0, 0.5, 2.0},
+{0.5, 3.0, 0.5, 3.0}, 
+{1.0, 0.33, 1.0, 0.33},
+{1.0, 0.5, 1.0, 0.5},
+{1.0, 1.0, 1.0, 1.0},
+{1.0, 2.0, 1.0, 2.0},
+{1.0, 3.0, 1.0, 3.0},
+{2.0, 0.33, 2.0, 0.33},
+{2.0, 0.5, 2.0, 0.5},
+{2.0, 1.0, 2.0, 1.0},
+{2.0, 2.0, 2.0, 2.0},
+{2.0, 3.0, 2.0, 3.0},
+{3.0, 0.33, 3.0, 0.33},
+{3.0, 0.5, 3.0, 0.5},
+{3.0, 1.0, 3.0, 1.0},
+{3.0, 2.0, 3.0, 2.0},
+{3.0, 3.0, 3.0, 3.0}
+
+Remarks:
+
+a- Production of all configuration files belonging to this branch is performed by running the executables compiled from the c++ code files
+gen-determ-lib_hs_eqeq_toral_6oct2026-22h27.cpp
+gen-determ-lib_hs_eqeq_cyl_6oct2026-22h27.cpp
+gen-determ-lib_hs_eqeq_flat_6oct2026-22h27.cpp
+
+as follows:
+
+g++ gen-determ-lib_hs_eqeq_toral_6oct2026-22h27.cpp -o gen-determ-lib_hs_eqeq_toral_6oct2026-22h27
+./gen-determ-lib_hs_eqeq_toral_6oct2026-22h27
+g++ gen-determ-lib_hs_eqeq_cyl_6oct2026-22h27.cpp.cpp -o gen-determ-lib_hs_eqeq_cyl_6oct2026-22h27.cpp
+./gen-determ-lib_hs_eqeq_cyl_6oct2026-22h27.cpp
+g++ gen-determ-lib_hs_eqeq_flat_6oct2026-22h27.cpp -o gen-determ-lib_hs_eqeq_flat_6oct2026-22h27
+./gen-determ-lib_hs_eqeq_flat_6oct2026-22h27
+
+b- Configuration files in this branch are saved in folders library/hubsAndSats/eqSrcsEqSnks/toral, library/hubsAndSats/eqSrcsEqSnks/cyl, library/hubsAndSats/eqSrcsEqSnks/flat
+
+c- There are 11 infeasible configurations in this subset.
+
+The 3 following are stored in folder library/hubsAndSats/eqSrcsEqSnks/toral/infeas:
+
+hs_vols-20-100_csts-20-100-20-100-20-100-20-100_eqSrcsEqSnks_secTop-toral_secTopSpe-2-3-1-1-1-1-2-8-2-8-3-15-30-10-15-2-15-30-10-15-2_noPar-20_adjSpe-3~00-0~33-3~00-0~33_seed-50163844_strm-2141.std
+
+hs_vols-20-100_csts-20-100-20-100-20-100-20-100_eqSrcsEqSnks_secTop-toral_secTopSpe-2-3-1-1-1-1-2-8-2-8-3-15-30-10-15-2-15-30-10-15-2_noPar-20_adjSpe-3~00-2~00-3~00-2~00_seed-50163844_strm-2441.std
+
+hs_vols-20-100_csts-20-100-20-100-20-100-20-100_eqSrcsEqSnks_secTop-toral_secTopSpe-2-3-1-2-1-2-2-8-2-8-6-15-45-10-15-2-15-45-10-15-2_noPar-20_adjSpe-3~00-0~50-3~00-0~50_seed-50163844_strm-4741.std
+
+The 2 following are stored in folder library/hubsAndSats/eqSrcsEqSnks/cyl/infeas:
+
+hs_vols-20-100_csts-20-100-20-100-20-100-20-100_eqSrcsEqSnks_secTop-cyl_secTopSpe-2-3-1-1-1-1-2-8-2-8-3-15-30-10-15-2-15-30-10-15-2_noPar-20_adjSpe-3~00-2~00-3~00-2~00_seed-50163844_strm-2442.std
+
+hs_vols-20-100_csts-20-100-20-100-20-100-20-100_eqSrcsEqSnks_secTop-cyl_secTopSpe-2-3-1-2-1-2-2-8-2-8-6-15-45-10-15-2-15-45-10-15-2_noPar-20_adjSpe-2~00-3~00-2~00-3~00_seed-50163844_strm-4542.std
+
+The 3 following are stored in folder library/hubsAndSats/eqSrcsEqSnks/flat/infeas:
+
+hs_vols-20-100_csts-20-100-20-100-20-100-20-100_eqSrcsEqSnks_secTop-flat_secTopSpe-2-3-1-2-1-2-2-8-2-8-6-15-45-10-15-2-15-45-10-15-2_noPar-20_adjSpe-3~00-0~33-3~00-0~33_seed-50163844_strm-4643.std
+
+hs_vols-20-100_csts-20-100-20-100-20-100-20-100_eqSrcsEqSnks_secTop-flat_secTopSpe-2-3-1-2-1-2-2-8-2-8-6-15-45-10-15-2-15-45-10-15-2_noPar-20_adjSpe-3~00-3~00-3~00-3~00_seed-50163844_strm-5043.std
+
+hs_vols-20-100_csts-20-100-20-100-20-100-20-100_eqSrcsEqSnks_secTop-flat_secTopSpe-2-3-2-3-2-3-2-8-2-8-12-15-45-10-15-2-15-45-10-15-2_noPar-20_adjSpe-3~00-2~00-3~00-2~00_seed-50163844_strm-7443.std
+
+d- The name of each configuration file completely describes its content and, therefore, the resulting deterministic MCFNDP instance.
+
+Examples:
+
+hs_vols-20-100_csts-20-100-20-100-20-100-20-100_eqSrcsEqSnks_secTop-toral_secTopSpe-2-3-1-1-1-1-2-8-2-8-3-15-30-10-15-2-15-30-10-15-2_noPar-20_adjSpe-0~33-0~33-0~33-0~33_seed-50163844_strm-141.par
+hs_vols-20-100_csts-20-100-20-100-20-100-20-100_eqSrcsEqSnks_secTop-cyl_secTopSpe-2-3-1-1-1-1-2-8-2-8-3-15-30-10-15-2-15-30-10-15-2_noPar-20_adjSpe-0~33-0~33-0~33-0~33_seed-50163844_strm-142.par
+hs_vols-20-100_csts-20-100-20-100-20-100-20-100_eqSrcsEqSnks_secTop-flat_secTopSpe-2-3-1-1-1-1-2-8-2-8-3-15-30-10-15-2-15-30-10-15-2_noPar-20_adjSpe-0~33-0~33-0~33-0~33_seed-50163844_strm-143.par
+
+d- Each configuration includes the options "seed" and "stream". Option "seed" refers to the seed of the pseudo-random generator. Its value is invariant throughout the library. Option "stream" refers to the stream of the pseudo-random generator. Values of option ""stream" are assigned in a one-to-one correspondence to the configuration files. Hence the pair of values for options "seed" and "stream" uniquely identifies the configuration file and, therefore, the resulting deterministic MCFNDP instance. This will be useful when identifying generated stochastic MCFNDP instances derived from a similar base deterministic MCFNDP instance.
+
+e- Once all configurations files have been produced with the executables (see a- above), the Bash script process-determ-config-files_19sept2026-15h56.sh can generate the corresponding deterministic MCFNDP instances by calling the deterministic generator with each configuration file. The generated deterministic MCFNDP instances are saved in the same folder as their founding configuration file.
+
+
