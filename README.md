@@ -1,4 +1,4 @@
-(October 16th 2026)
+(October 28th 2026)
 
 
 ## Generator of instances of the linear, deterministic, multi-commodity, capacitated, fixed charge network design problem
@@ -27,7 +27,7 @@ The repository contains the following:
 
 ##### Library
 
-/library: Folder structure containing a generic library of deterministic MCFNDP instances generated with the GenDeterm generator.
+/library: Folder structure containing a generic library of deterministic MCFNDP instances generated with the GenDeterm generator. In view of the large space that would be required to store all MCFNDP instances, only the configuration files are supplied within two .zip archives: hubsAndSats_config-files.zip and pointToPoint._config-files.zip.. The corresponding MCFNDP instances can be generated from the configuration files at a high speed using the program contained in the /program folder.
 
 /library/DESCLIBRARY_DETERM.txt: Detailed description of the library.
 

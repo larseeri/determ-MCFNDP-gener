@@ -1,4 +1,4 @@
-(October 16th 2026)
+(October 28th 2026)
 
 
 ## Generator of instances of the linear, deterministic, multi-commodity, capacitated, fixed charge network design problem
@@ -37,7 +37,7 @@ We reordered the content of the original file to make the exposition flow more p
 
 *** Content of the configuration file starts on the next line. ***
 
-// file name:\ hs_vols-20-100_csts-20-100-20-100-20-100-20-100_eqSrcsEqSnks_secTop-flat_secTopSpe-2-3-2-3-2-3-2-8-2-8-12-15-45-10-15-2-15-45-10-15-2_noPar-20_adjSpe-0~33-1~00-0~33-1~00_seed-50163844_strm-5343.par
+\# file name:\ hs_vols-20-100_csts-20-100-20-100-20-100-20-100_eqSrcsEqSnks_secTop-flat_secTopSpe-2-3-2-3-2-3-2-8-2-8-12-15-45-10-15-2-15-45-10-15-2_noPar-20_adjSpe-0~33-1~00-0~33-1~00_seed-50163844_strm-5343.par
 
 seed 50163844\
 stream 5343
@@ -95,7 +95,7 @@ We explain each statement and comment appearing in the example.
 
 Remarks:
 
-a- To supply an option, a line of a configuration file must begin with a dash '-' or a letter. A line beginning with any other character will be considered a comment. It is advisable to start comment lines exclusively with "//" or with "#". Blank lines are ignored. See Section 4.2 of the online user guide for complete details.
+a- To supply an option, a line of a configuration file must begin with a dash '-' or a letter. Comments at beginning or end of lines must begin with "#". Blank lines are ignored. See Section 4.2 of the online user guide for complete details.
 
 b- The order of the statements and comments in a configuration file is immaterial to the workings of the generator.
 
@@ -105,10 +105,10 @@ d- The selected option values must conform to the restrictions stated in Section
 
 e- In this section, the suffixes appearing in the names of the option values indicate the expected type. For instance, option seed expects an integer. Hence the value is named seed_int. 
 
-**2.1** While not absolutely necessary, it is advisable to state the name of the current configuration file as a comment within the configuration file and to make sure that this name is a unique identifier of the content.
+**2.1** It is advisable to name the configuration file with a unique identifier of its content and to state it in a top comment within the configuration file itself. 
 
 ```
-// file name: name-of-configuration-file
+# file name: name-of-configuration-file
 ```
 
 **2.2** seed_int and stream_int stand for the two integers that are assigned to the seed and stream of the pseudo-random generator. To ensure reproducibility, they should always be set. When several configurations are included in a set, the pair (seed_int, stream_int) should be selected for each configuration so as to constitute a unique identifier. A practical choice is to make seed_int invariant within the set of configurations whereas stream_int varies between the configurations in an interpretable way. 
@@ -140,7 +140,7 @@ minComVol minComVol_int
 maxComVol maxComVol_int
 ```
 
-**2.6** Setting eqSrcsEqSnks_bool to true explicitly or implicitly (by omitting eqSrcsEqSnks_bool), as is the case here, means that commodity volumes will have common source nodes over all commodities and common sink nodes over all commodities; the common sources and common sinks are sampled pseudo-randomly according to uniform(minNbSrc_int, maxNbSrc_int) and uniform(minNbSnk_int, maxNbSnk_int) distributions, respectively. Here, minNbSrc_int==2, maxNbSrc_int==3, minNbSnk_int==2, maxNbSnk_int==3. Setting instead the value of option oneSrcOneSnk to true explicitly or implicitly (by omitting oneSrcOneSnk_bool) would have meant that there would be a single source and a single sink for each commodity. In this case, minNbSrc_int, maxNbSrc_int, minNbSnk_int, maxNbSnk_int would have been neglected. Of course, values of options eqSrcsEqSnks and oneSrcOneSnk cannot both be set to true.
+**2.6** Setting eqSrcsEqSnks_bool to true explicitly or implicitly (by omitting eqSrcsEqSnks_bool), as is the case here, means that commodity volumes will have common source nodes over all commodities (unless volume is smaller than number of sources) and common sink nodes over all commodities (unless volume is smaller than number of sinks); the common sources and common sinks are sampled pseudo-randomly according to uniform(minNbSrc_int, maxNbSrc_int) and uniform(minNbSnk_int, maxNbSnk_int) distributions, respectively. Here, minNbSrc_int==2, maxNbSrc_int==3, minNbSnk_int==2, maxNbSnk_int==3. Setting instead the value of option oneSrcOneSnk to true explicitly or implicitly (by omitting oneSrcOneSnk_bool) would have meant that there would be a single source and a single sink for each commodity. In this case, minNbSrc_int, maxNbSrc_int, minNbSnk_int, maxNbSnk_int would have been neglected. Of course, values of options eqSrcsEqSnks and oneSrcOneSnk cannot both be set to true.
 
 ```
 eqSrcsEqSnks eqSrcsEqSnks_bool
@@ -225,7 +225,8 @@ adjFixCostsUp adjFixCostsUp_double
 
 **2.18** (Unused in the current example) Although the current example does not make use of these additional functionalities, it would be possible to uniformize the commodity-specific capacities and/or variable costs over all commodities for each hub arc. This would be controlled with the options equalComCaps and equalVarCosts, respectively.
 
-**2.19** The number of satellite nodes assigned to a hub node will be sampled pseudo-randomly according to uniform(minSatsPerHub_int, maxSatsPerHub_int). Here, minSatsPerHub_int==2 and maxSatsPerHub_int==8
+**2.19** The number of satellite nodes assigned to a hub node will be sampled pseudo-randomly according to uniform(minSatsPerHub_int, maxSatsPerHub_int). Here, minSatsPerHub_int==2 and maxSatsPerHub_int==8.
+
 ```
 minSatsPerHub minSatsPerHub_int
 maxSatsPerHub maxSatsPerHub_int
@@ -252,7 +253,7 @@ minSatVarCos minSatVarCos_int
 maxSatVarCos maxSatVarCos_int
 ```
 
-**2.23** Non-random satellite arcs initially created to build a strongly connected graph will be assigned an overall capacity equal to total volume over all commoditie. Additional, random satellite arcs that will eventually be created will have overall capacity sampled pseudo-randomly according to uniform(minSatArcCap_int, maxSatArcCap_int). Here, minSatArcCap_int==15, maxSatArcCap_int==45.
+**2.23** Non-random satellite arcs initially created to build a strongly connected graph will be assigned an overall capacity equal to total volume over all commodities. Additional, random satellite arcs that will eventually be created will have overall capacity sampled pseudo-randomly according to uniform(minSatArcCap_int, maxSatArcCap_int). Here, minSatArcCap_int==15, maxSatArcCap_int==45.
 
 ```
 minSatArcCap minSatArcCap_int
@@ -272,7 +273,7 @@ maxSatComCap maxSatComCap_int
 nbAddSatArcPerSampHead 2
 ```
 
-**2.26** (Unused in the current example) Although the current example does not make use of this additional functionality, it would be possible to exert a direct, deterministic control over the properties of the random satellite arcs added so as to alter the path followed by the optimal solution over these arcs as well as the complexity of the problem. The motivation is to Thus, the fixed cost of a percentage of the random satellite arcs could be set to zero, a percentage of the random satellite arcs could be set to full overall capacity, one commodity-specific capacity could be set to zero in a percentage of random satellite arcs or one commodity-specific capacity could be set to full in a percentage of random satellite arcs. These four adjustments are respectively controlled with the options ratSatZeroFix, ratSatTotVolCap, ratSatZeroComCap and ratSatMaxComCap.
+**2.26** (Unused in the current example) Although the current example does not make use of this additional functionality, it would be possible to exert a direct, deterministic control over the properties of the random satellite arcs added so as to alter the path followed by the optimal solution over these arcs as well as the complexity of the problem. Thus, the fixed cost of a percentage of the random satellite arcs could be set to zero, a percentage of the random satellite arcs could be set to full overall capacity, one commodity-specific capacity could be set to zero in a percentage of random satellite arcs or one commodity-specific capacity could be set to full in a percentage of random satellite arcs. These four adjustments are respectively controlled with the options ratSatZeroFix, ratSatTotVolCap, ratSatZeroComCap and ratSatMaxComCap.
 
 **2.27** Normalize overall and commodity-specific capacities over all satellite arcs (non-random and random) by uniform adjustment equal to adjSatCapacsDown_double (downward if adjSatCapacsDown_double >= 1, upward otherwise). Specifying a value of 1 balances the sum of total commodity volumes flowing on all arcs with the sum of all arc capacities. It might be viewed as a neutral setting. Here, adjSatCapacsDown_double==0.330000. (See note 2 below.)
 
