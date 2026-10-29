@@ -1,9 +1,9 @@
-(October 16th 2026)
+(October 28th 2026)
 
 
 ## Feasibility tester for instances of the linear, deterministic, multi-commodity, capacitated, fixed charge network design problem
 
-## Turorial example 
+## Tutorial example 
 
 
 Using the feasibility tester involves steps A, B below.
