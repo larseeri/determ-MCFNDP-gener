@@ -138,7 +138,7 @@ struct Configuration
     // vector listing the individual types
     VectTypes allTypes;    
 
-    Configuration(int argc, char **argv, string configFileName);
+    Configuration(int argc, char **argv);
 	
     void printHelpAndExit();
 

@@ -24,7 +24,7 @@
 #include "configuration.h"
 
 // Constructor
-Configuration::Configuration(int argc, char **argv, string _configFileName)
+Configuration::Configuration(int argc, char **argv)
     : nbArg(argc), vectArg(argv), verbose(false), instanceFormat(GSTD)      
 {	
 	parseConfigModesFromCmdLine();

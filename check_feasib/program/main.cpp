@@ -173,7 +173,7 @@
 // In general, Docker instructions can be formulated from those appearing in
 // Section 1.2 by (i) adding the prefix 
 //
-// docker run --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_feasib_image
+// docker run --init --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_feasib_image
 //
 // and by (ii) replacing the executable location ./determ_feasib with /determ_feasib
 // (i.e. removing the initial dot), since the executable determ_feasib is located
@@ -186,16 +186,17 @@
 //
 // corresponds to the following Docker instruction:
 //
-// docker run --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_feasib_image /determ_feasib +v -F formatOfInstance -I /inout/instanceFile
+// docker run --init --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_feasib_image /determ_feasib +v -F formatOfInstance -I /inout/instanceFile
 //
 // Important: 
-// When running the program through Docker instructions, all input and output
+// - When running the program through Docker instructions, all input and output
 // files must be located inside the docker/inout subfolder. Within the Docker 
-// instructions and the configuration files, this subfolder must be denoted
+// instructions, this subfolder must be denoted
 // /inout since it is located at the root of the Docker container. Hence, an
 // instance file located at docker/inout/networkFile.std will be
-// specified in the Docker instruction or inside the configuration file with
-// -I /inout/networkFile.std.
+// specified in the Docker instruction with -I /inout/networkFile.std.
+// - When running the program through Docker instructions, the default value of
+// option I is '/inout/default_instance.std'
 //
 // Important:
 // The supplied Docker image conforms to the amd64 CPU instructions standard
@@ -206,16 +207,16 @@
 // a- Running the following preliminary instruction once. (For details, see
 // https://hub.docker.com/r/tonistiigi/binfmt.)
 //
-// docker run --privileged --rm tonistiigi/binfmt --install all 
+// docker run --init --privileged --rm tonistiigi/binfmt --install all 
 //
 // b- Adding the option --platform linux/amd64 to the Docker instruction line
 // prefix as follows:
 //
-// docker run --platform linux/amd64 --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_feasib_image
+// docker run --init --platform linux/amd64 --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_feasib_image
 //
 // The following characteristics are specific to the operation of the program
 // through Docker instructions:
-// - An empty folder absolutePathToDockerFolder/inout must already exist on
+// - A folder absolutePathToDockerFolder/inout must already exist on
 // the host for the Docker instructions to work correctly.
 // - Option --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout
 // connects subfolder docker/inout on the host to folder /inout
@@ -229,6 +230,9 @@
 // and that it cannot be reused afterwards, for instance through a docker exec
 // instruction. Immediate suppression with --rm avoids uselessly cluttering
 // Docker's container repository.
+// - Option --init creates a small additional Docker process. This has the
+// effect of permitting a more orderly exit of the main Docker process in case
+// of error.
 //
 // The following Docker instructions may be useful:
 //
@@ -240,7 +244,7 @@
 //
 // docker container ls --all (list all containers, running or not)
 //
-// See Section 4 below for examples of configuration files and instructions
+// See Section 4 below for examples of instructions
 // when the program is run through Docker.
 //
 // 3 Format of the deterministic MCFNDP instance file
@@ -258,8 +262,8 @@
 // together.
 //
 // DOW and STD formats are commonly used to store deterministic MCFNDP instances
-// in text files. These formats are described in files DOW-format-desc.txt and
-// STD-format-desc.txt. The application can read from these two formats and also
+// in text files. Canonical descriptions of these formats are supplied in files 
+// DOW-format-desc.txt and STD-format-desc.txt. The application can read from these two formats and also
 // recognizes a specialization of STD.
 // The three following formats may be selected with option F.
 // a- DOW (option value D) presupposes that (i) for each arc, capacities and variable
@@ -273,10 +277,18 @@
 // the present application.
 //
 // Important:
-// The STD and DOW formats specify that negative arc capacities and negative
+// - The canonical STD and DOW formats specification require that negative arc capacities and negative
 // commodity-specific capacities be interpreted as infinite. When reading
 // instance files in GSTD, RSTD or DOW format, negative capacities are set
 // to 1E+9.
+// - The DOW format file reader is more permissive than allowed by the canonical
+// DOW format in this way: In contrast with the canonical DOW format specification, values of idxArc are allowed to be
+// non-consecutive. (The Canad R deterministic instances are stored in this manner.) Hence, arcs are
+// indexed in the order in which they appear in the file and values of idxArc are disregarded. In 
+// this manner the orders of the arcs in the file of the base determistic instance and for each
+// scenario appearing in the file of the generated stochastic instance correspond exactly.	
+// - The DOW and STD format file readers are more restrictive than allowed by the DOW and STD formats 
+// canonical specifications in this way: The value of zero-valued fixed costs cannot be omitted.
 //
 // Example
 // *******
@@ -323,7 +335,7 @@
 //
 // Docker instruction:
 //
-// docker run --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_feasib_image /determ_feasib +v -F D -I /inout/determ_oneSrcOneSnk_12oct2026-17h09.dow
+// docker run --init --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_feasib_image /determ_feasib +v -F D -I /inout/determ_oneSrcOneSnk_12oct2026-17h09.dow
 //
 // Location of instance file (input):
 // /examples/oneSrcOneSnk/determ_oneSrcOneSnk_12oct2026-17h09.dow
@@ -369,7 +381,7 @@
 //
 // Docker instruction:
 //
-// docker run --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_feasib_image /determ_feasib +v -F G -I /inout/determ_oneSrcOneSnk_12oct2026-17h09.std
+// docker run --init --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_feasib_image /determ_feasib +v -F G -I /inout/determ_oneSrcOneSnk_12oct2026-17h09.std
 //
 // Location of instance file (input):
 // /examples/oneSrcOneSnk/determ_oneSrcOneSnk_12oct2026-17h09.std
@@ -403,7 +415,7 @@
 //
 // Docker instruction:
 //
-// docker run --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_feasib_image /determ_feasib +v -F G -I /inout/determ_eqSrcsEqSnks_12oct2026-17h09.std
+// docker run --init --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_feasib_image /determ_feasib +v -F G -I /inout/determ_eqSrcsEqSnks_12oct2026-17h09.std
 //
 // Location of instance file (input):
 // /examples/eqSrcsEqSnks/determ_eqSrcsEqSnks_12oct2026-17h09.std
@@ -464,7 +476,7 @@ double *Arc::ptrCost = NULL;
 int main(int argc, char **argv)
 {
     // process configuration options
-    Configuration params(argc, argv, "./determ_config.par");
+    Configuration params(argc, argv);
     Instance *inst;
 
     // initialize computational instance
