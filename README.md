@@ -31,6 +31,8 @@ The repository contains the following:
 
 /library/DESCLIBRARY_DETERM.txt: Detailed description of the library.
 
+/library/scripts/: Contains the shell scripts generating the configuration files of the library.
+
 ##### Testing feasibility
 
 /check_feasib/USERGUIDE_FEASIB.md: User guide detailing installation, operation, functionalities and usage of options of the feasibility tester.
