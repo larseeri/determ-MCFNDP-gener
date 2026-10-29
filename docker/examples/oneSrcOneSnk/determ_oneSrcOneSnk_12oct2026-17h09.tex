@@ -8,47 +8,44 @@
 \usepackage{multirow}
 \begin{document}
 \usetikzlibrary{shapes.misc, arrows.meta, quotes, decorations.text}
-\section{Generated network based on grid topology}
+\section{Generated instance based on grid topology}
 \begin{center}
 \adjustbox{max size={11.5in}{11.5in}}{
 \begin{tikzpicture}[inout/.style={rectangle, minimum size=10mm,very thick,font={\sffamily}, blue},through/.style={circle,minimum size=10mm,very thick,font={\sffamily}},post/.style={->,shorten <=1pt,shorten >=1pt,>={Stealth[round]},thick},randpost/.style={->,shorten <=1pt,shorten >=1pt,>={Stealth[round]},thick,red}]
 \matrix[row sep=25mm,column sep=25mm,nodes=draw,ampersand replacement=\&]{
-\node [through] (1) {node 1};
+\node [inout, align=center] (1){\begin{tabular}{l|r}\multicolumn{2}{l}{node 1}\\
+ comm. & flow \\
+\hline
+1 & -200 \\
+\end{tabular}};
 \& \node [through] (2) {node 2};
-\& \node [through] (3) {node 3};\\
+\& \node [inout, align=center] (3){\begin{tabular}{l|r}\multicolumn{2}{l}{node 3}\\
+ comm. & flow \\
+\hline
+1 & 200 \\
+2 & -200 \\
+\end{tabular}};\\
 \node [inout, align=center] (4){\begin{tabular}{l|r}\multicolumn{2}{l}{node 4}\\
  comm. & flow \\
 \hline
 3 & 200 \\
 \end{tabular}};
-\& \node [through] (5) {node 5};
-\& \node [inout, align=center] (6){\begin{tabular}{l|r}\multicolumn{2}{l}{node 6}\\
+\& \node [inout, align=center] (5){\begin{tabular}{l|r}\multicolumn{2}{l}{node 5}\\
  comm. & flow \\
 \hline
 2 & 200 \\
-\end{tabular}};\\
-\node [through] (7) {node 7};
-\& \node [inout, align=center] (8){\begin{tabular}{l|r}\multicolumn{2}{l}{node 8}\\
- comm. & flow \\
-\hline
-1 & 200 \\
 \end{tabular}};
-\& \node [inout, align=center] (9){\begin{tabular}{l|r}\multicolumn{2}{l}{node 9}\\
- comm. & flow \\
-\hline
-2 & -200 \\
-\end{tabular}};\\
-\node [through] (10) {node 10};
-\& \node [inout, align=center] (11){\begin{tabular}{l|r}\multicolumn{2}{l}{node 11}\\
- comm. & flow \\
-\hline
-1 & -200 \\
-\end{tabular}};
-\& \node [inout, align=center] (12){\begin{tabular}{l|r}\multicolumn{2}{l}{node 12}\\
+\& \node [inout, align=center] (6){\begin{tabular}{l|r}\multicolumn{2}{l}{node 6}\\
  comm. & flow \\
 \hline
 3 & -200 \\
 \end{tabular}};\\
+\node [through] (7) {node 7};
+\& \node [through] (8) {node 8};
+\& \node [through] (9) {node 9};\\
+\node [through] (10) {node 10};
+\& \node [through] (11) {node 11};
+\& \node [through] (12) {node 12};\\
 };
 \path[post, bend left=20] (1) edge [postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=600 F=100 V=10}}}] (2);
 \path[post, bend left=20] (1) edge [postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=600 F=100 V=10}}}] (4);
@@ -85,11 +82,11 @@
 \path[post, bend left=20] (12) edge [postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=600 F=100 V=10}}}] (11);
 \path[post, bend left=20] (12) edge [postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=600 F=100 V=10}}}] (9);
 \path[randpost, bend left=20] (9) edge [postaction={decorate,decoration={text color=red,raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=100 F=100 V=10}}}] (1);
-\path[randpost, bend left=20] (1) edge [postaction={decorate,decoration={text color=red,raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=100 F=100 V=10}}}] (9);
 \path[randpost, bend left=20] (12) edge [postaction={decorate,decoration={text color=red,raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=100 F=100 V=10}}}] (3);
-\path[randpost, bend left=20] (3) edge [postaction={decorate,decoration={text color=red,raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=100 F=100 V=10}}}] (7);
-\path[randpost, bend left=20] (1) edge [postaction={decorate,decoration={text color=red,raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=100 F=100 V=10}}}] (12);
 \path[randpost, bend left=20] (1) edge [postaction={decorate,decoration={text color=red,raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=100 F=100 V=10}}}] (6);
+\path[randpost, bend left=20] (6) edge [postaction={decorate,decoration={text color=red,raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=100 F=100 V=10}}}] (11);
+\path[randpost, bend left=20] (8) edge [postaction={decorate,decoration={text color=red,raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=100 F=100 V=10}}}] (6);
+\path[randpost, bend left=20] (12) edge [postaction={decorate,decoration={text color=red,raise=1ex,text along path,text align=center,text={|\tiny\sffamily|C=100 F=100 V=10}}}] (4);
 \end{tikzpicture}
 }
 \end{center}
