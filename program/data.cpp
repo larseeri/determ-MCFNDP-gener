@@ -76,8 +76,8 @@ Data::Data(int argc, char **argv, string fileName)
     }
 
     readParam("eqSrcsEqSnks", "eqSrcsEqSnks", equSourcesEquSinks);
-    readParam("stream", "stream", stream, 0, 1000000000);
-    readParam("seed", "seed", seed, 0, 1000000000);
+    readParam("stream", "stream", stream, 0, INT_MAX);
+    readParam("seed", "seed", seed, 0, INT_MAX);
 	readParam("numbCom", "numbCom", numbCommods, 1, 1000);
 	readParam("shortOutFileName", "shortOutFileName", shortOutFileName);
 	verifyOutputPath(shortOutFileName);

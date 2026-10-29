@@ -335,7 +335,7 @@
 // the terminal on AMD and Intel CPUs (other CPUs are addressed further below).
 // For example, the default Docker instruction
 //
-// docker run --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_gen_image /determ_gen
+// docker run --init --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_gen_image /determ_gen
 //
 // is equivalent to the default Linux command line instruction
 //
@@ -344,7 +344,7 @@
 // In general, Docker instructions can be formulated from those appearing in
 // Section 2.2 by (i) adding the prefix 
 //
-// docker run --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_gen_image
+// docker run --init --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_gen_image
 //
 // and by (ii) replacing the executable location ./determ_gen with /determ_gen
 // (i.e. removing the initial dot), since the executable determ_gen is located
@@ -361,11 +361,11 @@
 //
 // respectively correspond to the following Docker instructions:
 //
-// docker run --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_gen_image /determ_gen +v +F /inout/newParamfile.par
+// docker run --init --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_gen_image /determ_gen +v +F /inout/newParamfile.par
 //
-// docker run --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_gen_image /determ_gen +H
+// docker run --init --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_gen_image /determ_gen +H
 //
-// docker run --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_gen_image /determ_gen +F /inout/newParamfile.par -stream 1234 -seed 4567 -numbCom 10
+// docker run --init --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_gen_image /determ_gen +F /inout/newParamfile.par -stream 1234 -seed 4567 -numbCom 10
 //
 // Important: 
 // When running the program through Docker instructions, all input and output
@@ -405,17 +405,18 @@
 // a- Running the following preliminary instruction once. (For details, see
 // https://hub.docker.com/r/tonistiigi/binfmt.)
 //
-// docker run --privileged --rm tonistiigi/binfmt --install all 
+// docker run --init --privileged --rm tonistiigi/binfmt --install all 
 //
 // b- Adding the option --platform linux/amd64 to the Docker instruction line
 // prefix as follows:
 //
-// docker run --platform linux/amd64 --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_gen_image
+// docker run --init --platform linux/amd64 --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_gen_image
 //
 // The following characteristics are specific to the operation of the program
 // through Docker instructions:
-// - An empty folder absolutePathToDockerFolder/inout must already exist on
-// the host for the Docker instructions to work correctly.
+// - An folder absolutePathToDockerFolder/inout must already exist on
+// the host for the Docker instructions to work correctly. This folder
+// already contains the default configuration file.
 // - Option --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout
 // connects subfolder docker/inout on the host to folder /inout
 // of the Docker container. Hence, the connection between
@@ -428,6 +429,9 @@
 // and that it cannot be reused afterwards, for instance through a docker exec
 // instruction. Immediate suppression with --rm avoids uselessly cluttering
 // Docker's container repository.
+// - Option --init creates a small additional Docker process. This has the
+// effect of permitting a more orderly exit of the main Docker process in case
+// of error.
 //
 // The following Docker instructions may be useful:
 //
@@ -516,7 +520,7 @@
 //
 // Remark:
 // DOW, STD and TEX formats describe the generated instance; DOW and STD
-// (a.k.a. Canad format) are text formats specified in files
+// (a.k.a. Canad format) are text formats whose canonical descriptions are supplied in files 
 // DOW-format-desc.txt and STD-format-desc.txt; STD is a generic format valid
 // for any MCFNDP, DOW requires that (i) for each arc, capacities and variable
 // costs are identical for all commodities and that (ii) each commodity has a
@@ -524,6 +528,10 @@
 // volume < 0); TEX format is a graphical representation that can be processed
 // by a LaTeX text and graphics compiler; LP (human readable) and MPS formats
 // state linear programming formulations of the generated MCFNDP instance.
+//
+// Important:
+// The DOW and STD format file writers are more restrictive than allowed by the DOW and STD formats 
+// canonical specifications in this way: zero-valued fixed costs aret be omitted.
 //
 // Remarks:
 // - The output will automatically be saved in STD format unless option
@@ -559,9 +567,9 @@
 //
 // -noStdOut <> (no value supplied); do not save output with STD format
 //
-// -seed <int: 0, 1000000000>; seed of the pseudo-random generator
+// -seed <int: 0, INT_MAX>; seed of the pseudo-random generator
 //
-// -stream <int: 0, 1000000000>; stream of the pseudo-random generator
+// -stream <int: 0, INT_MAX>; stream of the pseudo-random generator
 //
 // -numbCom <int: 1, 1000>; number of commodities
 //
@@ -1148,7 +1156,7 @@
 //
 // Docker instruction:
 //
-// docker run --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_gen_image /determ_gen +v +F /inout/docker_determ_config_oneSrcOneSnk_12oct2026-17h09.par
+// docker run --init --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_gen_image /determ_gen +v +F /inout/docker_determ_config_oneSrcOneSnk_12oct2026-17h09.par
 //
 // 5.1.2 Configuration files (input)
 // *********************************
@@ -1204,7 +1212,7 @@
 //
 // Docker instruction:
 //
-// docker run --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_gen_image /determ_gen +v +F /inout/docker_determ_config_eqSrcsEqSnks_12oct2026-17h09.par
+// docker run --init --rm --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout determ_gen_image /determ_gen +v +F /inout/docker_determ_config_eqSrcsEqSnks_12oct2026-17h09.par
 //
 // 5.2.2 Configuration files (input)
 // *********************************

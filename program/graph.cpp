@@ -2574,7 +2574,7 @@ void Graph::outputTexGeneric(string fileName)
         // sort all arcs in lexicographic order
         vector<size_t> idx(v.size());
         iota(idx.begin(), idx.end(), 0);
-        sort(idx.begin(), idx.end(), [&v](size_t i1, size_t i2) {
+        stable_sort(idx.begin(), idx.end(), [&v](size_t i1, size_t i2) {
             return (v[i1].first != v[i2].first) ? v[i1].first < v[i2].first : v[i1].second < v[i2].second;
         });
 
@@ -2898,7 +2898,7 @@ void Graph::outputTexGrid(string fileName)
         // sort all arcs in lexicographic order
         vector<size_t> idx(v.size());
         iota(idx.begin(), idx.end(), 0);
-        sort(idx.begin(), idx.end(), [&v](size_t i1, size_t i2) {
+        stable_sort(idx.begin(), idx.end(), [&v](size_t i1, size_t i2) {
             return (v[i1].first != v[i2].first) ? v[i1].first < v[i2].first : v[i1].second < v[i2].second;
         });
 
@@ -3127,7 +3127,8 @@ void Graph::outputTexCirc(string fileName)
         {
             cout << "\nWARNING:\n"
 				<< "LaTeX representations are unavailable with circular secondary topology\n"
-				<< "and !oneSrcOneSnk, if numbNodes > 25 and numbCom > 12." << endl;
+				<< "and !oneSrcOneSnk, if numbNodes > 25 and numbCom > 12.\n"
+				<< "The LaTeX representation will not be generated." << endl;
             return;
         }
     }
@@ -3381,7 +3382,7 @@ void Graph::outputTexCirc(string fileName)
         // sort all arcs in lexicographic order
         vector<size_t> idx(v.size());
         iota(idx.begin(), idx.end(), 0);
-        sort(idx.begin(), idx.end(), [&v](size_t i1, size_t i2) {
+        stable_sort(idx.begin(), idx.end(), [&v](size_t i1, size_t i2) {
             return (v[i1].first != v[i2].first) ? v[i1].first < v[i2].first : v[i1].second < v[i2].second;
         });
 
