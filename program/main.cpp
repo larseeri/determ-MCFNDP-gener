@@ -27,8 +27,8 @@
 //
 // This application generates instances of the linear, deterministic, multi-
 // commodity, capacitated, fixed charge network design problem (MCFNDP). The
-// generation process is based on pseudo-random determinations governed by user-
-// specified configuration settings.
+// generation process is based on pseudo-random determinations governed by 
+// user-specified configuration settings.
 //
 // For detailed background, see
 // Larsen, E., Bisaillon, S., Cordeau, J.F. and Frejinger, E.
@@ -45,9 +45,9 @@
 // 1 Pseudo-random generation and available topologies
 // ***************************************************
 //
-// All pseudo-random sampling operations occurring in the program are performed
-// with the permuted congruential generator (PCG). (See O'Neill, M. PCG, a
-// family of better random number generators.
+// All pseudo-random sampling operations occurring in the program are 
+// performed with the permuted congruential generator (PCG). (See O'Neill, M.
+// PCG, a family of better random number generators.
 // https://www.pcg-random.org/, 2023.) All generated numerical characteristics
 // are integer-valued: commodity volumes, fixed costs, overall capacities,
 // commodity-specific variable costs, commodity-specific capacities.
@@ -150,7 +150,7 @@
 // Options for running the program can be specified directly in the command
 // line or in a configuration file. By default, the program will read option
 // values from file determ_config.par. (This default setting can be updated by
-// modifying line 1210 of file main.cpp.) The default file can be 
+// modifying line 1261 of file main.cpp.) The default file can be 
 // overridden with option +F:
 //
 // ./determ_gen +F newParamfile.par
@@ -175,16 +175,16 @@
 // optionKey2   value2
 // .
 // .
-// optionKeyN   value3
+// optionKeyN   valueN
 //
 // It may specify at most one option per line. Option keys may be prefixed or
 // not with '-'. Comments may appear either at the beginning or the end of a
 // line, provided they start with '#'.
 //
 // Once the configuration file has been processed, options appearing in the
-// command line (other than +F, +v and +H) are processed. Option values specified
-// in the command line supersede those specified in the configuration file.
-// That is, if included, they replace, modify and supplement the latter.
+// command line (other than +F, +v and +H) are processed. Option values
+// specified in the command line supersede those specified in the configuration
+// file. That is, if included, they replace, modify and supplement the latter.
 // Option keys appearing in the command line must be prefixed with '-' as
 // follows:
 //
@@ -217,8 +217,7 @@
 //
 // the value retained for option parameter seed will be 1212 (not 4567).
 //
-// To display the complete documentation about the application and the
-// available options, run
+// To display the user guide, run
 //
 // ./determ_gen +H
 //
@@ -228,7 +227,7 @@
 // (ii) values appearing in configuration file whose name is specified in
 // command line with +F (if it is specified and if it exists); if no valid
 // configuration file is specified with +F in command line, values will be
-// taken from default configuration file whose name is specified in line 1210
+// taken from default configuration file whose name is specified in line 1261
 // of main.cpp; at this point, the latter should exist
 // (iii) values specified in the command line
 // Notice that location (i) is insufficiently transparent to the user and
@@ -297,6 +296,10 @@
 // compiler, C++ make build tool and required C++ libraries. It suffices that
 // the Docker engine be installed on the host where the computation will be
 // run. For this, see https://docs.docker.com/engine/install/.
+//
+// Remark:
+// Running the program from a Docker container is considerably slower. This is
+// best used for prototyping and not for large-scale production.
 //
 // Once the Docker engine is installed, follow these steps:
 //
@@ -378,10 +381,11 @@
 // in the Docker instruction or inside the configuration file with
 // -shortOutFileName /inout/shortOutputFileName.
 //
-// The default configuration file is located at docker/inout/determ_config.par.
-// It has initially been filled with illustrative values and should be edited
-// appropriately if no replacement configuration file is indicated on the
-// Docker instruction line with option key +F.
+// The default configuration file is located at
+// docker/inout/docker_determ_config.par. It has initially been filled with
+// illustrative values and should be edited appropriately if no replacement
+// configuration file is indicated on the Docker instruction line with option
+// key +F.
 // 
 // Option parameter values are successively updated from these locations in
 // this order:
@@ -414,9 +418,9 @@
 //
 // The following characteristics are specific to the operation of the program
 // through Docker instructions:
-// - An folder absolutePathToDockerFolder/inout must already exist on
-// the host for the Docker instructions to work correctly. This folder
-// already contains the default configuration file.
+// - A folder absolutePathToDockerFolder/inout must already exist on the host
+// for the Docker instructions to work correctly. This folder already contains
+// the default configuration file.
 // - Option --mount type=bind,src=absolutePathToDockerFolder/inout,dst=/inout
 // connects subfolder docker/inout on the host to folder /inout
 // of the Docker container. Hence, the connection between
@@ -457,13 +461,13 @@
 //
 // Important:
 // File paths specified in the instruction line or in a configuration file
-// must not contain any blank space.
+// must NOT contain any blank space.
 //
 // 4.1 Options available in instruction line only (Linux or Docker)
 // ****************************************************************
 //
 // +F <string>; name of configuration file supplying option parameter values;
-// this replaces the default file whose name is hard-coded in line 1210 of
+// this replaces the default file whose name is hard-coded in line 1261 of
 // main.cpp; any option value supplied in instruction line replaces value of
 // same option supplied in configuration file
 //
@@ -473,7 +477,7 @@
 // +H <> (no value supplied); display complete documentation
 //
 // Remark:
-// An unknown option key following '+' in the instruction line is disregarded.
+// An unknown option key following '+' in the instruction line is rejected.
 //
 // 4.2 Options available in instruction line (Linux or Docker) and in configuration file
 // *************************************************************************************
@@ -492,25 +496,23 @@
 // configuration file are disregarded.
 // - After the instruction line has been parsed, [key] [value] pairs that have
 // been left unconsumed are listed: (i) They may be currently inactive and
-// harmlessly present in the instruction line. (ii) They might also MISSPELL
-// active keys that were intended to be included, in which case the INTENDED
-// KEYS WILL BE GIVEN ERRONEOUS DEFAULT VALUES.	
+// harmlessly present in the instruction line. (ii) They might also misspell
+// active keys that were intended to be included, in which case the intended
+// keys will be given erroneous default values.	
 // - After the configuration file has been parsed, [key] [value] pairs that
 // have been left unconsumed are listed: (i) They may be currently inactive and
 // harmlessly present in the configuration file. (ii) They might have been 
 // superseded by similar pairs from the instruction line. (iii) They might also
-// MISSPELL active keys that were intended to be included, in which case the
-// INTENDED KEYS WILL BE GIVEN ERRONEOUS DEFAULT VALUES.
+// misspell active keys that were intended to be included, in which case the
+// intended keys will be given erroneous default values.
 //
-// -hubsAndSats <> (no value supplied); implement hubs-and-satellites primary
-// topology; if absent or explicitly set to false, the point-to-point primary
-// topology is instead implemented
+// -hubsAndSats <> (no value supplied); point-to-point primary topology is
+// implemented if key hubsAndSats is either absent or present and adjoined with
+// value false; hubs-and-satellites primary topology is implemented if key 
+// hubsAndSats is either present without value or present with value true
 //
 // 4.2.1 Options that are available under the point-to-point or hubs-and-satellites primary topologies
 // ***************************************************************************************************
-// (That is, when the option hubsAndSats is either (i) absent and implicitly set
-// to false, or (ii) present without value and implicitly set to true or (iii) 
-// present and explicitly set to true or false.)	
 //
 // -shortOutFileName <string>; short name (without extension) of output file;
 // default value is './outfile' (Linux instructions) or './inout/outfile'
@@ -520,18 +522,20 @@
 //
 // Remark:
 // DOW, STD and TEX formats describe the generated instance; DOW and STD
-// (a.k.a. Canad format) are text formats whose canonical descriptions are supplied in files 
-// DOW-format-desc.txt and STD-format-desc.txt; STD is a generic format valid
-// for any MCFNDP, DOW requires that (i) for each arc, capacities and variable
-// costs are identical for all commodities and that (ii) each commodity has a
-// single source node (at which volume > 0) and a single sink node (at which 
-// volume < 0); TEX format is a graphical representation that can be processed
-// by a LaTeX text and graphics compiler; LP (human readable) and MPS formats
-// state linear programming formulations of the generated MCFNDP instance.
+// (a.k.a. Canad format) are text formats whose canonical descriptions are
+// supplied in files DOW-format-desc.txt and STD-format-desc.txt; STD is a 
+// generic format valid for any MCFNDP, DOW requires that (i) for each arc,
+// capacities and variable costs are identical for all commodities and that
+// (ii) each commodity has a single source node (at which volume > 0) and a 
+// single sink node (at which volume < 0); TEX format is a graphical
+// representation that can be processed by a LaTeX text and graphics compiler;
+// LP (human readable) and MPS formats state linear programming formulations
+// of the generated MCFNDP instance.
 //
 // Important:
-// The DOW and STD format file writers are more restrictive than allowed by the DOW and STD formats 
-// canonical specifications in this way: zero-valued fixed costs aret be omitted.
+// The DOW and STD format file writers are more restrictive than allowed by the
+// canonical specifications of DOW and STD formats in this way: zero-valued
+// fixed costs cannot be omitted.
 //
 // Remarks:
 // - The output will automatically be saved in STD format unless option
@@ -553,8 +557,9 @@
 // Remarks:
 // - Under the point-to-point primary topology, the LaTeX representations are
 //  available
-// (i) if lengthX <=10, lengthY <= 10 and numbCom <= 15  when 1 <= secTopology <= 3,
-// (ii) if numbNodes <= 36 and numbCom <= 15 when secTopology == 4.
+// (i) if lengthX <=10, lengthY <= 10 and numbCom <= 15,
+//  when 1 <= secTopology <= 3,
+// (ii) if numbNodes <= 36 and numbCom <= 15, when secTopology == 4
 // - Subsequent processing of the TEX file by a LaTeX compiler may require up to
 // several minutes depending on complexity.
 // - The LaTeX representations produced in connection with 
@@ -577,20 +582,20 @@
 // sink for each commodity; (source, sink) pairs must be different across all
 // commodities
 //
-// -eqSrcsEqSnks <> (no value supplied); If commodity volumes that
-// are randomly generated according to minComVol, maxComVol are all at least
-// equal to the numbers of source nodes and sink nodes that are randomly
-// generated according to minNbSrc, maxNbSrc, minNbSnk, maxNbSnk, then all
-// commodities will share common source nodes and common sink nodes.
+// -eqSrcsEqSnks <> (no value supplied); If commodity volumes that are
+// randomly generated according to minComVol, maxComVol are all at least equal
+// to the numbers of source nodes and sink nodes that are randomly generated 
+// according to minNbSrc, maxNbSrc, minNbSnk, maxNbSnk, then all commodities
+// will share common source nodes and common sink nodes.
 // More generally: 
 // (i) Commodities whose volumes are not smaller than the number of source
 // nodes will share the same source nodes. However, commodities that have 
-// volumes smaller than the number of source nodes will only share source
-// nodes for which they have positive volume.
-// (ii) Commodities whose volumes are not smaller than the number of sink
-// nodes will share the same sink nodes. However, commodities that have 
-// volumes smaller than the number of sink nodes will only share sink
-// nodes for which they have negative volume.
+// volumes smaller than the number of source nodes will only share source nodes
+// for which they have positive volume.
+// (ii) Commodities whose volumes are not smaller than the number of sink nodes
+// will share the same sink nodes. However, commodities that have volumes 
+// smaller than the number of sink nodes will only share sink nodes for which
+// they have negative volume.
 // (iii) These conditions implicitly exclude that a node be simultaneously
 // a sink and a source.
 //
@@ -624,8 +629,8 @@
 // constraints.
 //
 // Important:
-// Whereas the DOW, STD and TEX formats store sufficient basic information 
-// to uniquely identify a MCFNDP instance, the LP and MPS formats state a
+// Whereas the DOW, STD and TEX formats store sufficient basic information to
+// uniquely identify a MCFNDP instance, the LP and MPS formats state a
 // formulation of this problem (objective and constraints). LP and MPS are
 // respectively human- and machine-readable. Options inclDesignObjCap and
 // inclDesignObjCommCap allow to select particular formulations of the 
@@ -671,7 +676,7 @@
 // - Whenever secTopology is set to 5 so that a basic graph is read from a file
 // (whose name is specified with option longBasicGraphFileName), value of
 // option numbNodes must be set to a number not smaller than the exact number
-// of nodes found in this file.
+// of nodes defined according to this file.
 // - Whenever secTopology is set to 0 so that arcs are all randomly generated,
 // no guarantee is made that the resulting instance will be feasible. This
 // contrasts with settings 1 to 4 where the non-random arcs that are initially 
@@ -679,10 +684,10 @@
 // carry all outstanding commodity volumes.
 //
 // -longBasicGraphFileName <string>; long name (including extension) of file
-// where basic graph (excluding random arcs, capacities and costs ) will be
+// where basic graph (excluding random arcs, capacities and costs) will be
 // read if secTopology == 5 and will be written if 1 <= secTopology <= 4;
 // default value is './basic_graph.gra' (Linux instructions) or
-// './inout/basic_graph.gra' (Docker instructions); when using Linux
+// '/inout/basic_graph.gra' (Docker instructions); when using Linux
 // instructions, absolute path or path relative to the /program folder may be
 // added
 //
@@ -781,15 +786,15 @@
 //
 // 4.2.3 Options available under the hubs-and-satellites primary topology
 // **********************************************************************
-// (That is, when option hubsAndSats is (i) present and implicitly set to true, or
-// (ii) present and explicitly set to true.)
+// (That is, when option hubsAndSats is (i) present and implicitly set to true,
+// or (ii) present and explicitly set to true.)
 //
 // -minComVol <int: 1, 10000>; min commodity volume
 //
 // -maxComVol <int: 1, 10000>; max commodity volume
 //
 // -longBasicGraphFileName <string>; long name (including extension) of file
-// where basic graph (excluding random arcs, capacities and costs ) will be
+// where basic graph (excluding random arcs, capacities and costs) will be
 // written if 1 <= secTopology <= 4; default value is './basic_graph.gra'
 // (Linux instructions) or './inout/basic_graph.gra' (Docker instructions);
 // when using Linux instructions, absolute path or path relative to the
@@ -799,8 +804,8 @@
 // Under the hubs-and-satellites primary topology, secTopology cannot be
 // set to 5. That is, the topology cannot be read from a basic graph file.
 // However, a basic graph file will be written if 1 <= secTopology <= 4.
-// In this case, the graph will be saved unstructured, without information
-// about its original (i.e., hubs-and-satellites) primary topology.
+// In this case, the graph will be saved unstructured, that is without
+// information about its original (i.e., hubs-and-satellites) primary topology.
 // Subsequently, this basic graph file could be read in a new run in which 
 // the primary topology would be set to point-to-point. Obviously, the
 // original hubs-and-satellites characterization would be lost.
@@ -814,7 +819,7 @@
 // 4.2.3.1 Options describing hub nodes and hub arcs
 // *************************************************
 //
-// Definition:
+// Reminder:
 // A hub arc connects two hub nodes.
 //
 // -secTopology <int: 0, 1, 2, 3, 4>; 0 calls for a secondary topology that is
@@ -835,16 +840,16 @@
 // -lengthY <int: 1, 1000>; length along Y axis if hub topology option
 // secTopology is in {1, 2, 3} (inactive otherwise)
 //
-// -numbNodes <int: 1, 10000>; number of hub nodes under random or circular
-// hub topology; (overridden by lengthX * lengthY under grid secondary topology)
+// -numbNodes <int: 1, 10000>; number of hub nodes under random or circular hub
+// topology; (overridden by lengthX * lengthY under grid secondary topology)
 //
-// -nbAddArcSampTailHead <int: 0, 1000>; total number of additional random
-// arcs between hub nodes generated by sampling over tail (origin) and head 
+// -nbAddArcSampTailHead <int: 0, 1000>; total number of additional random arcs
+// between hub nodes generated by sampling over tail (origin) and head 
 // (destination) hub nodes; if this option is inactive, default value is 0
 //
-// -nbAddArcPerSampHead <int: 0, 1000>; number of additional random arcs
-// per tail (origin) hub node generated by sampling over head (destination)
-// hub nodes; if this option is inactive, default value is 0
+// -nbAddArcPerSampHead <int: 0, 1000>; number of additional random arcs per
+// tail (origin) hub node generated by sampling over head (destination) hub
+// nodes; if this option is inactive, default value is 0
 //
 // -minVarCos <int: 0, 10000>; min commodity-specific variable cost over hub
 // arc
@@ -915,7 +920,7 @@
 // 4.2.3.2 Options describing satellite nodes and satellite arcs
 // *************************************************************
 //
-// Definitions:
+// Reminders:
 // (i) A satellite arc connects either two satellite nodes or one hub node and
 // one satellite node.
 // (ii) A round is a set of satellite nodes that are assigned to a hub node and
