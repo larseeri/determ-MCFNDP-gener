@@ -1,4 +1,4 @@
-(October 28th 2026)
+(October 29th 2026)
 
 
 ## Generator of instances of the linear, deterministic, multi-commodity, capacitated, fixed charge network design problem
@@ -28,12 +28,12 @@ As an example, this configuration file is taken from the deterministic library:
 
 library/hubsAndSats/eqSrcsEqSnks/flat/hs_vols-20-100_csts-20-100-20-100-20-100-20-100_eqSrcsEqSnks_secTop-flat_secTopSpe-2-3-2-3-2-3-2-8-2-8-12-15-45-10-15-2-15-45-10-15-2_noPar-20_adjSpe-0~33-1~00-0~33-1~00_seed-50163844_strm-5343.par
 
-By thoroughly understanding this example and experimenting with alternative and/or additional settings, the user will gain sufficient knowledge to use the full extent of the available functionalities in new experiments.
+It is suitable to the use of the program from the Linux command line. By thoroughly understanding this example and experimenting with alternative and/or additional settings, the user will gain sufficient knowledge to use the full extent of the available functionalities in new experiments.
 
 
 #### 1 Content of the configuration file
 
-We reordered the content of the original file to make the exposition flow more progressively.
+We reordered and slightly modified the content of the original file to make the exposition flow more progressively. We also added the option shortOutFileName: when the actual configuration file is used to build the library, this option is omitted and the exact output file is specified by the processing script on the instruction line. 
 
 *** Content of the configuration file starts on the next line. ***
 
@@ -99,7 +99,7 @@ a- To supply an option, a line of a configuration file must begin with a dash '-
 
 b- The order of the statements and comments in a configuration file is immaterial to the workings of the generator.
 
-c- Any boolean option that does not appear in the configuration file or in the command line is interpreted as having the boolean value false. To set a boolean option to true, it is sufficient to state it without any value in the configuration file or in the command line or to state it with the boolean value true in the confiration file (as done here).
+c- Any boolean option that does not appear in the configuration file or in the command line is interpreted as having the boolean value false. To set a boolean option to true, it is sufficient to state it without any value in the configuration file or in the command line or to state it with the boolean value true in the configuration file (as done here).
 
 d- The selected option values must conform to the restrictions stated in Section 4.3 of the online user guide. Otherwise, the program will notify the user of any error and stop.
 
@@ -121,7 +121,7 @@ seed seed_int
 stream stream_int
 ```
 
-**2.3** Setting hubsAndSats_bool to true (either explicitly or implicitly by omitting hubsAndSats_bool), as is the case here, means that the hubs-and-satellites primary topology is to be implemented. If setting to false explicitly or implicitly (by omitting this option entirely), then the point-to-point primary toplogy is implemented. See Section 1 of the online user guide for details.
+**2.3** Setting hubsAndSats_bool to true (either explicitly or implicitly by omitting hubsAndSats_bool), as is the case here, means that the hubs-and-satellites primary topology is to be implemented. If setting to false explicitly or implicitly (by omitting this option entirely), then the point-to-point primary topology is implemented. See Section 1 of the online user guide for details.
 
 ```
 hubsAndSats hubsAndSats_bool
@@ -162,7 +162,7 @@ maxNbSnk maxNbSnk_int
 secTopology secTopology_int
 ```
 
-**2.8** The horizontal and vertical numbers of hub nodes (recall that the primary topology is hubs-and-satellites) on the torus will be respectively lengthX_int, lengthY_int (equal to 2 and 3 here). The number of hub nodes will automatically be inferred as 6 = 2 * 3.
+**2.8** The horizontal and vertical numbers of hub nodes (recall that the primary topology is hubs-and-satellites) on the grid will be respectively lengthX_int, lengthY_int (equal to 2 and 3 here). The number of hub nodes will automatically be inferred as 6 = 2 * 3.
 
 ```
 lengthX lengthX_int
@@ -190,7 +190,7 @@ minArcCap minArcCap_int
 maxArcCap maxArcCap_int
 ```
 
-**2.12** Non-random hub arcs initially created to build a strongly connected graph between hub nodes will be assigned commodity-specific capacities equal to commodity volume. Additional, random hub arcs that will entually be created will have commodity-specific capacities sampled pseudo-randomly according to uniform(minComCap_int, maxComCap_int). Here, minComCap_int==10, maxComCap_int==15. (See note 1 below.)
+**2.12** Non-random hub arcs initially created to build a strongly connected graph between hub nodes will be assigned commodity-specific capacities equal to commodity volume. Additional, random hub arcs that will eventually be created will have commodity-specific capacities sampled pseudo-randomly according to uniform(minComCap_int, maxComCap_int). Here, minComCap_int==10, maxComCap_int==15. (See note 1 below.)
 
 ```
 minComCap minComCap_int
@@ -267,10 +267,10 @@ minSatComCap minSatComCap_int
 maxSatComCap maxSatComCap_int
 ```
 
-**2.25** From each satellite node, nbAddSatArcPerSampHead_int arcs towards any other node nodes will be added randomly (i.e., only the heads of the random arcs are sampled). Here, nbAddSatArcPerSampHead==2. These arcs will be specified according to 2.21-2.24. Notice that the addition of random arcs whose head and tail would be both sampled is also possible. In this case the appropriate option would be nbAddSatArcSampTailHead. 
+**2.25** From each satellite node, nbAddSatArcPerSampHead_int arcs towards any other node will be added randomly (i.e., only the heads of the random arcs are sampled). Here, nbAddSatArcPerSampHead==2. These arcs will be specified according to 2.21-2.24. Notice that the addition of random arcs whose head and tail would be both sampled is also possible. In this case the appropriate option would be nbAddSatArcSampTailHead. 
 
 ```
-nbAddSatArcPerSampHead 2
+nbAddSatArcPerSampHead nbAddSatArcPerSampHead_int
 ```
 
 **2.26** (Unused in the current example) Although the current example does not make use of this additional functionality, it would be possible to exert a direct, deterministic control over the properties of the random satellite arcs added so as to alter the path followed by the optimal solution over these arcs as well as the complexity of the problem. Thus, the fixed cost of a percentage of the random satellite arcs could be set to zero, a percentage of the random satellite arcs could be set to full overall capacity, one commodity-specific capacity could be set to zero in a percentage of random satellite arcs or one commodity-specific capacity could be set to full in a percentage of random satellite arcs. These four adjustments are respectively controlled with the options ratSatZeroFix, ratSatTotVolCap, ratSatZeroComCap and ratSatMaxComCap.

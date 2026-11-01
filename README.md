@@ -1,4 +1,4 @@
-(October 28th 2026)
+(October 29th 2026)
 
 
 ## Generator of instances of the linear, deterministic, multi-commodity, capacitated, fixed charge network design problem
@@ -11,7 +11,11 @@ This companion repository of Larsen et al. (2023) contains the GenDeterm generat
 
 The repository contains the following:
 
-##### Generation
+/AUTHORS.txt: Authors of the generator.
+
+/LICENSE.txt: Statement of the license covering the generator.
+
+#### Generation
 
 /USERGUIDE_DETERM.md: User guide detailing installation, operation, functionalities and usage of options of the generator.
 
@@ -21,19 +25,15 @@ The repository contains the following:
 
 /docker: Folder structure and files required to run the generator through a Docker container built from the supplied Docker image.
 
-/AUTHORS.txt: Authors of the generator.
+#### Library
 
-/LICENSE.txt: Statement of the license covering the generator.
-
-##### Library
-
-/library: Folder structure containing a generic library of deterministic MCFNDP instances generated with the GenDeterm generator. In view of the large space that would be required to store all MCFNDP instances, only the configuration files are supplied within two .zip archives: hubsAndSats_config-files.zip and pointToPoint._config-files.zip.. The corresponding MCFNDP instances can be generated from the configuration files at a high speed using the program contained in the /program folder.
+/library: Folder structure containing a generic library of deterministic MCFNDP instances generated with the GenDeterm generator. In view of the large space that would be required to store all instances in the library, only the configuration files are supplied within two .zip archives: hubsAndSats_determ_config-files.zip and pointToPoint_determ_config-files.zip. The corresponding deterministic MCFNDP instances can be generated from the configuration files at a high speed using GenDeterm, without need for verification of feasibility.
 
 /library/DESCLIBRARY_DETERM.txt: Detailed description of the library.
 
-/library/build_config/: Folder containing the C++ code building configuration files for each instance in the library.
+/library/build_config/: Folder containing the C++ code building a configuration file for each instance in the library.
 
-##### Testing feasibility
+#### Testing feasibility
 
 /check_feasib/USERGUIDE_FEASIB.md: User guide detailing installation, operation, functionalities and usage of options of the feasibility tester.
 
