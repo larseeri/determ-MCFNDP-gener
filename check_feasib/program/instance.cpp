@@ -153,7 +153,7 @@ void InstanceDow::read(istream &is)
 		{
 			cerr << "\nERROR:\n"
 				<< "At least one of the two node indices (" << arc.orig << ", " << arc.dest << ") stated\n"
-				<< "in connection with the " << a+1 << "st/th arc listed (starting from 1) in instance file\n"
+				<< "in connection with the " << a+1 << "st/nd/rd/th arc listed (starting from 1) in instance file\n"
 				<< params->inputInstFileName << " is non-positive or exceeds the total number of nodes stated\n"
 				<< "at beginning of file.\n"
 				<< "EXECUTION ABORTED" << endl;
@@ -163,7 +163,7 @@ void InstanceDow::read(istream &is)
 		{
 			cerr << "\nERROR:\n"
 				<< "At least one of the variable cost " << varCost << " and fixed cost " << fixedCost << "\n"
-				<< "stated in connection with the " << a+1 << "st/th arc listed (starting from 1)\n"
+				<< "stated in connection with the " << a+1 << "st/nd/rd/th arc listed (starting from 1)\n"
 				<< "in instance file " << params->inputInstFileName << " is negative.\n"
 				<< "EXECUTION ABORTED" << endl;
 				exit(1);		
@@ -260,7 +260,7 @@ void InstanceRStd::read(istream &is)
 		if (fixedCost < 0)
 		{
 			cerr << "\nERROR:\n"
-				<< "Fixed cost " << fixedCost << " stated in connection with the " << a+1 << "th arc row listed\n"
+				<< "Fixed cost " << fixedCost << " stated in connection with the " << a+1 << "st/nd/rd/th arc row listed\n"
 				<< "(starting from 1) in instance file " << params->inputInstFileName << " is negative.\n"
 				<< "EXECUTION ABORTED" << endl;
 				exit(1);		
@@ -408,7 +408,7 @@ void InstanceGStd::read(istream &is)
 		if (fixedCost < 0)
 		{
 			cerr << "\nERROR:\n"
-				<< "Fixed cost " << fixedCost << " stated in connection with the " << a+1 << "th arc row listed\n"
+				<< "Fixed cost " << fixedCost << " stated in connection with the " << a+1 << "st/nd/rd/th arc row listed\n"
 				<< "(starting from 1) in instance file " << params->inputInstFileName << " is negative.\n"
 				<< "EXECUTION ABORTED" << endl;
 				exit(1);		

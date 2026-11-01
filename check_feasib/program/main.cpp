@@ -51,15 +51,18 @@
 // a- Install the CPLEX solver and/or the HIGHS solver (if not already done)
 // and note the installation folder(s). According to our verifications, CPLEX
 // and HIGHS work equally well in our application. HIGHS is freely available
-// under the MIT license at https://highs.dev/. See Huangfu, Q., Hall, J.A.J.
-// Parallelizing the dual revised simplex method. Math. Prog. Comp. 10, 119-142
-// (2018).
+// under the MIT license at https://highs.dev/, does not require additional
+// libraries and can be built and installed in a small number of steps that are
+// currently described at
+// https://github.com/ERGO-Code/HiGHS/blob/master/cmake/README.md. See
+// Huangfu, Q., Hall, J.A.J. Parallelizing the dual revised simplex method.
+// Math. Prog. Comp. 10, 119-142 (2018).
 // b- If not already done, either (i) use Git to clone locally the remote
 // repository https://github.com/larseeri/determ-MCFNDP-gener, or (ii)
 // generate, download locally to an appropriate folder and uncompress a .zip
 // archive containing the remote repository file tree.
 // c- In a Linux terminal, go to the /check_feasib/program folder just created.
-// d- Edit the file named "makefile" to set the variables indicating the
+// d- Edit the file named 'makefile' to set the variables indicating the
 // locations relevant to the CPLEX solver and/or the HIGHS solver, as noted in
 // step a-. These locations are chiefly CPLEX_HOME and HIGHS_HOME. Save the
 // modifications.
@@ -72,7 +75,7 @@
 //
 // make HIGHS_SOLVER=1
 //
-// An executable file named "determ_feasib" will be created inside the
+// An executable file named 'determ_feasib' will be created inside the
 // /check_feasib/program folder. Building with versions 11.5.0, 12.2.0, 13.2.0,
 // 14.2.0 and 15.1.0 of the gcc compiler has been verified.
 //
@@ -107,7 +110,7 @@
 // below about Docker instructions)
 //
 // Important:
-// The path specified with option key I must not contain any blank space.
+// The path specified with option key I must NOT contain any blank space.
 //
 // The result is displayed on standard output as follows:
 //
@@ -120,8 +123,7 @@
 // The verbosity option +v can be used to obtain more information about the
 // option parsing process.
 //
-// To display the complete documentation about the application and the
-// available options, run
+// To display the user guide, run
 //
 // ./determ_feasib +H
 //
@@ -136,6 +138,10 @@
 // C++ compiler, C++ make build tool and required C++ libraries. It suffices
 // that the Docker engine be installed on the host where the computation will
 // be run. For this, see https://docs.docker.com/engine/install/.
+//
+// Remark:
+// Running the program from a Docker container is considerably slower. This is
+// best used for prototyping and not for large-scale production.
 //
 // Once the Docker engine is installed, follow these steps:
 //
@@ -164,7 +170,7 @@
 // based on which the Docker image was originally generated, (ii) a subfolder 
 // /inout used for exchanging files between the program running inside a Docker 
 // container and the directory structure of the host and (iii) a subfolder
-// /examples containing the examples examined in Section 5 below.
+// /examples containing the examples examined in Section 4 below.
 // d- In a terminal, go to the /check_feasib/docker folder just created.
 //
 // Then, instructions similar to those appearing in Section 1.2 can be run from
@@ -252,43 +258,47 @@
 //
 // By default, the name of the file describing the deterministic MCFNDP
 // instance is './default_instance.std' (Linux instructions),
-// './inout/network.std' (Docker instructions) and the default input format
-// is STD. This name may be changed with option I and the input format can
-// be indicated accordingly with option F.
+// '/inout/default_instance.std' (Docker instructions) and the default input
+// format is STD. This name may be changed with option I and the input format
+// can be indicated accordingly with option F.
 //
 // Important:
 // It is critical that the content of the file describing the base
 // deterministic MCFNDP instance and the indicated format of its content match
 // together.
 //
-// DOW and STD formats are commonly used to store deterministic MCFNDP instances
-// in text files. Canonical descriptions of these formats are supplied in files 
-// DOW-format-desc.txt and STD-format-desc.txt. The application can read from these two formats and also
-// recognizes a specialization of STD.
-// The three following formats may be selected with option F.
-// a- DOW (option value D) presupposes that (i) for each arc, capacities and variable
-// costs are identical for all commodities and (ii) each commodity has a
-// single source node (at which volume > 0) and a single sink node (at which
+// DOW and STD formats are commonly used to store deterministic MCFNDP 
+// instances in text files. Canonical descriptions of these formats are 
+// supplied in files DOW-format-desc.txt and STD-format-desc.txt. The 
+// application can read from these two formats and also recognizes a 
+// specialization of STD. The three following formats may be selected with
+// option F.
+// a- DOW (option value D) presupposes that (i) for each arc, capacities and
+// variable costs are identical for all commodities and (ii) each commodity has
+// a single source node (at which volume > 0) and a single sink node (at which
 // volume < 0).
 // b- GSTD (option value G) designates the STD format. STD is fully generic 
 // and imposes neither (i), nor (ii).
-// c- RSTD (option R) designates a specialization of STD in which condition (ii)
-// above is imposed. It is defined for convenience and for the purposes only of
-// the present application.
+// c- RSTD (option R) designates a specialization of STD in which condition
+// (ii) above is imposed. It is defined for convenience and for the purposes
+// only of the present application.
 //
 // Important:
-// - The canonical STD and DOW formats specification require that negative arc capacities and negative
-// commodity-specific capacities be interpreted as infinite. When reading
-// instance files in GSTD, RSTD or DOW format, negative capacities are set
-// to 1E+9.
-// - The DOW format file reader is more permissive than allowed by the canonical
-// DOW format in this way: In contrast with the canonical DOW format specification, values of idxArc are allowed to be
-// non-consecutive. (The Canad R deterministic instances are stored in this manner.) Hence, arcs are
-// indexed in the order in which they appear in the file and values of idxArc are disregarded. In 
-// this manner the orders of the arcs in the file of the base determistic instance and for each
-// scenario appearing in the file of the generated stochastic instance correspond exactly.	
-// - The DOW and STD format file readers are more restrictive than allowed by the DOW and STD formats 
-// canonical specifications in this way: The value of zero-valued fixed costs cannot be omitted.
+// - The canonical STD and DOW formats specification require that negative arc
+// capacities and negative commodity-specific capacities be interpreted as
+// infinite. When reading instance files in GSTD, RSTD or DOW format, negative
+// capacities are set to 1E+9.
+// - The DOW format file reader is more permissive than allowed by the 
+// canonical DOW format in this way: In contrast with the canonical DOW format
+// specification, values of idxArc are allowed to be non-consecutive. (The
+// Canad R deterministic instances are stored in this manner.) Hence, arcs are
+// indexed in the order in which they appear in the file and values of idxArc
+// are disregarded. In this manner the orders of the arcs in the file of the
+// base deterministic instance and for each scenario appearing in the file of
+// the generated stochastic instance correspond exactly.	
+// - The DOW and STD format file readers are more restrictive than allowed by
+// the DOW and STD formats canonical specifications in this way: The value of
+// zero-valued fixed costs cannot be omitted.
 //
 // Example
 // *******
@@ -317,9 +327,9 @@
 //
 // Folder /examples/oneSrcOneSnk/
 //
-// In the MCFNDP instance, there is one source and one sink for each 
-// commodity and no differentiation of variable costs and capacities according
-// to commodities.
+// In the MCFNDP instance, there is one source and one sink for each commodity
+// and no differentiation of variable costs and capacities according to
+// commodities.
 //
 // 4.1.1 DOW format
 // ****************
@@ -400,8 +410,8 @@
 //
 // Folder /examples/eqSrcsEqSnks/
 //
-// In the MCFNDP instance, there are multiple sources and multiple sinks for each
-// commodity. However, sources and sinks are identical across commodities.
+// In the MCFNDP instance, there are multiple sources and multiple sinks for
+// each commodity. However, sources and sinks are identical across commodities.
 // There is differentiation of variable costs and capacities according to
 // commodities. The instance must be received in the STD format (as the DOW
 // format is unsuitable in this situation).
