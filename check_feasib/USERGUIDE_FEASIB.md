@@ -1,4 +1,4 @@
-(October 30th 2026)
+(November 1st 2026)
 
 
 ## Feasibility tester for instances of the linear, deterministic, multi-commodity, capacitated, fixed charge network design problem
@@ -11,7 +11,7 @@ This application verifies if a specified instance of the linear, deterministic, 
 This user guide comprises the following sections:\
 1 Building and running the program directly from the Linux command line.\
 2 Running the program through Docker instructions.\
-3 Format of the deterministic MCFND instance file.\
+3 Format of the deterministic MCFNDP instance file.\
 4 Detailed examples.
 
 ### 1 Building and running the program directly from the Linux command line
@@ -152,7 +152,7 @@ docker run --init --rm --mount type=bind,src=absolutePathToDockerFolder/inout,ds
 ```
 
 Important: 
-- When running the program through Docker instructions, all input and output files must be located inside the docker/inout subfolder. Within the Docker instructions, this subfolder must be denoted /inout since it is located at the root of the Docker container. Hence, an instance file located at docker/inout/networkFile.std will be specified in the Docker instruction with -I /inout/networkFile.std.
+- When running the program through Docker instructions, all input and output files must be located inside the docker/inout subfolder. Within the Docker instructions, this subfolder must be denoted /inout since it is located at the root of the Docker container. Hence, an instance file located at /check_feasib/docker/inout/networkFile.std will be specified in the Docker instruction with -I /inout/networkFile.std.
 - When running the program through Docker instructions, the default value of option I is '/inout/default_instance.std'
 
 Important:\
