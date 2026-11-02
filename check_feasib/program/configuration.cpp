@@ -188,8 +188,8 @@ void Configuration::printHelpAndExit()
 {
     printf("\nHELP REQUESTED: DISPLAYING USER GUIDE\n");	
 	printf("\n");
-	printf("FEASIBILITY TESTER FOR INSTANCES OF THE DETERMINISTIC LINEAR, TWO-STAGE,\n");
-	printf("MULTI-COMMODITY, CAPACITATED, FIXED CHARGE, NETWORK DESIGN PROBLEM\n");
+	printf("FEASIBILITY TESTER FOR INSTANCES OF THE LINEAR, DETERMINISTIC,\n");
+	printf("MULTI-COMMODITY, CAPACITATED, FIXED CHARGE NETWORK DESIGN PROBLEM\n");	
 	printf("\n");
 	printf("USER GUIDE\n");
 	printf("\n");
@@ -219,14 +219,14 @@ void Configuration::printHelpAndExit()
 	printf("a- Install the CPLEX solver and/or the HIGHS solver (if not already done)\n");
 	printf("and note the installation folder(s). According to our verifications, CPLEX\n");
 	printf("and HIGHS work equally well in our application. HIGHS is freely available\n");
-	printf("under the MIT license at https:\n");printf("highs.dev/, does not require additional\n");
+	printf("under the MIT license at https://highs.dev/, does not require additional\n");
 	printf("libraries and can be built and installed in a small number of steps that are\n");
 	printf("currently described at\n");
-	printf("https:\n");printf("github.com/ERGO-Code/HiGHS/blob/master/cmake/README.md. See\n");
+	printf("https://github.com/ERGO-Code/HiGHS/blob/master/cmake/README.md. See\n");
 	printf("Huangfu, Q., Hall, J.A.J. Parallelizing the dual revised simplex method.\n");
 	printf("Math. Prog. Comp. 10, 119-142 (2018).\n");
 	printf("b- If not already done, either (i) use Git to clone locally the remote\n");
-	printf("repository https:\n");printf("github.com/larseeri/determ-MCFNDP-gener, or (ii)\n");
+	printf("repository https://github.com/larseeri/determ-MCFNDP-gener, or (ii)\n");
 	printf("generate, download locally to an appropriate folder and uncompress a .zip\n");
 	printf("archive containing the remote repository file tree.\n");
 	printf("c- In a Linux terminal, go to the /check_feasib/program folder just created.\n");
@@ -305,7 +305,7 @@ void Configuration::printHelpAndExit()
 	printf("container is the possibility to avoid selection and installation of suitable\n");
 	printf("C++ compiler, C++ make build tool and required C++ libraries. It suffices\n");
 	printf("that the Docker engine be installed on the host where the computation will\n");
-	printf("be run. For this, see https:\n");printf("docs.docker.com/engine/install/.\n");
+	printf("be run. For this, see https://docs.docker.com/engine/install/.\n");
 	printf("\n");
 	printf("Remark:\n");
 	printf("Running the program from a Docker container is considerably slower. This is\n");
@@ -331,7 +331,7 @@ void Configuration::printHelpAndExit()
 	printf("docker load --input determ_feasib_image.tar\n");
 	printf("\n");
 	printf("c- If not already done, either (i) use Git to clone locally the remote\n");
-	printf("repository https:\n");printf("github.com/larseeri/determ-MCFNDP-gener, or (ii)\n");
+	printf("repository https://github.com/larseeri/determ-MCFNDP-gener, or (ii)\n");
 	printf("generate, download locally to an appropriate folder and uncompress a .zip\n");
 	printf("archive containing the remote repository file tree. The /check_feasib/docker\n");
 	printf("folder contains (i) the primitive files named 'Dockerfile' and 'makefile'\n");
@@ -364,11 +364,11 @@ void Configuration::printHelpAndExit()
 	printf("\n");
 	printf("Important:\n");
 	printf("- When running the program through Docker instructions, all input and output\n");
-	printf("files must be located inside the docker/inout subfolder. Within the Docker\n");
-	printf("instructions, this subfolder must be denoted\n");
-	printf("/inout since it is located at the root of the Docker container. Hence, an\n");
-	printf("instance file located at docker/inout/networkFile.std will be\n");
-	printf("specified in the Docker instruction with -I /inout/networkFile.std.\n");
+	printf("files must be located inside the check_feasib/docker/inout subfolder. Within\n");
+	printf("the Docker instructions, this subfolder must be denoted /inout since it is\n");
+	printf("located at the root of the Docker container. Hence, an instance file located\n");
+	printf("at check_feasib/docker/inout/networkFile.std will be specified in the Docker\n");
+	printf("instruction with -I /inout/networkFile.std.\n");
 	printf("- When running the program through Docker instructions, the default value of\n");
 	printf("option I is '/inout/default_instance.std'\n");
 	printf("\n");
@@ -379,7 +379,7 @@ void Configuration::printHelpAndExit()
 	printf("image can be run through emulation. Essentially, this may be achieved as\n");
 	printf("follows:\n");
 	printf("a- Running the following preliminary instruction once. (For details, see\n");
-	printf("https:\n");printf("hub.docker.com/r/tonistiigi/binfmt.)\n");
+	printf("https://hub.docker.com/r/tonistiigi/binfmt.)\n");
 	printf("\n");
 	printf("docker run --init --privileged --rm tonistiigi/binfmt --install all\n");
 	printf("\n");
@@ -461,8 +461,7 @@ void Configuration::printHelpAndExit()
 	printf("specification, values of idxArc are allowed to be non-consecutive. (The\n");
 	printf("Canad R deterministic instances are stored in this manner.) Hence, arcs are\n");
 	printf("indexed in the order in which they appear in the file and values of idxArc\n");
-	printf("are disregarded. In this manner the orders of the arcs in the file of the\n");
-	printf("base deterministic instance and for each scenario appear\n");
+	printf("are disregarded.\n");	
 	printf("- The DOW and STD format file readers are more restrictive than allowed by\n");
 	printf("the DOW and STD formats canonical specifications in this way: The value of\n");
 	printf("zero-valued fixed costs cannot be omitted.\n");
@@ -624,7 +623,7 @@ void Configuration::printHelpAndExit()
 	printf("determ_eqSrcsEqSnks_12oct2026-17h09.pdf\n");	
 	printf("\n");
 	
-    exit(1);
+    exit(0);
 }
 
 // unused
