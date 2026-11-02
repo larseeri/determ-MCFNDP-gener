@@ -1,4 +1,4 @@
-(October 29th 2026)
+(November 1st 2026)
 
 
 ## Generator of instances of the linear, deterministic, multi-commodity, capacitated, fixed charge network design problem
@@ -24,7 +24,7 @@ See Section 2 of the online user guide for complete details.
 
 ### B- Build or modify a configuration file.
 
-As an example, this configuration file is taken from the deterministic library:
+As an example, this configuration file is taken from the deterministic library where it is stored in a .zip archive:
 
 library/hubsAndSats/eqSrcsEqSnks/flat/hs_vols-20-100_csts-20-100-20-100-20-100-20-100_eqSrcsEqSnks_secTop-flat_secTopSpe-2-3-2-3-2-3-2-8-2-8-12-15-45-10-15-2-15-45-10-15-2_noPar-20_adjSpe-0~33-1~00-0~33-1~00_seed-50163844_strm-5343.par
 
@@ -267,7 +267,7 @@ minSatComCap minSatComCap_int
 maxSatComCap maxSatComCap_int
 ```
 
-**2.25** From each satellite node, nbAddSatArcPerSampHead_int arcs towards any other node will be added randomly (i.e., only the heads of the random arcs are sampled). Here, nbAddSatArcPerSampHead==2. These arcs will be specified according to 2.21-2.24. Notice that the addition of random arcs whose head and tail would be both sampled is also possible. In this case the appropriate option would be nbAddSatArcSampTailHead. 
+**2.25** From each satellite node, nbAddSatArcPerSampHead_int arcs towards any other node will be added randomly (i.e., only the heads of the random arcs are sampled). Here, nbAddSatArcPerSampHead_int==2. These arcs will be specified according to 2.21-2.24. Notice that the addition of random arcs whose head and tail would be both sampled is also possible. In this case the appropriate option would be nbAddSatArcSampTailHead. 
 
 ```
 nbAddSatArcPerSampHead nbAddSatArcPerSampHead_int
@@ -306,7 +306,7 @@ Note 2: These options are critical instruments for controlling and diversifying 
 
 See Section 2 of the online user guide for a detailed discussion.
 
-For example, to launch the generation process from the Linux command line based on the configuration file described in Section B above, the following instruction would be issued from the folder GenDeterm/program:
+For example, to launch the generation process from the Linux command line based on the configuration file described in Section B above, the following instruction would be issued from the folder /program:
 
 ```
 ./determ_gen +v +F ../library/hubsAndSats/eqSrcsEqSnks/flat/hs_vols-20-100_csts-20-100-20-100-20-100-20-100_eqSrcsEqSnks_secTop-flat_secTopSpe-2-3-2-3-2-3-2-8-2-8-12-15-45-10-15-2-15-45-10-15-2_noPar-20_adjSpe-0~33-1~00-0~33-1~00_seed-50163844_strm-5343.par

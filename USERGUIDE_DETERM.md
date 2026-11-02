@@ -1,4 +1,4 @@
-(October 30th 2026)
+(November 1st 2026)
 
 
 ## Generator of instances of the linear, deterministic, multi-commodity, capacitated, fixed charge network design problem
@@ -13,7 +13,7 @@ This user guide comprises the following sections:\
 1 Pseudo-random generation and available topologies.\
 2 Building and running the program directly from the Linux command line.\
 3 Running the program through Docker instructions.\
-4 Usage of options.\
+4 Detailed usage of options.\
 5 Detailed examples.
 
 ### 1 Pseudo-random generation and available topologies
@@ -60,7 +60,7 @@ The program can be run as follows from the /program folder just created along wi
 ./determ_gen
 ```
 
-Options for running the program can be specified directly in the command line or in a configuration file. By default, the program will read option values from file determ_config.par. (This default setting can be updated by modifying line 1261 of file main.cpp.) The default file can be overridden with option +F:
+Options for running the program can be specified directly in the command line or in a configuration file. By default, the program will read option values from file determ_config.par. (This default setting can be updated by modifying line 1260 of file main.cpp.) The default file can be overridden with option +F:
 
 ```
 ./determ_gen +F newParamfile.par
@@ -120,7 +120,7 @@ To display the user guide, run
 Summing up, option values are successively updated from these locations in
 this order:\
 (i) hard-coded initialization values in lines 28-48 of data.cpp\
-(ii) values appearing in configuration file whose name is specified in command line with +F (if it is specified and if it exists); if no valid configuration file is specified with +F in command line, values will be taken from default configuration file whose name is specified in line 1261 of main.cpp; at this point, the latter should exist\
+(ii) values appearing in configuration file whose name is specified in command line with +F (if it is specified and if it exists); if no valid configuration file is specified with +F in command line, values will be taken from default configuration file whose name is specified in line 1260 of main.cpp; at this point, the latter should exist\
 (iii) values specified in the command line\
 Notice that location (i) is insufficiently transparent to the user and should not be relied upon. Parameter values should be set through (ii) and (iii).
 
@@ -307,7 +307,7 @@ File paths specified in the instruction line or in a configuration file must NOT
 #### 4.1 Options available in instruction line only (Linux or Docker)
 
 ```
-+F <string>; name of configuration file supplying option parameter values; this replaces the default file whose name is hard-coded in line 1261 of main.cpp; any option value supplied in instruction line replaces value of same option supplied in configuration file
++F <string>; name of configuration file supplying option parameter values; this replaces the default file whose name is hard-coded in line 1260 of main.cpp; any option value supplied in instruction line replaces value of same option supplied in configuration file
 ```
 ```
 +v <> (no value supplied); requests verbosity while parsing options in instruction line or configuration file
@@ -348,7 +348,7 @@ Important:\
 The DOW and STD format file writers are more restrictive than allowed by the canonical specifications of DOW and STD formats in this way: zero-valued fixed costs cannot be omitted.
 
 Remarks:
-- The output will automatically be saved in STD format unless optionnoStdOut is specified.
+- The output will automatically be saved in STD format unless option StdOut is specified.
 - Under the point-to-point primary topology, the output will automatically be saved in DOW format if the options oneSrcOneSnk, equalComCaps, equalVarCosts all hold.
 - Under the hubs-and-satellites primary topology, the output will automatically be saved in DOW format if the options oneSrcOneSnk, equalComCaps, equalVarCosts, equalSatComCaps, equalSatVarCosts all hold.
 
