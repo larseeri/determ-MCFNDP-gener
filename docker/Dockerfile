@@ -31,14 +31,14 @@ FROM scratch AS runtime
 COPY --from=builder /determ_gen .
 
 ## Copy the default parameter file from the build stage
-COPY --from=builder /inout/determ_config.par .
+COPY --from=builder /inout/docker_determ_config.par .
 
 ## For diagnostic purposes
 ##RUN pwd
 ##RUN ls -al /
 
 # Default command to run the binary when the container starts
-CMD ["/determ_gen", "-help"]
+CMD ["/determ_gen", "+H"]
 
 #############################################################################
 #############################################################################
