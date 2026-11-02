@@ -1792,26 +1792,27 @@ void Graph::outputBasicGraph(string longBasicGraphFileName)
     ofstream outFile(longBasicGraphFileName);	
 	checkIfValidOutputFile(outFile, longBasicGraphFileName);	
 
-    outFile << "1 Nodes" << endl;
+    outFile << "1 Nodes" << "\n";
     outFile << "Nodes are identified with integers in closed interval [low, "
                "high]. Program will perform appropriate renumbering."
-            << endl;
-    outFile << "low = " << 1 << endl;
-    outFile << "high = " << numbNodes << endl << endl;
+            << "\n";
+    outFile << "low = " << 1 << "\n";
+    outFile << "high = " << numbNodes << endl << "\n";
 
-    outFile << "2 Arcs" << endl;
-    outFile << "NodeFrom  NodeTo" << endl;
+    outFile << "2 Arcs" << "\n";
+    outFile << "NodeFrom  NodeTo" << "\n";
 
     for (int a = 0; a < numbNonRandomArcs; a++)
 	{
-        outFile << arcs[a].orig + 1 << "  " << arcs[a].dest + 1 << endl;
+        outFile << arcs[a].orig + 1 << "  " << arcs[a].dest + 1 << "\n";
 	}
 	
 	for (int a1 = numbArcs; a1 < numbArcs + numbSatNonRandomArcs; a1++)
 	{
-        outFile << arcs[a1].orig + 1 << "  " << arcs[a1].dest + 1 << endl;
+        outFile << arcs[a1].orig + 1 << "  " << arcs[a1].dest + 1 << "\n";
 	}
-
+	
+	outFile << flush;
     outFile.close();
 }
 
@@ -1826,16 +1827,16 @@ void Graph::outputDow(string fileName)
 	
     int orig = 0, dest = 0, volume = 0;
 
-    outFile << "MULTIGEN.DAT:" << endl;
+    outFile << "MULTIGEN.DAT:" << "\n";
     outFile << setw(8) << right << (numbNodes + numbSatNodes) << "    " << setw(8) << right << (numbArcs + numbSatArcs) << "    " << setw(8) << right
-            << numbCommods << endl;
+            << numbCommods << "\n";
     
 	for (int a = 0; a < numbArcs + numbSatArcs; a++)
 	{            
 		outFile << setw(8) << right << arcs[a].orig + 1 << "    " << setw(8) << right << arcs[a].dest + 1
 				<< "    " << setw(8) << right << arcs[a].commodsOnArc[0].cost << "    " << setw(8) << right
 				<< arcs[a].capac << "    " << setw(8) << right << arcs[a].cost << "    " << setw(8) << right
-				<< 1 << "    " << setw(8) << right << a + 1 << endl;
+				<< 1 << "    " << setw(8) << right << a + 1 << "\n";
 	}
 
     for (int k = 0; k < numbCommods; k++)
@@ -1852,9 +1853,10 @@ void Graph::outputDow(string fileName)
         }
 
         outFile << setw(8) << right << orig + 1 << "    " << setw(8) << right << dest + 1 << "    " << setw(8) << right
-                << volume << endl;
+                << volume << "\n";
     }
 
+	outFile << flush;
     outFile.close();
 }
 
@@ -1864,7 +1866,7 @@ void Graph::outputStd(string fileName)
     ofstream outFile(fileName);	
 	checkIfValidOutputFile(outFile, fileName);
     outFile << setw(8) << right << (numbNodes + numbSatNodes) << "    " << setw(8) << right << (numbArcs + numbSatArcs) << "    " << setw(8) << right
-            << numbCommods << endl;
+            << numbCommods << "\n";
     for (int n = 0; n < numbNodes + numbSatNodes; n++)
         for (int a = 0; a < numbArcs + numbSatArcs; a++)
         {
@@ -1878,21 +1880,28 @@ void Graph::outputStd(string fileName)
 
                 outFile << setw(8) << right << arcs[a].orig + 1 << "    " << setw(8) << right << arcs[a].dest + 1
                         << "    " << setw(8) << right << arcs[a].cost << "    " << setw(8) << right << arcs[a].capac
-                        << "    " << setw(8) << right << cpt << endl;
+                        << "    " << setw(8) << right << cpt << "\n";
 
                 for (int k = 0; k < numbCommods; k++)
                     if (arcs[a].commodsOnArc[k].capac != 0)
                         outFile << setw(8) << right << k + 1 << "    " << setw(8) << right
                                 << arcs[a].commodsOnArc[k].cost << "    " << setw(8) << right
-                                << arcs[a].commodsOnArc[k].capac << endl;
+                                << arcs[a].commodsOnArc[k].capac << "\n";
             }
         }
     for (int k = 0; k < numbCommods; k++)
-        for (int n = 0; n < numbNodes + numbSatNodes; n++)
-            if (commods[k].commodNodes[n].volume != 0)
-                outFile << setw(8) << right << k + 1 << "    " << setw(8) << right << n + 1 << "    " << setw(8)
-                        << right << commods[k].commodNodes[n].volume << endl;
+	{
+		for (int n = 0; n < numbNodes + numbSatNodes; n++)
+        {
+			if (commods[k].commodNodes[n].volume != 0)
+			{
+				outFile << setw(8) << right << k + 1 << "    " << setw(8) << right << n + 1 << "    " << setw(8)
+                        << right << commods[k].commodNodes[n].volume << "\n";
+			}
+		}
+	}
 
+	outFile << flush;
     outFile.close();	
 }
 
@@ -2344,8 +2353,7 @@ void Graph::outputTexGeneric(string fileName)
     string temp = "";
     int counter0 = 0;
     for (int n0 = 0; n0 < inFullRows; n0++)
-    {
-        // cout << "n: " << to_string(n) << endl;
+    {        
         counter0++;
         temp = strNodes[n0];
 
@@ -2374,8 +2382,7 @@ void Graph::outputTexGeneric(string fileName)
 
     int counter1 = 0;
     for (int n1 = inFullRows; n1 < numbNodes + numbSatNodes; n1++)
-    {
-        // cout << "n: " << to_string(n) << endl;
+    {       
         counter1++;
         temp = strNodes[n1];
 

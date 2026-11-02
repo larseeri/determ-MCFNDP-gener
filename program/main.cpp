@@ -39,7 +39,7 @@
 // 1 Pseudo-random generation and available topologies
 // 2 Building and running the program directly from the Linux command line
 // 3 Running the program through Docker instructions
-// 4 Usage of options
+// 4 Detailed usage of options
 // 5 Detailed examples
 //
 // 1 Pseudo-random generation and available topologies
@@ -150,7 +150,7 @@
 // Options for running the program can be specified directly in the command
 // line or in a configuration file. By default, the program will read option
 // values from file determ_config.par. (This default setting can be updated by
-// modifying line 1261 of file main.cpp.) The default file can be 
+// modifying line 1260 of file main.cpp.) The default file can be 
 // overridden with option +F:
 //
 // ./determ_gen +F newParamfile.par
@@ -227,7 +227,7 @@
 // (ii) values appearing in configuration file whose name is specified in
 // command line with +F (if it is specified and if it exists); if no valid
 // configuration file is specified with +F in command line, values will be
-// taken from default configuration file whose name is specified in line 1261
+// taken from default configuration file whose name is specified in line 1260
 // of main.cpp; at this point, the latter should exist
 // (iii) values specified in the command line
 // Notice that location (i) is insufficiently transparent to the user and
@@ -467,7 +467,7 @@
 // ****************************************************************
 //
 // +F <string>; name of configuration file supplying option parameter values;
-// this replaces the default file whose name is hard-coded in line 1261 of
+// this replaces the default file whose name is hard-coded in line 1260 of
 // main.cpp; any option value supplied in instruction line replaces value of
 // same option supplied in configuration file
 //

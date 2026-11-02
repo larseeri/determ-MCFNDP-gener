@@ -602,13 +602,13 @@ void Data::printHelpAndExit()
 	printf("1 Pseudo-random generation and available topologies\n");
 	printf("2 Building and running the program directly from the Linux command line\n");
 	printf("3 Running the program through Docker instructions\n");
-	printf("4 Usage of options\n");printf("5 Detailed examples\n");
+	printf("4 Detailed usage of options\n");printf("5 Detailed examples\n");
 	printf("\n");printf("1 Pseudo-random generation and available topologies\n");
 	printf("***************************************************\n");printf("\n");
 	printf("All pseudo-random sampling operations occurring in the program are\n");
 	printf("performed with the permuted congruential generator (PCG). (See O'Neill, M.\n");
 	printf("PCG, a family of better random number generators.\n");
-	printf("https:\n");printf("www.pcg-random.org/, 2023.) All generated numerical characteristics\n");
+	printf("https://www.pcg-random.org/, 2023.) All generated numerical characteristics\n");
 	printf("are integer-valued: commodity volumes, fixed costs, overall capacities,\n");
 	printf("commodity-specific variable costs, commodity-specific capacities.\n");
 	printf("\n");
@@ -685,7 +685,7 @@ void Data::printHelpAndExit()
 	printf("Follow these steps to build the program:\n");
 	printf("\n");
 	printf("a- Either (i) use Git to clone locally the remote repository\n");
-	printf("https:\n");printf("github.com/larseeri/determ-MCFNDP-gener, or (ii) generate, download\n");
+	printf("https://github.com/larseeri/determ-MCFNDP-gener, or (ii) generate, download\n");
 	printf("locally to an appropriate folder and uncompress a .zip archive containing\n");
 	printf("the remote repository file tree.\n");
 	printf("b- In a Linux terminal, go to the /program subfolder just created.\n");
@@ -710,7 +710,7 @@ void Data::printHelpAndExit()
 	printf("Options for running the program can be specified directly in the command\n");
 	printf("line or in a configuration file. By default, the program will read option\n");
 	printf("values from file determ_config.par. (This default setting can be updated by\n");
-	printf("modifying line 1261 of file main.cpp.) The default file can be\n");
+	printf("modifying line 1260 of file main.cpp.) The default file can be\n");
 	printf("overridden with option +F:\n");
 	printf("\n");
 	printf("./determ_gen +F newParamfile.par\n");
@@ -787,7 +787,7 @@ void Data::printHelpAndExit()
 	printf("(ii) values appearing in configuration file whose name is specified in\n");
 	printf("command line with +F (if it is specified and if it exists); if no valid\n");
 	printf("configuration file is specified with +F in command line, values will be\n");
-	printf("taken from default configuration file whose name is specified in line 1261\n");
+	printf("taken from default configuration file whose name is specified in line 1260\n");
 	printf("of main.cpp; at this point, the latter should exist\n");
 	printf("(iii) values specified in the command line\n");
 	printf("Notice that location (i) is insufficiently transparent to the user and\n");
@@ -855,7 +855,7 @@ void Data::printHelpAndExit()
 	printf("is the possibility to avoid selection and installation of suitable C++\n");
 	printf("compiler, C++ make build tool and required C++ libraries. It suffices that\n");
 	printf("the Docker engine be installed on the host where the computation will be\n");
-	printf("run. For this, see https:\n");printf("docs.docker.com/engine/install/.\n");
+	printf("run. For this, see https://docs.docker.com/engine/install/.\n");
 	printf("\n");
 	printf("Remark:\n");
 	printf("Running the program from a Docker container is considerably slower. This is\n");
@@ -882,7 +882,7 @@ void Data::printHelpAndExit()
 	printf("docker load --input determ_gen_image.tar\n");
 	printf("\n");
 	printf("c- Either (i) use Git to clone locally the remote repository\n");
-	printf("https:\n");printf("github.com/larseeri/determ-MCFNDP-gener, or (ii) generate, download\n");
+	printf("https://github.com/larseeri/determ-MCFNDP-gener, or (ii) generate, download\n");
 	printf("locally to an appropriate folder and uncompress a .zip archive containing\n");
 	printf("the remote repository file tree. The /docker folder contains (i) the\n");
 	printf("primitive files named 'Dockerfile' and 'makefile' based on which the\n");
@@ -967,7 +967,7 @@ void Data::printHelpAndExit()
 	printf("follows:\n");
 	printf("\n");
 	printf("a- Running the following preliminary instruction once. (For details, see\n");
-	printf("https:\n");printf("hub.docker.com/r/tonistiigi/binfmt.)\n");
+	printf("https://hub.docker.com/r/tonistiigi/binfmt.)\n");
 	printf("\n");
 	printf("docker run --init --privileged --rm tonistiigi/binfmt --install all\n");
 	printf("\n");
@@ -1027,7 +1027,7 @@ void Data::printHelpAndExit()
 	printf("****************************************************************\n");
 	printf("\n");
 	printf("+F <string>; name of configuration file supplying option parameter values;\n");
-	printf("this replaces the default file whose name is hard-coded in line 1261 of\n");
+	printf("this replaces the default file whose name is hard-coded in line 1260 of\n");
 	printf("main.cpp; any option value supplied in instruction line replaces value of\n");
 	printf("same option supplied in configuration file\n");
 	printf("\n");
