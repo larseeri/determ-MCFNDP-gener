@@ -193,7 +193,7 @@ void Configuration::printHelpAndExit()
 	printf("\n");
 	printf("USER GUIDE\n");
 	printf("\n");
-	printf("This application verifies if a specified instance of the deterministic\n");
+	printf("This application verifies if a specified instance of the linear, deterministic,\n");
 	printf("multi-commodity, capacitated, fixed charge network design problem (MCFNDP) is\n");
 	printf("feasible. It does so by (i) opening all existing arcs in the network,\n");
 	printf("(ii) setting the fixed cost over each arc to 0, (iii) setting the variable\n");
@@ -364,10 +364,10 @@ void Configuration::printHelpAndExit()
 	printf("\n");
 	printf("Important:\n");
 	printf("- When running the program through Docker instructions, all input and output\n");
-	printf("files must be located inside the check_feasib/docker/inout subfolder. Within\n");
+	printf("files must be located inside the /check_feasib/docker/inout subfolder. Within\n");
 	printf("the Docker instructions, this subfolder must be denoted /inout since it is\n");
 	printf("located at the root of the Docker container. Hence, an instance file located\n");
-	printf("at check_feasib/docker/inout/networkFile.std will be specified in the Docker\n");
+	printf("at /check_feasib/docker/inout/networkFile.std will be specified in the Docker\n");
 	printf("instruction with -I /inout/networkFile.std.\n");
 	printf("- When running the program through Docker instructions, the default value of\n");
 	printf("option I is '/inout/default_instance.std'\n");

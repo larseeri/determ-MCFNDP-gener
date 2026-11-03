@@ -25,7 +25,7 @@
 //
 // USER GUIDE
 //
-// This application verifies if a specified instance of the deterministic
+// This application verifies if a specified instance of the linear, deterministic,
 // multi-commodity, capacitated, fixed charge network design problem (MCFNDP) is
 // feasible. It does so by (i) opening all existing arcs in the network,
 // (ii) setting the fixed cost over each arc to 0, (iii) setting the variable
@@ -196,10 +196,10 @@
 //
 // Important: 
 // - When running the program through Docker instructions, all input and output
-// files must be located inside the check_feasib/docker/inout subfolder. Within
+// files must be located inside the /check_feasib/docker/inout subfolder. Within
 // the Docker instructions, this subfolder must be denoted /inout since it is
 // located at the root of the Docker container. Hence, an instance file located
-// at check_feasib/docker/inout/networkFile.std will be specified in the Docker
+// at /check_feasib/docker/inout/networkFile.std will be specified in the Docker
 // instruction with -I /inout/networkFile.std.
 // - When running the program through Docker instructions, the default value of
 // option I is '/inout/default_instance.std'
