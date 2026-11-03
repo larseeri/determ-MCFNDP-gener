@@ -95,7 +95,7 @@ We explain each statement and comment appearing in the example.
 
 Remarks:
 
-a- To supply an option, a line of a configuration file must begin with a dash '-' or a letter. Comments at beginning or end of lines must begin with "#". Blank lines are ignored. See Section 4.2 of the online user guide for complete details.
+a- To supply an option, a line of a configuration file must begin with a dash '-' or a letter. Comments at beginning or end of lines must begin with '#'. Blank lines are ignored. See Section 4.2 of the online user guide for complete details.
 
 b- The order of the statements and comments in a configuration file is immaterial to the workings of the generator.
 
