@@ -1,4 +1,4 @@
-NAME  ./determ_oneSrcOneSnk_12oct2026-17h09.mps
+NAME  /inout/determ_oneSrcOneSnk_12oct2026-17h09.mps
 ROWS  
  N  Obj
  E  N_0_0
