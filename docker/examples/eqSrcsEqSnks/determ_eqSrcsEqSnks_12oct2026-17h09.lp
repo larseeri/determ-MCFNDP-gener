@@ -1,4 +1,4 @@
-\Problem name: ./determ_eqSrcsEqSnks_12oct2026-17h09.lp
+\Problem name: /inout/determ_eqSrcsEqSnks_12oct2026-17h09.lp
 
 Minimize
 Obj:  + 10 X_0_0 + 10 X_0_1 + 10 X_0_2 + 10 X_1_0 + 10 X_1_1 + 10 X_1_2
