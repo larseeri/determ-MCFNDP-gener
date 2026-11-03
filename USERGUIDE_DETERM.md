@@ -348,7 +348,7 @@ Important:\
 The DOW and STD format file writers are more restrictive than allowed by the canonical specifications of DOW and STD formats in this way: zero-valued fixed costs cannot be omitted.
 
 Remarks:
-- The output will automatically be saved in STD format unless option StdOut is specified.
+- The output will automatically be saved in STD format unless option noStdOut is specified.
 - Under the point-to-point primary topology, the output will automatically be saved in DOW format if the options oneSrcOneSnk, equalComCaps, equalVarCosts all hold.
 - Under the hubs-and-satellites primary topology, the output will automatically be saved in DOW format if the options oneSrcOneSnk, equalComCaps, equalVarCosts, equalSatComCaps, equalSatVarCosts all hold.
 
@@ -733,7 +733,7 @@ else
     	numbNodes >= 2            
 }	
 	
-primary topology is point-to-point
+// primary topology is point-to-point
 if (!hubsAndSats)
 {
 		if (oneSrcOneSnk)
@@ -764,7 +764,7 @@ if (!hubsAndSats)
 			}
 		}
 }
-primary topology is hubs-and-satellites
+// primary topology is hubs-and-satellites
 else
 {
 		secTopology != 5
