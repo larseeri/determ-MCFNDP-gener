@@ -1,4 +1,4 @@
-(November 1st 2026)
+(November 3rd 2026)
 
 
 ## Generator of instances of the linear, deterministic, multi-commodity, capacitated, fixed charge network design problem
@@ -24,7 +24,7 @@ See Section 2 of the online user guide for complete details.
 
 ### B- Build or modify a configuration file.
 
-As an example, this configuration file is taken from the deterministic library where it is stored in a .zip archive:
+As an example, this configuration file is taken from the deterministic library where it is stored in the hubsAndSats_determ_config-files.zip archive. The archive must be opened and the hubsAndSats/ folder must be installed inside library/.
 
 library/hubsAndSats/eqSrcsEqSnks/flat/hs_vols-20-100_csts-20-100-20-100-20-100-20-100_eqSrcsEqSnks_secTop-flat_secTopSpe-2-3-2-3-2-3-2-8-2-8-12-15-45-10-15-2-15-45-10-15-2_noPar-20_adjSpe-0~33-1~00-0~33-1~00_seed-50163844_strm-5343.par
 
@@ -84,7 +84,7 @@ nbAddSatArcPerSampHead 2\
 adjSatCapacsDown 0.330000\
 adjSatFixCostsUp 1.000000
 
-shortOutFileName\ hs_vols-20-100_csts-20-100-20-100-20-100-20-100_eqSrcsEqSnks_secTop-flat_secTopSpe-2-3-2-3-2-3-2-8-2-8-12-15-45-10-15-2-15-45-10-15-2_noPar-20_adjSpe-0~33-1~00-0~33-1~00_seed-50163844_strm-5343
+shortOutFileName hs_vols-20-100_csts-20-100-20-100-20-100-20-100_eqSrcsEqSnks_secTop-flat_secTopSpe-2-3-2-3-2-3-2-8-2-8-12-15-45-10-15-2-15-45-10-15-2_noPar-20_adjSpe-0~33-1~00-0~33-1~00_seed-50163844_strm-5343
 
 *** Content of the configuration file ends at the preceding line. ***
 
