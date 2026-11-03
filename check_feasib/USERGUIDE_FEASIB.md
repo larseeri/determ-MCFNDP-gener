@@ -1,4 +1,4 @@
-(November 1st 2026)
+(November 3rd 2026)
 
 
 ## Feasibility tester for instances of the linear, deterministic, multi-commodity, capacitated, fixed charge network design problem
@@ -152,7 +152,7 @@ docker run --init --rm --mount type=bind,src=absolutePathToDockerFolder/inout,ds
 ```
 
 Important: 
-- When running the program through Docker instructions, all input and output files must be located inside the docker/inout subfolder. Within the Docker instructions, this subfolder must be denoted /inout since it is located at the root of the Docker container. Hence, an instance file located at /check_feasib/docker/inout/networkFile.std will be specified in the Docker instruction with -I /inout/networkFile.std.
+- When running the program through Docker instructions, all input and output files must be located inside the /check_feasib/docker/inout subfolder. Within the Docker instructions, this subfolder must be denoted /inout since it is located at the root of the Docker container. Hence, an instance file located at /check_feasib/docker/inout/networkFile.std will be specified in the Docker instruction with -I /inout/networkFile.std.
 - When running the program through Docker instructions, the default value of option I is '/inout/default_instance.std'
 
 Important:\
@@ -210,10 +210,10 @@ c- RSTD (option R) designates a specialization of STD in which condition (ii) ab
 
 Important:
 - The canonical STD and DOW formats specification require that negative arc capacities and negative commodity-specific capacities be interpreted as infinite. When reading instance files in GSTD, RSTD or DOW format, negative capacities are set to 1E+9.
-- The DOW format file reader is more permissive than allowed by the canonical DOW format in this way: In contrast with the canonical DOW format specification, values of idxArc are allowed to be non-consecutive. (The Canad R deterministic instances are stored in this manner.) Hence, arcs are indexed in the order in which they appear in the file and values of idxArc are disregarded. In this manner the orders of the arcs in the file of the base deterministic instance and for each scenario appearing in the file of the generated stochastic instance correspond exactly.	
+- The DOW format file reader is more permissive than allowed by the canonical DOW format in this way: In contrast with the canonical DOW format specification, values of idxArc are allowed to be non-consecutive. (The Canad R deterministic instances are stored in this manner.) Hence, arcs are indexed in the order in which they appear in the file and values of idxArc are disregarded.	
 - The DOW and STD format file readers are more restrictive than allowed by the DOW and STD formats canonical specifications in this way: The value of zero-valued fixed costs cannot be omitted.
 
-Example:\n
+Example:\
 
 Consider this hypothetical Linux command line instruction:
 
