@@ -1600,7 +1600,7 @@ void Data::printHelpAndExit()
 	printf("    	numbNodes >= 2\n");
 	printf("}\n");
 	printf("\n");
-	printf("primary topology is point-to-point\n");
+	printf("// primary topology is point-to-point\n");
 	printf("if (!hubsAndSats)\n");
 	printf("{\n");
 	printf("		if (oneSrcOneSnk)\n");
@@ -1631,7 +1631,8 @@ void Data::printHelpAndExit()
 	printf("			}\n");
 	printf("		}\n");
 	printf("}\n");
-	printf("\n");printf("primary topology is hubs-and-satellites\n");
+	printf("\n");
+	printf("// primary topology is hubs-and-satellites\n");
 	printf("else\n");
 	printf("{\n");
 	printf("		secTopology != 5\n");

@@ -1040,7 +1040,7 @@
 //     	numbNodes >= 2            
 // }	
 // 	
-// primary topology is point-to-point
+// // primary topology is point-to-point
 // if (!hubsAndSats)
 // {
 //		if (oneSrcOneSnk)

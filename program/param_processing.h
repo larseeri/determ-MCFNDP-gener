@@ -62,40 +62,6 @@ namespace PARAM
 
 // Class ParamProcessing handles parsing of parameter values supplied
 // in configuration file and/or on instruction line.
-//
-// Parameter values are successively updated from these locations in this
-// order:
-// (i) hard-coded initialization values in lines 28-41 of data.cpp
-// (ii) values appearing in configuration file whose name is specified in
-// instruction line with +F (if it is specified and if it exists); if no valid
-// configuration file is specified with +F in instruction line, values will be
-// taken from configuration file whose name is specified in line 712 of
-// main.cpp; at this point, the latter should exist, although it may be empty
-// (iii) values specified in the instruction line
-// Location (i) is insufficiently transparent to the user and should not be
-// relied upon. Parameter values should be set through (ii) and (iii).
-//
-// Remarks:
-// Option names appearing in instruction line must be prefixed with '-' as
-// follows:
-// -option_name option_value
-// except for the following:
-// +F when specifying a configuration file
-// +v when requesting verbose mode while parsing options.
-// - When options are called from the instruction line, dash prefixes '-'
-// must be present. The latter can be omitted when the options are called from
-// a configuration file.
-// - To supply an option, a line of a configuration file must begin with a dash
-// '-' or a letter. A line beginning with any other character will be
-// considered a comment.
-// - The remainder of a line beyond the stated option and its value (if any is
-// expected) is disregarded and may therefore be used for adding comments.
-// - Unknown option keys following '-' in the instruction line are disregarded.
-// - Unknown option keys (following '-' or not) at beginning of lines in a
-// configuration file are disregarded.
-// - Whenever the name of a boolean parameter is not followed by a boolean
-// value, it will be assigned the default value DEFAULT_BOOL.
-
 class ParamProcessing
 {
   public:
