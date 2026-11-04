@@ -313,4 +313,4 @@ For example, to launch the generation process from the Linux command line based 
 ```
 
 Remark:\
-Except for options +F, +v and +H that can only be specified in the instruction line, all options can specified either in the configuration file or in the instruction line. Furthermore, the value of an option specified in the instruction line supersedes that specified in the configuration file. See Section 2.2 of the online user guide for details.
+Except for options +F, +v and +H that can only be specified in the instruction line, all options can be specified either in the configuration file or in the instruction line. Furthermore, the value of an option specified in the instruction line supersedes that specified in the configuration file. See Section 2.2 of the online user guide for details.
