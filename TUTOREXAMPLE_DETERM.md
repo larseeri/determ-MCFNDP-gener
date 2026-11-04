@@ -1,4 +1,4 @@
-(November 3rd 2026)
+(November 4th 2026)
 
 
 ## Generator of instances of the linear, deterministic, multi-commodity, capacitated, fixed charge network design problem
@@ -17,7 +17,7 @@ To become proficient with the use of the GenDeterm generator, we suggest to star
 
 Using the generator involves steps A, B, C below.
 
-### A- If not already done, install the program or create a Docker container from the supplied Docker image.
+### A- If not already done, install the program.
 
 See Section 2 of the online user guide for complete details.
 
@@ -37,7 +37,7 @@ We reordered and slightly modified the content of the original file to make the 
 
 *** Content of the configuration file starts on the next line. ***
 
-\# file name:\ hs_vols-20-100_csts-20-100-20-100-20-100-20-100_eqSrcsEqSnks_secTop-flat_secTopSpe-2-3-2-3-2-3-2-8-2-8-12-15-45-10-15-2-15-45-10-15-2_noPar-20_adjSpe-0~33-1~00-0~33-1~00_seed-50163844_strm-5343.par
+\# file name: hs_vols-20-100_csts-20-100-20-100-20-100-20-100_eqSrcsEqSnks_secTop-flat_secTopSpe-2-3-2-3-2-3-2-8-2-8-12-15-45-10-15-2-15-45-10-15-2_noPar-20_adjSpe-0~33-1~00-0~33-1~00_seed-50163844_strm-5343.par
 
 seed 50163844\
 stream 5343
@@ -312,4 +312,5 @@ For example, to launch the generation process from the Linux command line based 
 ./determ_gen +v +F ../library/hubsAndSats/eqSrcsEqSnks/flat/hs_vols-20-100_csts-20-100-20-100-20-100-20-100_eqSrcsEqSnks_secTop-flat_secTopSpe-2-3-2-3-2-3-2-8-2-8-12-15-45-10-15-2-15-45-10-15-2_noPar-20_adjSpe-0~33-1~00-0~33-1~00_seed-50163844_strm-5343.par
 ```
 
-Notice that options can also be set on the command line. Furthermore, the value of an option specified on the command line supersedes that specified in the configuration file.
+Remark:\
+Except for options +F, +v and +H that can only be specified in the instruction line, all options can specified either in the configuration file or in the instruction line. Furthermore, the value of an option specified in the instruction line supersedes that specified in the configuration file. See Section 2.2 of the online user guide for details.
